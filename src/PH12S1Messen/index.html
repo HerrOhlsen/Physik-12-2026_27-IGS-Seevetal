@@ -247,6 +247,12 @@ table input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .plotrow { display: grid; grid-template-columns: 1fr; gap: 1rem; }
 @media (min-width: 720px) { .plotrow { grid-template-columns: 1fr 1fr; } }
 svg { display: block; width: 100%; height: auto; }
+svg text {
+  paint-order: stroke;
+  stroke: #101b2c;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
 .plot-cap { font-size: 0.85rem; color: var(--ink-dim); text-align: center; margin-top: 0.3rem; font-family: var(--mono); }
 
 /* Ergebnis-Panel */
@@ -259,10 +265,12 @@ svg { display: block; width: 100%; height: auto; }
 .result .cap { font-size: 0.9rem; color: var(--ink-muted); margin-top: 0.4rem; }
 
 .formula {
-  font-family: var(--mono); font-size: 1.1rem; color: var(--ink);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 1.35rem; color: var(--ink); letter-spacing: 0.02em;
   background: rgba(0,0,0,0.25); border-radius: var(--r-sm);
-  padding: 0.7rem 1rem; display: inline-block; margin: 0.3rem 0 1rem;
+  padding: 0.7rem 1.2rem; display: inline-block; margin: 0.3rem 0 1rem;
 }
+.formula sub { font-style: normal; font-size: 0.7em; }
 
 /* Druck */
 @media print {
@@ -381,7 +389,7 @@ svg { display: block; width: 100%; height: auto; }
       <!-- Achsen -->
       <line x1="80" y1="150" x2="612" y2="150" stroke="#6f8299" stroke-width="1.5" marker-end="url(#ar)"/>
       <line x1="80" y1="262" x2="80" y2="32" stroke="#6f8299" stroke-width="1.5" marker-end="url(#ar)"/>
-      <text x="606" y="176" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="14" text-anchor="end">t in s</text>
+      <text x="606" y="140" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="14" text-anchor="end">t in s</text>
       <text x="70" y="40" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="14" text-anchor="end">y in cm</text>
       <!-- Achsenbeschriftung x -->
       <g fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">
@@ -395,15 +403,15 @@ svg { display: block; width: 100%; height: auto; }
       <!-- Kurve: y = 2,5 cm * sin(2 pi t / 0,8 s), 45 px pro cm, 200 px pro s -->
       <path id="wave" fill="none" stroke="#22d3ee" stroke-width="2.5"/>
       <!-- Amplitude -->
-      <line x1="140" y1="150" x2="140" y2="37.5" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arc)" marker-start="url(#arcs)"/>
+      <line x1="120" y1="150" x2="120" y2="37.5" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arc)" marker-start="url(#arcs)"/>
       <text x="150" y="95" fill="#22d3ee" font-family="IBM Plex Mono, monospace" font-size="13">Amplitude</text>
       <!-- Periodendauer -->
       <line x1="80" y1="272" x2="240" y2="272" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arc)" marker-start="url(#arcs)"/>
       <text x="160" y="290" fill="#22d3ee" font-family="IBM Plex Mono, monospace" font-size="13" text-anchor="middle">Periodendauer T</text>
       <!-- Auslenkung an einer Stelle -->
-      <line x1="360" y1="150" x2="360" y2="70" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 3"/>
-      <circle cx="360" cy="70" r="4" fill="#fbbf24"/>
-      <text x="370" y="66" fill="#fbbf24" font-family="IBM Plex Mono, monospace" font-size="13">y(t)</text>
+      <line x1="260" y1="150" x2="260" y2="70.4" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <circle cx="260" cy="70.4" r="4" fill="#fbbf24"/>
+      <text x="252" y="64" fill="#fbbf24" font-family="IBM Plex Mono, monospace" font-size="13" text-anchor="end">y(t)</text>
     </svg>
     <div class="plot-cap">Auslenkung y gegen die Zeit t</div>
   </div>
@@ -759,6 +767,8 @@ function go(n) {
   document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
   document.getElementById('sec' + n).classList.add('active');
   state.section = n;
+  if (n === 6) renderReveal();
+  if (n === 5) drawPlots();
   renderSteps();
   persist();
   window.scrollTo({ top: 0, behavior: 'smooth' });
