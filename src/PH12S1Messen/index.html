@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Schwingungen S1: Wovon hängt die Schwingungsdauer ab? | Physik 12</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════════
+   TOKENS
+   ══════════════════════════════════════════ */
+:root {
+  --bg-deep: #0b1220;
+  --bg-surface: #111c2e;
+  --bg-card: #16243a;
+  --bg-elevated: #1d3049;
+
+  --ink: #e6edf5;
+  --ink-muted: #a3b4c8;
+  --ink-dim: #6f8299;
+
+  --accent: #22d3ee;
+  --accent-deep: #0891b2;
+  --accent-subtle: rgba(34, 211, 238, 0.10);
+  --accent-glow: rgba(34, 211, 238, 0.28);
+
+  --ok: #34d399;
+  --ok-bg: rgba(52, 211, 153, 0.12);
+  --ok-border: rgba(52, 211, 153, 0.35);
+  --err: #f87171;
+  --err-bg: rgba(248, 113, 113, 0.12);
+  --err-border: rgba(248, 113, 113, 0.35);
+  --warn: #fbbf24;
+  --warn-bg: rgba(251, 191, 36, 0.10);
+  --warn-border: rgba(251, 191, 36, 0.30);
+
+  --brian: #c084fc;
+  --brian-bg: rgba(192, 132, 252, 0.10);
+  --brian-border: rgba(192, 132, 252, 0.35);
+
+  --border: rgba(34, 211, 238, 0.15);
+  --border-strong: rgba(34, 211, 238, 0.32);
+
+  --font: 'Outfit', system-ui, -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-full: 100px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.32), 0 1px 4px rgba(0,0,0,0.2);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--bg-deep);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34,211,238,0.10), transparent),
+    radial-gradient(ellipse 60% 50% at 90% 110%, rgba(8,145,178,0.08), transparent);
+  background-attachment: fixed;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+input, textarea, select { font-size: 16px; font-family: var(--font); }
+button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; font-family: var(--font); }
+
+/* ══════════════════════════════════════════
+   LAYOUT
+   ══════════════════════════════════════════ */
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 1.25rem 6rem; }
+
+header.top {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(11, 18, 32, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 0;
+  margin-bottom: 2rem;
+}
+.top-inner { max-width: 860px; margin: 0 auto; padding: 0 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.kicker {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent); white-space: nowrap;
+}
+.steps { display: flex; gap: 0.4rem; margin-left: auto; flex-wrap: wrap; }
+.step-dot {
+  width: 2rem; height: 0.3rem; border-radius: var(--r-full);
+  background: rgba(255,255,255,0.12); transition: background 0.25s, box-shadow 0.25s;
+  cursor: pointer; border: none; padding: 0;
+}
+.step-dot.done { background: var(--accent-deep); }
+.step-dot.here { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+
+h1 { font-size: clamp(1.6rem, 4.5vw, 2.3rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 0.6rem; }
+h2 { font-size: clamp(1.25rem, 3.5vw, 1.55rem); font-weight: 700; line-height: 1.25; margin-bottom: 0.9rem; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--ink); }
+p { margin-bottom: 1rem; color: var(--ink-muted); }
+p strong, li strong { color: var(--ink); font-weight: 600; }
+ul, ol { margin: 0 0 1rem 1.3rem; color: var(--ink-muted); }
+li { margin-bottom: 0.4rem; }
+
+.sec { display: none; animation: fade 0.3s ease; }
+.sec.active { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.card.tight { padding: 1.1rem 1.25rem; }
+
+.tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.68rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.25rem 0.6rem; border-radius: var(--r-full);
+  background: var(--accent-subtle); color: var(--accent);
+  border: 1px solid var(--border-strong); margin-bottom: 0.9rem;
+}
+.tag.zusatz { background: var(--warn-bg); color: var(--warn); border-color: var(--warn-border); }
+
+.lead { font-size: 1.05rem; color: var(--ink-muted); }
+
+/* Ziele-Liste */
+.goals { list-style: none; margin-left: 0; }
+.goals li { display: flex; gap: 0.7rem; align-items: flex-start; margin-bottom: 0.6rem; }
+.goals li::before {
+  content: ''; flex: 0 0 auto; width: 0.5rem; height: 0.5rem; margin-top: 0.6rem;
+  border-radius: 50%; background: var(--accent);
+}
+
+/* Callouts */
+.note {
+  border-left: 3px solid var(--accent); background: var(--accent-subtle);
+  border-radius: 0 var(--r-md) var(--r-md) 0; padding: 0.9rem 1.1rem; margin-bottom: 1.2rem;
+}
+.note p:last-child { margin-bottom: 0; }
+.note.warnbox { border-left-color: var(--warn); background: var(--warn-bg); }
+
+/* Brian-Karte */
+.brian {
+  border: 1px solid var(--brian-border); background: var(--brian-bg);
+  border-radius: var(--r-lg); padding: 1.3rem 1.4rem; margin-bottom: 1.5rem;
+}
+.brian .tag { background: rgba(192,132,252,0.12); color: var(--brian); border-color: var(--brian-border); }
+.brian h3 { color: var(--brian); }
+.brian-task {
+  font-family: var(--mono); font-size: 0.9rem; color: var(--ink);
+  background: rgba(0,0,0,0.28); border-radius: var(--r-sm);
+  padding: 0.6rem 0.85rem; margin: 0.7rem 0 0.9rem; display: inline-block;
+}
+
+/* Bootcamp-Hinweis */
+.rescue {
+  display: flex; gap: 0.9rem; align-items: flex-start;
+  border: 1px dashed rgba(255,255,255,0.18); border-radius: var(--r-md);
+  padding: 0.9rem 1.1rem; margin-bottom: 1.2rem; background: rgba(255,255,255,0.03);
+}
+.rescue .ico { font-size: 1.3rem; line-height: 1.3; }
+.rescue p { margin: 0; font-size: 0.94rem; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--accent); color: #06202b; font-weight: 600; font-size: 0.98rem;
+  border: none; border-radius: var(--r-full); padding: 0.7rem 1.5rem; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
+.btn:active { transform: none; }
+.btn.ghost { background: transparent; color: var(--ink-muted); border: 1px solid var(--border-strong); }
+.btn.ghost:hover { color: var(--ink); box-shadow: none; }
+.btn.small { padding: 0.45rem 1rem; font-size: 0.88rem; }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.nav { display: flex; gap: 0.8rem; align-items: center; margin-top: 2rem; flex-wrap: wrap; }
+.nav .spacer { flex: 1 1 auto; }
+
+/* Auswahlfragen */
+.choices { display: flex; flex-direction: column; gap: 0.6rem; margin: 1rem 0; }
+.choice {
+  display: flex; gap: 0.8rem; align-items: flex-start; text-align: left; width: 100%;
+  background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: var(--r-md); padding: 0.85rem 1rem; cursor: pointer; color: var(--ink);
+  font-size: 0.98rem; line-height: 1.5; transition: border-color 0.18s, background 0.18s;
+}
+.choice:hover { border-color: var(--border-strong); }
+.choice .letter {
+  flex: 0 0 auto; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  background: rgba(255,255,255,0.08); color: var(--ink-muted);
+  display: grid; place-items: center; font-family: var(--mono); font-size: 0.8rem; font-weight: 600;
+}
+.choice.picked { border-color: var(--accent); background: var(--accent-subtle); }
+.choice.picked .letter { background: var(--accent); color: #06202b; }
+.choice.right { border-color: var(--ok-border); background: var(--ok-bg); }
+.choice.right .letter { background: var(--ok); color: #04231a; }
+.choice.wrong { border-color: var(--err-border); background: var(--err-bg); }
+.choice.wrong .letter { background: var(--err); color: #2a0a0a; }
+.choice[disabled] { cursor: default; }
+
+.fb { border-radius: var(--r-md); padding: 0.8rem 1rem; margin-top: 0.7rem; font-size: 0.94rem; display: none; }
+.fb.show { display: block; }
+.fb.good { background: var(--ok-bg); border: 1px solid var(--ok-border); color: var(--ink); }
+.fb.bad { background: var(--err-bg); border: 1px solid var(--err-border); color: var(--ink); }
+.fb.hint { background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--ink); }
+
+/* Eingabefelder */
+.inputs { display: flex; flex-direction: column; gap: 0.8rem; margin: 1rem 0; }
+.field { display: flex; gap: 0.7rem; align-items: center; flex-wrap: wrap; }
+.field label { flex: 1 1 15rem; color: var(--ink-muted); font-size: 0.96rem; }
+.field input {
+  width: 6.5rem; background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--r-sm); padding: 0.5rem 0.7rem; color: var(--ink);
+  font-family: var(--mono); text-align: right;
+}
+.field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.field input.ok { border-color: var(--ok); background: var(--ok-bg); }
+.field input.no { border-color: var(--err); background: var(--err-bg); }
+.field .unit { font-family: var(--mono); color: var(--ink-dim); width: 3rem; font-size: 0.9rem; }
+
+/* Tabellen */
+.tablewrap { overflow-x: auto; margin-bottom: 1.2rem; }
+table { border-collapse: collapse; width: 100%; font-size: 0.94rem; min-width: 26rem; }
+th, td { padding: 0.55rem 0.7rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.09); }
+th { color: var(--accent); font-weight: 600; font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase; }
+td { color: var(--ink-muted); font-family: var(--mono); font-size: 0.9rem; }
+td.txt { font-family: var(--font); }
+table input {
+  width: 5rem; background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--r-sm); padding: 0.35rem 0.5rem; color: var(--ink);
+  font-family: var(--mono); text-align: right; font-size: 0.9rem;
+}
+table input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Diagramme */
+.plotbox { background: rgba(0,0,0,0.25); border-radius: var(--r-md); padding: 0.8rem; margin-bottom: 1rem; }
+.plotrow { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+@media (min-width: 720px) { .plotrow { grid-template-columns: 1fr 1fr; } }
+svg { display: block; width: 100%; height: auto; }
+.plot-cap { font-size: 0.85rem; color: var(--ink-dim); text-align: center; margin-top: 0.3rem; font-family: var(--mono); }
+
+/* Ergebnis-Panel */
+.result {
+  text-align: center; padding: 1.5rem;
+  border: 1px solid var(--border-strong); border-radius: var(--r-lg);
+  background: var(--accent-subtle); margin-bottom: 1.5rem;
+}
+.result .big { font-size: 2.4rem; font-weight: 800; color: var(--accent); line-height: 1; }
+.result .cap { font-size: 0.9rem; color: var(--ink-muted); margin-top: 0.4rem; }
+
+.formula {
+  font-family: var(--mono); font-size: 1.1rem; color: var(--ink);
+  background: rgba(0,0,0,0.25); border-radius: var(--r-sm);
+  padding: 0.7rem 1rem; display: inline-block; margin: 0.3rem 0 1rem;
+}
+
+/* Druck */
+@media print {
+  body { background: #fff; color: #000; }
+  header.top, .nav, .btn, .steps { display: none !important; }
+  .sec { display: block !important; }
+  .card, .note, .brian, .rescue { border: 1px solid #999; background: #fff; box-shadow: none; page-break-inside: avoid; }
+  h1, h2, h3, p, li, td, th { color: #000 !important; }
+  .print-only { display: block !important; }
+}
+.print-only { display: none; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <span class="kicker">Physik 12 &middot; Schwingungen &middot; S1</span>
+    <nav class="steps" id="steps" aria-label="Abschnitte"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ═══════════════ 0 START ═══════════════ -->
+<section class="sec active" id="sec0">
+  <h1>Wovon hängt die Schwingungsdauer ab?</h1>
+  <p class="lead">Du bekommst ein Fadenpendel in die Hand und die Frage: Was verändert seine Schwingungsdauer? Statt es dir zu sagen, misst du es selbst. Danach weißt du nicht nur die Antwort, sondern auch, warum man ihr trauen kann.</p>
+
+  <div class="card">
+    <span class="tag">Das kannst du danach</span>
+    <ul class="goals">
+      <li>Du benennst die Größen einer Schwingung: Auslenkung, Amplitude, Periodendauer und Frequenz, und liest sie aus einem Diagramm ab.</li>
+      <li>Du planst eine Messreihe so, dass sie eine Frage wirklich beantwortet (nur eine Größe verändern, den Rest festhalten).</li>
+      <li>Du misst die Periodendauer so, dass der Messfehler klein bleibt.</li>
+      <li>Du wertest deine Messwerte in einem Diagramm aus und sagst, welcher Zusammenhang dahintersteckt.</li>
+      <li>Du erklärst, warum die Masse des Pendelkörpers nichts ändert, die Fadenlänge aber schon.</li>
+    </ul>
+  </div>
+
+  <div class="card tight">
+    <h3>So läuft dieser Schritt</h3>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Teil</th><th>Wo</th><th>Zeit</th></tr>
+        <tr><td class="txt">1. Deine Vorhersage</td><td class="txt">hier im Modul</td><td>5 min</td></tr>
+        <tr><td class="txt">2. Die vier Größen</td><td class="txt">hier im Modul</td><td>15 min</td></tr>
+        <tr><td class="txt">3. Messreihe planen</td><td class="txt">Modul + Brian</td><td>20 min</td></tr>
+        <tr><td class="txt">4. Messen</td><td class="txt">im Unterricht, in der Gruppe</td><td>45 min</td></tr>
+        <tr><td class="txt">5. Auswerten</td><td class="txt">hier im Modul</td><td>25 min</td></tr>
+        <tr><td class="txt">6. Auflösung und Check</td><td class="txt">hier im Modul</td><td>15 min</td></tr>
+      </table>
+    </div>
+    <p style="margin-bottom:0">Du kannst zwischendurch aufhören. Deine Eingaben werden gespeichert und sind beim nächsten Öffnen wieder da.</p>
+  </div>
+
+  <div class="nav">
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(1)">Los geht es</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 1 VORHERSAGE ═══════════════ -->
+<section class="sec" id="sec1">
+  <h2>1. Erst tippen, dann messen</h2>
+  <p>Zwei Fragen, bevor irgendetwas gemessen wird. Es geht nicht darum, richtig zu liegen. Es geht darum, dass du eine Erwartung hast, an der du dich später überprüfen kannst. Wer nichts erwartet, lernt aus einer Messung auch nichts.</p>
+
+  <div class="card">
+    <h3>Vorhersage 1</h3>
+    <p>Zwei Fadenpendel hängen nebeneinander. Beide Fäden sind genau <strong>60 cm</strong> lang. Am einen hängt eine Kugel mit <strong>50 g</strong>, am anderen eine mit <strong>200 g</strong>. Du lenkst beide gleich weit aus und lässt gleichzeitig los.</p>
+    <div class="choices" id="p1"></div>
+    <div class="fb hint" id="p1fb">Gemerkt. Aufgelöst wird das erst, wenn ihr gemessen habt.</div>
+  </div>
+
+  <div class="card">
+    <h3>Vorhersage 2</h3>
+    <p>Jetzt zwei gleiche Pendel, beide 60 cm, beide 100 g. Das eine lenkst du <strong>5 Grad</strong> aus, das andere <strong>30 Grad</strong>.</p>
+    <div class="choices" id="p2"></div>
+    <div class="fb hint" id="p2fb">Gemerkt. Auch das wird nach der Messung aufgelöst.</div>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(0)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(2)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 2 GRÖSSEN ═══════════════ -->
+<section class="sec" id="sec2">
+  <h2>2. Vier Größen, mit denen man jede Schwingung beschreibt</h2>
+  <p>Bevor du misst, brauchst du die Sprache dafür. Eine Schwingung ist eine Bewegung, die sich immer wieder gleich wiederholt. Trägt man die Auslenkung gegen die Zeit auf, entsteht diese Kurve:</p>
+
+  <div class="plotbox">
+    <svg viewBox="0 0 640 300" role="img" aria-label="Diagramm der Auslenkung gegen die Zeit mit eingezeichneter Amplitude und Periodendauer">
+      <defs>
+        <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#6f8299"/>
+        </marker>
+        <marker id="arc" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#22d3ee"/>
+        </marker>
+        <marker id="arcs" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto-start-reverse">
+          <path d="M8,0 L0,4 L8,8 z" fill="#22d3ee"/>
+        </marker>
+      </defs>
+      <!-- Gitter -->
+      <g stroke="rgba(255,255,255,0.07)" stroke-width="1">
+        <line x1="80" y1="40" x2="80" y2="250"/><line x1="160" y1="40" x2="160" y2="250"/>
+        <line x1="240" y1="40" x2="240" y2="250"/><line x1="320" y1="40" x2="320" y2="250"/>
+        <line x1="400" y1="40" x2="400" y2="250"/><line x1="480" y1="40" x2="480" y2="250"/>
+        <line x1="560" y1="40" x2="560" y2="250"/>
+        <line x1="80" y1="60" x2="600" y2="60"/><line x1="80" y1="105" x2="600" y2="105"/>
+        <line x1="80" y1="195" x2="600" y2="195"/><line x1="80" y1="240" x2="600" y2="240"/>
+      </g>
+      <!-- Achsen -->
+      <line x1="80" y1="150" x2="612" y2="150" stroke="#6f8299" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="80" y1="262" x2="80" y2="32" stroke="#6f8299" stroke-width="1.5" marker-end="url(#ar)"/>
+      <text x="606" y="176" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="14" text-anchor="end">t in s</text>
+      <text x="70" y="40" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="14" text-anchor="end">y in cm</text>
+      <!-- Achsenbeschriftung x -->
+      <g fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">
+        <text x="160" y="170">0,4</text><text x="240" y="170">0,8</text><text x="320" y="170">1,2</text>
+        <text x="400" y="170">1,6</text><text x="480" y="170">2,0</text><text x="560" y="170">2,4</text>
+      </g>
+      <!-- Achsenbeschriftung y -->
+      <g fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end">
+        <text x="72" y="65">2</text><text x="72" y="110">1</text><text x="72" y="200">-1</text><text x="72" y="245">-2</text>
+      </g>
+      <!-- Kurve: y = 2,5 cm * sin(2 pi t / 0,8 s), 45 px pro cm, 200 px pro s -->
+      <path id="wave" fill="none" stroke="#22d3ee" stroke-width="2.5"/>
+      <!-- Amplitude -->
+      <line x1="140" y1="150" x2="140" y2="37.5" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arc)" marker-start="url(#arcs)"/>
+      <text x="150" y="95" fill="#22d3ee" font-family="IBM Plex Mono, monospace" font-size="13">Amplitude</text>
+      <!-- Periodendauer -->
+      <line x1="80" y1="272" x2="240" y2="272" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arc)" marker-start="url(#arcs)"/>
+      <text x="160" y="290" fill="#22d3ee" font-family="IBM Plex Mono, monospace" font-size="13" text-anchor="middle">Periodendauer T</text>
+      <!-- Auslenkung an einer Stelle -->
+      <line x1="360" y1="150" x2="360" y2="70" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <circle cx="360" cy="70" r="4" fill="#fbbf24"/>
+      <text x="370" y="66" fill="#fbbf24" font-family="IBM Plex Mono, monospace" font-size="13">y(t)</text>
+    </svg>
+    <div class="plot-cap">Auslenkung y gegen die Zeit t</div>
+  </div>
+
+  <div class="card">
+    <div class="tablewrap">
+      <table>
+        <tr><th>Größe</th><th>Zeichen</th><th>Was sie sagt</th></tr>
+        <tr><td>Auslenkung</td><td>y(t)</td><td class="txt">Wie weit der Körper zum Zeitpunkt t von der Ruhelage entfernt ist. Ändert sich ständig, hat ein Vorzeichen.</td></tr>
+        <tr><td>Amplitude</td><td>ŷ</td><td class="txt">Die größte Auslenkung. Also der halbe Abstand zwischen den beiden Umkehrpunkten, nicht der ganze.</td></tr>
+        <tr><td>Periodendauer</td><td>T</td><td class="txt">Die Zeit für eine vollständige Schwingung: hin, zurück und wieder am Startpunkt in gleicher Richtung.</td></tr>
+        <tr><td>Frequenz</td><td>f</td><td class="txt">Schwingungen pro Sekunde. Einheit Hertz (Hz). Es gilt f = 1 / T.</td></tr>
+      </table>
+    </div>
+    <div class="note warnbox">
+      <p><strong>Die Falle bei der Amplitude:</strong> Wenn ein Pendel zwischen zwei Punkten hin und her schwingt, die 12 cm auseinander liegen, ist die Amplitude 6 cm und nicht 12 cm. Die Amplitude wird immer von der Ruhelage aus gemessen.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="tag">Übung</span>
+    <h3>Lies die drei Werte aus dem Diagramm oben ab</h3>
+    <p>Runde sinnvoll. Kleine Abweichungen sind in Ordnung, es ist ein Ablesewert.</p>
+    <div class="inputs">
+      <div class="field">
+        <label for="r1">Amplitude ŷ</label>
+        <input id="r1" type="text" inputmode="decimal" autocomplete="off"><span class="unit">cm</span>
+      </div>
+      <div class="field">
+        <label for="r2">Periodendauer T</label>
+        <input id="r2" type="text" inputmode="decimal" autocomplete="off"><span class="unit">s</span>
+      </div>
+      <div class="field">
+        <label for="r3">Frequenz f (rechne aus T aus)</label>
+        <input id="r3" type="text" inputmode="decimal" autocomplete="off"><span class="unit">Hz</span>
+      </div>
+    </div>
+    <button class="btn small" onclick="checkRead()">Prüfen</button>
+    <div class="fb" id="readfb"></div>
+  </div>
+
+  <div class="rescue">
+    <span class="ico">&#129517;</span>
+    <p><strong>Du kommst mit dem Ablesen aus Diagrammen nicht klar?</strong> Dann arbeite im Physik Bootcamp <strong>Track C1 "Diagramme lesen"</strong> durch, bevor du weitermachst. Das ist keine Strafe, das ist die Abkürzung.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(1)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(3)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 3 PLANEN ═══════════════ -->
+<section class="sec" id="sec3">
+  <h2>3. Eine Messreihe planen, die auch etwas beweist</h2>
+  <p>Die Frage lautet: Wovon hängt die Periodendauer T eines Fadenpendels ab? Das Problem ist, dass an einem Pendel mehrere Dinge gleichzeitig verändert werden könnten. Wenn du zwei davon auf einmal änderst und sich T ändert, weißt du hinterher nicht, welche der beiden es war.</p>
+
+  <div class="card">
+    <h3>Die Regel, um die es geht</h3>
+    <p><strong>Verändere immer nur eine Größe. Alle anderen hältst du fest.</strong> Für jede Größe, die du untersuchen willst, brauchst du deshalb eine eigene Messreihe.</p>
+    <p style="margin-bottom:0">Das klingt banal, ist aber der Unterschied zwischen einer Messung und einem Herumprobieren. Und es ist der Grund, warum Naturwissenschaft überhaupt zu belastbaren Aussagen kommt.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Überlegung</span>
+    <h3>Welche dieser Größen könnten T beeinflussen?</h3>
+    <p>Kreuze an, was du für plausibel hältst. Mehrfachauswahl. Es gibt hier bewusst auch Unsinn zur Auswahl, denn zu einer guten Planung gehört, Unsinn auszusortieren und begründen zu können, warum es Unsinn ist.</p>
+    <div class="choices" id="params"></div>
+    <button class="btn small" onclick="checkParams()">Auswertung anzeigen</button>
+    <div class="fb" id="paramsfb"></div>
+  </div>
+
+  <div class="brian">
+    <span class="tag">Aufgabe in Brian</span>
+    <h3>Deine Versuchsplanung begründen</h3>
+    <p>Jetzt kommt der Teil, den ein Ankreuztest nicht abnehmen kann: Du musst deinen Plan aufschreiben und begründen. Brian gibt dir dazu Rückmeldung.</p>
+    <div class="brian-task">PH12-S1 Versuchsplanung</div>
+    <p style="margin-bottom:0">Du findest die Aufgabe in Brian in deinem Physikkurs unter diesem Namen. Bearbeite sie, bevor ihr im Unterricht messt. Es dauert etwa 10 Minuten.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(2)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(4)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 4 MESSEN ═══════════════ -->
+<section class="sec" id="sec4">
+  <h2>4. Messen im Unterricht</h2>
+  <p>Dieser Teil findet in der Gruppe statt, nicht am Bildschirm. Hier steht, was ihr braucht und worauf es ankommt. Du kannst diese Seite ausdrucken, die Messtabelle ist dafür vorbereitet.</p>
+
+  <div class="card">
+    <h3>Der wichtigste Trick: zehn Perioden auf einmal</h3>
+    <p>Wenn du eine einzelne Periode stoppst, machst du beim Starten und beim Stoppen jeweils einen Reaktionsfehler von etwa 0,2 Sekunden. Bei einer Periode von 1,5 Sekunden sind das über 10 Prozent Fehler. Das ist zu viel.</p>
+    <p><strong>Deshalb:</strong> Stoppe die Zeit für <strong>10 volle Schwingungen</strong> und teile sie durch 10.</p>
+    <div class="formula">T = t<sub>10</sub> / 10</div>
+    <p style="margin-bottom:0">Der Reaktionsfehler verteilt sich dadurch auf zehn Perioden und schrumpft auf ein Zehntel. Derselbe Fehler, zehnmal weniger Wirkung. Nebenbei: Zähle beim Loslassen "null" und nicht "eins", sonst misst du neun Perioden statt zehn.</p>
+  </div>
+
+  <div class="card">
+    <h3>Ablauf</h3>
+    <ol>
+      <li>Baut das Pendel auf. Messt die Fadenlänge von der Aufhängung bis zur Mitte der Kugel.</li>
+      <li>Lenkt <strong>klein</strong> aus, höchstens etwa 10 Grad, und lasst ohne Schwung los.</li>
+      <li>Stoppt die Zeit für 10 Schwingungen. Wiederholt jede Messung <strong>dreimal</strong> und bildet den Mittelwert.</li>
+      <li>Verändert dann genau eine Größe und wiederholt. Alles andere bleibt gleich.</li>
+      <li>Tragt alles in die Tabelle ein. Auch Messungen, die euch komisch vorkommen. Nichts wegwerfen.</li>
+    </ol>
+    <p style="margin-bottom:0">Wer genauer messen will, nimmt statt der Stoppuhr das Smartphone: die App <strong>phyphox</strong> hat unter "Pendel" eine fertige Messung, die über das Magnetometer oder die Beschleunigungssensoren läuft. Leifi erklärt den Aufbau Schritt für Schritt.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Zum Ausdrucken</span>
+    <h3>Messtabelle Fadenlänge</h3>
+    <p>Fadenlänge verändern, Masse und Auslenkung festhalten.</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>l in cm</th><th>t<sub>10</sub> (1) in s</th><th>t<sub>10</sub> (2) in s</th><th>t<sub>10</sub> (3) in s</th><th>Mittelwert in s</th><th>T in s</th></tr>
+        <tr><td>20</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>40</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>60</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>80</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>100</td><td></td><td></td><td></td><td></td><td></td></tr>
+      </table>
+    </div>
+    <p style="margin-bottom:0">Für die zweite Messreihe (Masse verändern, Länge festhalten) und die dritte (Auslenkung verändern) macht ihr dieselbe Tabelle mit der jeweils veränderten Größe in der ersten Spalte.</p>
+  </div>
+
+  <div class="note">
+    <p><strong>Bevor ihr abbaut:</strong> Schaut euch eure Zahlen kurz an. Passt die Reihenfolge? Wenn bei 100 cm eine kleinere Zeit steht als bei 80 cm, habt ihr wahrscheinlich einen Messfehler und solltet nachmessen, solange der Aufbau noch steht.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(3)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(5)">Weiter zur Auswertung</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 5 AUSWERTEN ═══════════════ -->
+<section class="sec" id="sec5">
+  <h2>5. Auswerten</h2>
+  <p>Trage deine eigenen Messwerte ein. Wenn bei euch etwas schiefgegangen ist oder du krank warst, kannst du auch mit einem fertigen Datensatz arbeiten. Ehrlich bleiben: eigene Werte sind besser, weil du sie erklären kannst.</p>
+
+  <div class="card">
+    <h3>Messreihe 1: Fadenlänge verändert</h3>
+    <div class="tablewrap">
+      <table>
+        <tr><th>l in m</th><th>T in s</th><th>T² in s²</th></tr>
+        <tbody id="dataRows"></tbody>
+      </table>
+    </div>
+    <div class="nav" style="margin-top:0.5rem">
+      <button class="btn small ghost" onclick="loadDemo()">Fertigen Datensatz laden</button>
+      <button class="btn small ghost" onclick="clearData()">Leeren</button>
+      <div class="spacer"></div>
+      <button class="btn small" onclick="drawPlots()">Diagramme zeichnen</button>
+    </div>
+  </div>
+
+  <div class="plotrow">
+    <div class="plotbox">
+      <svg id="plotA" viewBox="0 0 320 260" role="img" aria-label="Diagramm der Periodendauer gegen die Fadenlänge"></svg>
+      <div class="plot-cap">T gegen l</div>
+    </div>
+    <div class="plotbox">
+      <svg id="plotB" viewBox="0 0 320 260" role="img" aria-label="Diagramm des Quadrats der Periodendauer gegen die Fadenlänge"></svg>
+      <div class="plot-cap">T² gegen l</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="tag">Auswertung</span>
+    <h3>Was sagen die beiden Diagramme?</h3>
+    <div class="choices" id="q5"></div>
+    <div class="fb" id="q5fb"></div>
+  </div>
+
+  <div class="card">
+    <h3>Messreihe 2 und 3: Masse und Auslenkung</h3>
+    <p>Diese beiden Reihen sind schneller ausgewertet, weil sich fast nichts tut. Hier sind typische Messwerte aus früheren Kursen, alle bei l = 50 cm:</p>
+    <div class="plotrow" style="gap:1rem">
+      <div class="tablewrap">
+        <table>
+          <tr><th>m in g</th><th>T in s</th></tr>
+          <tr><td>20</td><td>1,42</td></tr>
+          <tr><td>50</td><td>1,41</td></tr>
+          <tr><td>100</td><td>1,43</td></tr>
+          <tr><td>200</td><td>1,42</td></tr>
+        </table>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <tr><th>Auslenkung</th><th>T in s</th></tr>
+          <tr><td>5&deg;</td><td>1,42</td></tr>
+          <tr><td>10&deg;</td><td>1,42</td></tr>
+          <tr><td>20&deg;</td><td>1,43</td></tr>
+          <tr><td>40&deg;</td><td>1,46</td></tr>
+        </table>
+      </div>
+    </div>
+    <p style="margin-bottom:0">Schau dir die rechte Tabelle genau an. Bei 5, 10 und 20 Grad ist T praktisch gleich. Bei 40 Grad steht plötzlich eine andere Zahl. Das ist kein Messfehler. Merke dir diese Zeile, in Lernschritt 4 kommen wir darauf zurück.</p>
+  </div>
+
+  <div class="rescue">
+    <span class="ico">&#129517;</span>
+    <p><strong>Unsicher beim Diagrammzeichnen, bei Achsen oder Einheiten?</strong> Physik Bootcamp <strong>Track C</strong> (Diagramme) und <strong>Track B</strong> (Rechnen und Einheiten) decken genau das ab.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(4)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(6)">Zur Auflösung</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 6 AUFLÖSUNG + CHECK ═══════════════ -->
+<section class="sec" id="sec6">
+  <h2>6. Auflösung und Check</h2>
+
+  <div class="card">
+    <h3>Deine Vorhersagen von vorhin</h3>
+    <div id="revealBox"></div>
+  </div>
+
+  <div class="card">
+    <h3>Das Ergebnis dieses Lernschritts</h3>
+    <p>Die Periodendauer eines Fadenpendels hängt <strong>nur von der Fadenlänge</strong> ab (und vom Ort, weil die Fallbeschleunigung eingeht). Nicht von der Masse. Nicht von der Auslenkung, solange sie klein bleibt.</p>
+    <p>Und der Zusammenhang mit der Länge ist nicht proportional: Doppelte Länge heißt nicht doppelte Periodendauer. Dein zweites Diagramm zeigt, was stattdessen gilt: <strong>T² ist proportional zu l</strong>. Also wächst T mit der Wurzel aus l.</p>
+    <div class="formula">T ~ &radic;l</div>
+    <p style="margin-bottom:0">Die vollständige Gleichung dazu bekommst du in Lernschritt 3. Wichtig ist jetzt, dass du sie nicht glauben musst: du hast sie gemessen.</p>
+  </div>
+
+  <div class="note">
+    <p><strong>Warum spielt die Masse keine Rolle?</strong> Eine schwerere Kugel wird stärker zurückgetrieben, weil die Gewichtskraft größer ist. Sie ist aber gleichzeitig träger, lässt sich also schwerer beschleunigen. Beides wächst im selben Verhältnis, und deshalb heben sich die Effekte auf. Genau derselbe Grund, aus dem alle Körper gleich schnell fallen.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Check</span>
+    <h3>Fünf Fragen zum Schluss</h3>
+    <p>Nicht benotet, niemand sieht die Antworten außer dir. Der Sinn ist, dass du merkst, wo es noch hakt, solange du noch etwas dagegen tun kannst.</p>
+    <div id="quizBox"></div>
+    <div class="result" id="quizResult" style="display:none">
+      <div class="big" id="quizScore">0/5</div>
+      <div class="cap" id="quizCap"></div>
+    </div>
+  </div>
+
+  <div class="brian">
+    <span class="tag">Aufgabe in Brian</span>
+    <h3>Abschluss dieser Einheit</h3>
+    <p>Am Ende der gesamten Einheit Schwingungen wartet in Brian das Abschluss-Quiz. Für diesen Lernschritt reicht die Aufgabe zur Versuchsplanung, die du in Teil 3 gefunden hast.</p>
+    <div class="brian-task" style="margin-bottom:0">PH12-S5 Abschluss-Quiz</div>
+  </div>
+
+  <div class="card tight">
+    <h3>Wie es weitergeht</h3>
+    <p style="margin-bottom:0">In <strong>Lernschritt 2</strong> beschreibst du die Kurve, die du hier abgelesen hast, mit einer Gleichung: y(t) = ŷ &middot; sin(2&pi;t / T). Dann kannst du zu jedem Zeitpunkt ausrechnen, wo das Pendel gerade ist, statt es abzulesen.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(5)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="finishModule(event)">Lernschritt abschließen</button>
+  </div>
+</section>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// SCORM 1.2 API WRAPPER
+// ══════════════════════════════════════════
+const SCORM = (() => {
+  let api = null;
+  let initialized = false;
+
+  function findAPI(win) {
+    let tries = 0;
+    while (win && !win.API && tries < 10) {
+      tries++;
+      if (win.parent && win.parent !== win) { win = win.parent; }
+      else if (win.opener) { win = win.opener; }
+      else break;
+    }
+    return win ? win.API : null;
+  }
+
+  function init() {
+    try {
+      api = findAPI(window);
+      if (!api) return;
+      api.LMSInitialize('');
+      initialized = true;
+      const saved = api.LMSGetValue('cmi.core.lesson_location');
+      if (saved) {
+        try { Object.assign(state, JSON.parse(saved)); } catch (e) {}
+      }
+      if (api.LMSGetValue('cmi.core.lesson_status') === 'not attempted') {
+        api.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+        api.LMSCommit('');
+      }
+    } catch (e) { console.log('SCORM init:', e); }
+  }
+
+  function save(completed) {
+    if (!api || !initialized) return;
+    try {
+      api.LMSSetValue('cmi.core.lesson_location', JSON.stringify(state));
+      const total = 5;
+      const right = Object.values(state.quiz).filter(v => v === true).length;
+      api.LMSSetValue('cmi.core.score.raw', String(Math.round(right / total * 100)));
+      api.LMSSetValue('cmi.core.score.min', '0');
+      api.LMSSetValue('cmi.core.score.max', '100');
+      if (completed || state.done) api.LMSSetValue('cmi.core.lesson_status', 'completed');
+      api.LMSCommit('');
+    } catch (e) { console.log('SCORM save:', e); }
+  }
+
+  function finish() {
+    if (!api || !initialized) return;
+    try { save(); api.LMSFinish(''); } catch (e) {}
+  }
+
+  return { init, save, finish };
+})();
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let state = {
+  section: 0,
+  pred: {},      // Vorhersagen
+  read: {},      // abgelesene Werte
+  params: [],    // angekreuzte Parameter
+  data: [],      // Messwerte [{l, T}]
+  q5: null,      // Auswertungsfrage
+  quiz: {},      // Checkfragen: index -> true/false
+  quizPick: {},  // Checkfragen: index -> gewählte Option
+  done: false
+};
+
+const LAST = 6;
+
+function persist() { SCORM.save(); }
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function go(n) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec' + n).classList.add('active');
+  state.section = n;
+  renderSteps();
+  persist();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderSteps() {
+  const el = document.getElementById('steps');
+  const labels = ['Start', 'Vorhersage', 'Größen', 'Planen', 'Messen', 'Auswerten', 'Check'];
+  el.innerHTML = '';
+  for (let i = 0; i <= LAST; i++) {
+    const b = document.createElement('button');
+    b.className = 'step-dot' + (i === state.section ? ' here' : (i < state.section ? ' done' : ''));
+    b.title = labels[i];
+    b.setAttribute('aria-label', 'Zu Abschnitt ' + labels[i]);
+    b.onclick = () => go(i);
+    el.appendChild(b);
+  }
+}
+
+// ══════════════════════════════════════════
+// AUSWAHLFRAGEN
+// ══════════════════════════════════════════
+const LETTERS = ['A', 'B', 'C', 'D'];
+
+function renderChoices(boxId, options, onPick, picked) {
+  const box = document.getElementById(boxId);
+  box.innerHTML = '';
+  options.forEach((text, i) => {
+    const b = document.createElement('button');
+    b.className = 'choice' + (picked === i ? ' picked' : '');
+    b.innerHTML = '<span class="letter">' + LETTERS[i] + '</span><span>' + text + '</span>';
+    b.onclick = () => onPick(i);
+    box.appendChild(b);
+  });
+}
+
+// --- Vorhersagen ---
+const PRED1 = [
+  'Das schwerere Pendel schwingt langsamer.',
+  'Beide brauchen für eine Schwingung gleich lang.',
+  'Das schwerere Pendel schwingt schneller.',
+  'Das lässt sich ohne Rechnung nicht sagen.'
+];
+const PRED2 = [
+  'Das weiter ausgelenkte Pendel braucht länger für eine Schwingung.',
+  'Beide brauchen praktisch gleich lang.',
+  'Das weiter ausgelenkte Pendel ist schneller fertig.',
+  'Das hängt zusätzlich von der Masse ab.'
+];
+
+function pick(key, i, boxId, options, fbId) {
+  state.pred[key] = i;
+  renderChoices(boxId, options, (j) => pick(key, j, boxId, options, fbId), i);
+  document.getElementById(fbId).classList.add('show');
+  persist();
+}
+
+// --- Parameter-Auswahl (Mehrfach) ---
+const PARAMS = [
+  { t: 'Länge des Fadens', ok: true, fb: 'Richtig, und das ist die entscheidende Größe. Genau die untersucht ihr in der ersten Messreihe.' },
+  { t: 'Masse des Pendelkörpers', ok: true, fb: 'Als Vermutung völlig berechtigt. Fast alle tippen darauf. Ob es stimmt, entscheidet die Messung, nicht das Gefühl.' },
+  { t: 'Wie weit man auslenkt', ok: true, fb: 'Auch berechtigt. Hier wird die Antwort interessanter, als sie zunächst aussieht.' },
+  { t: 'Farbe des Fadens', ok: false, fb: 'Unsinn, und du solltest sagen können warum: Farbe ist eine optische Eigenschaft und greift nicht in die Kräfte am Pendel ein. Genau solche Größen sortiert man vorher aus, statt sie zu messen.' },
+  { t: 'Ob Herr Ohlsen heute schon Kaffee hatte', ok: false, fb: 'Unsinn, klar. Der Punkt dahinter ist ernst: Es gibt keinen denkbaren Weg, wie das die Kräfte am Pendel beeinflusst. Bei Größen ohne plausiblen Wirkmechanismus lohnt keine Messreihe.' },
+  { t: 'Ort der Messung (Erde, Mond)', ok: true, fb: 'Sehr gut mitgedacht. Die Fallbeschleunigung geht tatsächlich ein. Auf dem Mond schwingt dasselbe Pendel deutlich langsamer. Messen könnt ihr das im Klassenraum leider nicht.' }
+];
+
+function renderParams() {
+  const box = document.getElementById('params');
+  box.innerHTML = '';
+  PARAMS.forEach((p, i) => {
+    const b = document.createElement('button');
+    b.className = 'choice' + (state.params.includes(i) ? ' picked' : '');
+    b.innerHTML = '<span class="letter">' + (state.params.includes(i) ? '&#10003;' : '&nbsp;') + '</span><span>' + p.t + '</span>';
+    b.onclick = () => {
+      const at = state.params.indexOf(i);
+      if (at >= 0) state.params.splice(at, 1); else state.params.push(i);
+      renderParams();
+      persist();
+    };
+    box.appendChild(b);
+  });
+}
+
+function checkParams() {
+  const fb = document.getElementById('paramsfb');
+  let html = '<p style="margin-bottom:0.6rem"><strong>Zu deiner Auswahl:</strong></p><ul style="margin-bottom:0">';
+  PARAMS.forEach((p, i) => {
+    if (state.params.includes(i)) {
+      html += '<li><strong>' + p.t + ':</strong> ' + p.fb + '</li>';
+    }
+  });
+  const missed = PARAMS.map((p, i) => ({ p, i })).filter(x => x.p.ok && !state.params.includes(x.i));
+  html += '</ul>';
+  if (state.params.length === 0) {
+    html = '<p style="margin-bottom:0">Du hast noch nichts angekreuzt. Entscheide dich, auch wenn du unsicher bist.</p>';
+  } else if (missed.length) {
+    html += '<p style="margin-top:0.7rem;margin-bottom:0">Nicht angekreuzt, aber einen Gedanken wert: ' +
+      missed.map(x => x.p.t.toLowerCase()).join(', ') + '.</p>';
+  }
+  fb.className = 'fb hint show';
+  fb.innerHTML = html;
+  persist();
+}
+
+// ══════════════════════════════════════════
+// ABLESE-ÜBUNG
+// ══════════════════════════════════════════
+function num(v) {
+  const s = String(v).trim().replace(',', '.');
+  if (!s) return NaN;
+  return parseFloat(s);
+}
+
+function checkRead() {
+  const targets = [
+    { id: 'r1', val: 2.5, tol: 0.35, name: 'Amplitude', hint: 'Der höchste Punkt der Kurve liegt zwischen den Linien für 2 und 3. Miss von der Nulllinie aus, nicht von unten nach oben.' },
+    { id: 'r2', val: 0.8, tol: 0.12, name: 'Periodendauer', hint: 'Nimm zwei Stellen, an denen die Kurve gleich aussieht, zum Beispiel von einem Hochpunkt bis zum nächsten Hochpunkt.' },
+    { id: 'r3', val: 1.25, tol: 0.25, name: 'Frequenz', hint: 'f = 1 / T. Wenn du T = 0,8 s hast, rechne 1 geteilt durch 0,8.' }
+  ];
+  let allGood = true, msgs = [];
+  targets.forEach(t => {
+    const el = document.getElementById(t.id);
+    const v = num(el.value);
+    if (!isNaN(v) && Math.abs(v - t.val) <= t.tol) {
+      el.classList.add('ok'); el.classList.remove('no');
+      state.read[t.id] = v;
+    } else {
+      el.classList.add('no'); el.classList.remove('ok');
+      allGood = false;
+      msgs.push('<strong>' + t.name + ':</strong> ' + t.hint);
+    }
+  });
+  const fb = document.getElementById('readfb');
+  if (allGood) {
+    fb.className = 'fb good show';
+    fb.innerHTML = 'Alle drei stimmen. Die Kurve gehört zu einer Schwingung mit ŷ = 2,5 cm, T = 0,8 s und f = 1,25 Hz. Halte fest: T und f sind dieselbe Information in zwei Schreibweisen.';
+  } else {
+    fb.className = 'fb bad show';
+    fb.innerHTML = msgs.join('<br>');
+  }
+  persist();
+}
+
+// ══════════════════════════════════════════
+// MESSWERTE + DIAGRAMME
+// ══════════════════════════════════════════
+const DEMO = [
+  { l: 0.20, T: 0.89 },
+  { l: 0.40, T: 1.28 },
+  { l: 0.60, T: 1.56 },
+  { l: 0.80, T: 1.78 },
+  { l: 1.00, T: 2.02 }
+];
+
+function renderRows() {
+  const tb = document.getElementById('dataRows');
+  tb.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const row = state.data[i] || {};
+    const tr = document.createElement('tr');
+    const t2 = (row.l != null && row.T != null && !isNaN(row.T)) ? (row.T * row.T).toFixed(2).replace('.', ',') : '&ndash;';
+    tr.innerHTML =
+      '<td><input type="text" inputmode="decimal" autocomplete="off" value="' + (row.l != null ? String(row.l).replace('.', ',') : '') + '" oninput="setCell(' + i + ',\'l\',this.value)"></td>' +
+      '<td><input type="text" inputmode="decimal" autocomplete="off" value="' + (row.T != null ? String(row.T).replace('.', ',') : '') + '" oninput="setCell(' + i + ',\'T\',this.value)"></td>' +
+      '<td>' + t2 + '</td>';
+    tb.appendChild(tr);
+  }
+}
+
+function setCell(i, key, val) {
+  if (!state.data[i]) state.data[i] = {};
+  const v = num(val);
+  state.data[i][key] = isNaN(v) ? null : v;
+  renderRowsT2(i);
+  persist();
+}
+
+function renderRowsT2(i) {
+  const tb = document.getElementById('dataRows');
+  const row = state.data[i] || {};
+  const cell = tb.children[i] && tb.children[i].children[2];
+  if (cell) cell.innerHTML = (row.T != null && !isNaN(row.T)) ? (row.T * row.T).toFixed(2).replace('.', ',') : '&ndash;';
+}
+
+function loadDemo() {
+  state.data = DEMO.map(d => ({ l: d.l, T: d.T }));
+  renderRows();
+  drawPlots();
+  persist();
+}
+
+function clearData() {
+  state.data = [];
+  renderRows();
+  drawPlots();
+  persist();
+}
+
+function drawPlots() {
+  const pts = state.data.filter(d => d && d.l != null && d.T != null && !isNaN(d.l) && !isNaN(d.T));
+  plot('plotA', pts.map(d => ({ x: d.l, y: d.T })), 'l in m', 'T in s', false);
+  plot('plotB', pts.map(d => ({ x: d.l, y: d.T * d.T })), 'l in m', 'T² in s²', true);
+}
+
+function plot(id, pts, xlab, ylab, fitLine) {
+  const svg = document.getElementById(id);
+  const W = 320, H = 260, L = 46, R = 14, TP = 16, B = 44;
+  const px = W - L - R, py = H - TP - B;
+
+  if (!pts.length) {
+    svg.innerHTML = '<text x="' + (W / 2) + '" y="' + (H / 2) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">noch keine Werte</text>';
+    return;
+  }
+
+  const maxX = Math.max(...pts.map(p => p.x)) * 1.1 || 1;
+  const maxY = Math.max(...pts.map(p => p.y)) * 1.15 || 1;
+  const X = v => L + (v / maxX) * px;
+  const Y = v => TP + py - (v / maxY) * py;
+
+  let s = '';
+  // Gitter
+  for (let i = 1; i <= 4; i++) {
+    const gy = TP + py - (i / 4) * py;
+    s += '<line x1="' + L + '" y1="' + gy.toFixed(1) + '" x2="' + (W - R) + '" y2="' + gy.toFixed(1) + '" stroke="rgba(255,255,255,0.07)"/>';
+    s += '<text x="' + (L - 6) + '" y="' + (gy + 4).toFixed(1) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="end">' + (maxY * i / 4).toFixed(1).replace('.', ',') + '</text>';
+  }
+  for (let i = 1; i <= 4; i++) {
+    const gx = L + (i / 4) * px;
+    s += '<line x1="' + gx.toFixed(1) + '" y1="' + TP + '" x2="' + gx.toFixed(1) + '" y2="' + (TP + py) + '" stroke="rgba(255,255,255,0.05)"/>';
+    s += '<text x="' + gx.toFixed(1) + '" y="' + (TP + py + 16) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="middle">' + (maxX * i / 4).toFixed(1).replace('.', ',') + '</text>';
+  }
+  // Achsen
+  s += '<line x1="' + L + '" y1="' + (TP + py) + '" x2="' + (W - R) + '" y2="' + (TP + py) + '" stroke="#6f8299" stroke-width="1.4"/>';
+  s += '<line x1="' + L + '" y1="' + TP + '" x2="' + L + '" y2="' + (TP + py) + '" stroke="#6f8299" stroke-width="1.4"/>';
+  s += '<text x="' + (W - R) + '" y="' + (TP + py + 34) + '" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end">' + xlab + '</text>';
+  s += '<text x="' + L + '" y="' + (TP - 4) + '" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="11">' + ylab + '</text>';
+
+  // Ausgleichsgerade durch den Ursprung, nur beim T²-Diagramm
+  if (fitLine && pts.length > 1) {
+    let sxy = 0, sxx = 0;
+    pts.forEach(p => { sxy += p.x * p.y; sxx += p.x * p.x; });
+    const m = sxx ? sxy / sxx : 0;
+    s += '<line x1="' + X(0) + '" y1="' + Y(0) + '" x2="' + X(maxX) + '" y2="' + Y(m * maxX).toFixed(1) + '" stroke="#fbbf24" stroke-width="1.6" stroke-dasharray="5 4"/>';
+  }
+
+  // Verbindungslinie im T-Diagramm, damit die Krümmung sichtbar wird
+  if (!fitLine && pts.length > 1) {
+    const sorted = [...pts].sort((a, b) => a.x - b.x);
+    s += '<polyline fill="none" stroke="rgba(34,211,238,0.35)" stroke-width="1.4" points="' +
+      sorted.map(p => X(p.x).toFixed(1) + ',' + Y(p.y).toFixed(1)).join(' ') + '"/>';
+  }
+
+  pts.forEach(p => {
+    s += '<circle cx="' + X(p.x).toFixed(1) + '" cy="' + Y(p.y).toFixed(1) + '" r="4.5" fill="#22d3ee"/>';
+  });
+
+  svg.innerHTML = s;
+}
+
+// --- Auswertungsfrage ---
+const Q5 = [
+  'In beiden Diagrammen liegen die Punkte auf einer Geraden durch den Ursprung.',
+  'Im T-Diagramm ist die Kurve gekrümmt, im T²-Diagramm liegen die Punkte auf einer Geraden durch den Ursprung.',
+  'In beiden Diagrammen ist die Kurve gekrümmt.',
+  'Im T-Diagramm liegen die Punkte auf einer Geraden, im T²-Diagramm ist die Kurve gekrümmt.'
+];
+const Q5FB = [
+  'Schau dir das linke Diagramm noch einmal an. Von 0,20 m auf 0,40 m wächst T deutlich, von 0,80 m auf 1,00 m viel weniger. Eine Gerade sieht anders aus.',
+  'Genau. Und das ist der ganze Trick beim Auswerten: Wenn man die richtige Größe aufträgt, wird aus einer Kurve eine Gerade, und eine Gerade kann man ablesen. Aus T² ~ l folgt T ~ Wurzel aus l. Doppelte Länge heißt also nicht doppelte, sondern etwa das 1,4-fache der Periodendauer.',
+  'Nur eines der beiden ist gekrümmt. Vergleiche die beiden Diagramme direkt nebeneinander: In welchem liegen die Punkte auf einer Linie, die du mit dem Lineal nachziehen könntest?',
+  'Genau umgekehrt. Trage die Werte noch einmal ein oder lade den fertigen Datensatz, dann wird der Unterschied deutlich.'
+];
+
+function renderQ5() {
+  renderChoices('q5', Q5, (i) => {
+    state.q5 = i;
+    const box = document.getElementById('q5');
+    Array.from(box.children).forEach((c, j) => {
+      c.disabled = true;
+      if (j === 1) c.className = 'choice right';
+      else if (j === i) c.className = 'choice wrong';
+      else c.className = 'choice';
+    });
+    const fb = document.getElementById('q5fb');
+    fb.className = 'fb ' + (i === 1 ? 'good' : 'bad') + ' show';
+    fb.innerHTML = Q5FB[i];
+    persist();
+  }, state.q5);
+  if (state.q5 != null) {
+    const box = document.getElementById('q5');
+    Array.from(box.children).forEach((c, j) => {
+      c.disabled = true;
+      if (j === 1) c.className = 'choice right';
+      else if (j === state.q5) c.className = 'choice wrong';
+      else c.className = 'choice';
+    });
+    const fb = document.getElementById('q5fb');
+    fb.className = 'fb ' + (state.q5 === 1 ? 'good' : 'bad') + ' show';
+    fb.innerHTML = Q5FB[state.q5];
+  }
+}
+
+// ══════════════════════════════════════════
+// CHECK
+// ══════════════════════════════════════════
+const QUIZ = [
+  {
+    q: 'Zwei Fadenpendel, beide 60 cm lang. Am einen hängen 50 g, am anderen 200 g. Was gilt für die Periodendauer?',
+    a: ['Das schwerere schwingt langsamer.', 'Beide haben dieselbe Periodendauer.', 'Das schwerere schwingt schneller.', 'Das hängt davon ab, wie weit man auslenkt.'],
+    r: 1,
+    fb: [
+      'Das ist die häufigste Fehlvorstellung, und sie klingt vernünftig: mehr Masse, träger, langsamer. Der Haken ist, dass die schwerere Kugel auch stärker zurückgezogen wird. Beides wächst gleich schnell und hebt sich auf.',
+      'Richtig. Größere Gewichtskraft und größere Trägheit heben sich exakt auf. Genau deshalb fallen im Vakuum auch Feder und Hammer gleich schnell.',
+      'Umgekehrt gedacht, aber derselbe Denkfehler: die Masse taucht am Ende gar nicht auf. Sie wirkt auf beiden Seiten der Rechnung und kürzt sich weg.',
+      'Die Auslenkung ist hier gar nicht das Thema, beide werden ja gleich ausgelenkt. Und bei kleinen Winkeln ändert sie ohnehin nichts.'
+    ]
+  },
+  {
+    q: 'Warum stoppt man die Zeit für 10 Schwingungen und teilt durch 10, statt eine einzelne zu messen?',
+    a: ['Weil die ersten Schwingungen ungenauer sind als die späteren.', 'Weil sich der Reaktionsfehler beim Starten und Stoppen auf zehn Perioden verteilt.', 'Weil das Pendel mit der Zeit langsamer wird und man den Mittelwert braucht.', 'Weil man so gleichzeitig die Amplitude mittelt.'],
+    r: 1,
+    fb: [
+      'Die ersten Schwingungen sind nicht schlechter als die späteren. Der Fehler steckt nicht im Pendel, sondern in deiner Reaktionszeit an der Stoppuhr.',
+      'Richtig. Dein Reaktionsfehler von etwa 0,2 s bleibt gleich groß, egal ob du eine oder zehn Perioden misst. Nur teilt er sich beim Zehnfachen auf zehn Perioden auf und wirkt sich pro Periode nur noch ein Zehntel so stark aus.',
+      'Ein Pendel wird tatsächlich langsam kleiner in der Amplitude, aber die Periodendauer bleibt dabei fast gleich. Darum geht es hier nicht.',
+      'Die Amplitude wird bei dieser Messung gar nicht bestimmt. Es geht ausschließlich um die Zeit.'
+    ]
+  },
+  {
+    q: 'Ihr wollt untersuchen, wie T von der Fadenlänge abhängt. Was muss dabei konstant bleiben?',
+    a: ['Nur die Masse des Pendelkörpers.', 'Masse und Auslenkung.', 'Nichts, es geht ja gerade um die Länge.', 'Die Periodendauer, sonst kann man nicht vergleichen.'],
+    r: 1,
+    fb: [
+      'Die Masse allein reicht nicht. Wenn du gleichzeitig unterschiedlich weit auslenkst, hast du zwei veränderte Größen und kannst das Ergebnis niemandem mehr erklären.',
+      'Richtig. Alles außer der untersuchten Größe wird festgehalten. Nur dann lässt sich eine Änderung von T eindeutig der Länge zuschreiben.',
+      'Genau andersherum: Weil es um die Länge geht, muss alles andere gleich bleiben. Sonst weißt du hinterher nicht, welche Änderung gewirkt hat.',
+      'T ist das Messergebnis. Wenn du es festhalten würdest, gäbe es nichts mehr zu messen.'
+    ]
+  },
+  {
+    q: 'Eine Schwingung hat die Frequenz 2,5 Hz. Wie groß ist die Periodendauer?',
+    a: ['2,5 s', '0,4 s', '5,0 s', '0,25 s'],
+    r: 1,
+    fb: [
+      'Das ist die Frequenz selbst, nur mit anderer Einheit. T und f sind Kehrwerte, keine gleichen Zahlen.',
+      'Richtig. T = 1 / f = 1 / 2,5 Hz = 0,4 s. In 1 Sekunde passen zweieinhalb Schwingungen, jede dauert also 0,4 s.',
+      'Hier wurde vermutlich verdoppelt statt der Kehrwert gebildet. Rechne 1 geteilt durch 2,5.',
+      'Ein Zehnerfehler. 1 geteilt durch 2,5 ist 0,4 und nicht 0,25. Kontrolle: 0,25 s würde 4 Schwingungen pro Sekunde bedeuten.'
+    ]
+  },
+  {
+    q: 'Ein Pendel schwingt zwischen zwei Umkehrpunkten hin und her, die 12 cm auseinanderliegen. Wie groß ist die Amplitude?',
+    a: ['12 cm', '6 cm', '24 cm', 'Das lässt sich daraus nicht bestimmen.'],
+    r: 1,
+    fb: [
+      'Das ist der gesamte Weg von einem Umkehrpunkt zum anderen. Die Amplitude wird aber immer von der Ruhelage aus gemessen, also nur die Hälfte davon.',
+      'Richtig. Die Ruhelage liegt in der Mitte, also 6 cm von jedem Umkehrpunkt entfernt. Die Amplitude ist der halbe Gesamtausschlag.',
+      'Hier wurde verdoppelt statt halbiert. Zeichne dir die Ruhelage in der Mitte ein, dann siehst du es sofort.',
+      'Doch, das reicht aus: Die Ruhelage liegt genau in der Mitte zwischen den beiden Umkehrpunkten.'
+    ]
+  }
+];
+
+function renderQuiz() {
+  const box = document.getElementById('quizBox');
+  box.innerHTML = '';
+  QUIZ.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.style.marginBottom = '1.4rem';
+    const h = document.createElement('p');
+    h.innerHTML = '<strong>' + (qi + 1) + '. ' + item.q + '</strong>';
+    h.style.color = 'var(--ink)';
+    card.appendChild(h);
+
+    const ch = document.createElement('div');
+    ch.className = 'choices';
+    ch.id = 'quiz' + qi;
+    card.appendChild(ch);
+
+    const fb = document.createElement('div');
+    fb.className = 'fb';
+    fb.id = 'quizfb' + qi;
+    card.appendChild(fb);
+
+    box.appendChild(card);
+
+    const answered = state.quiz[qi] !== undefined;
+    item.a.forEach((text, ai) => {
+      const b = document.createElement('button');
+      b.className = 'choice';
+      b.innerHTML = '<span class="letter">' + LETTERS[ai] + '</span><span>' + text + '</span>';
+      b.onclick = () => answerQuiz(qi, ai);
+      ch.appendChild(b);
+    });
+    if (answered) showQuizAnswer(qi, state.quizPick ? state.quizPick[qi] : item.r);
+  });
+  updateQuizResult();
+}
+
+function answerQuiz(qi, ai) {
+  if (state.quiz[qi] !== undefined) return;
+  if (!state.quizPick) state.quizPick = {};
+  state.quizPick[qi] = ai;
+  state.quiz[qi] = (ai === QUIZ[qi].r);
+  showQuizAnswer(qi, ai);
+  updateQuizResult();
+  persist();
+}
+
+function showQuizAnswer(qi, ai) {
+  const item = QUIZ[qi];
+  const ch = document.getElementById('quiz' + qi);
+  Array.from(ch.children).forEach((c, j) => {
+    c.disabled = true;
+    if (j === item.r) c.className = 'choice right';
+    else if (j === ai) c.className = 'choice wrong';
+    else c.className = 'choice';
+  });
+  const fb = document.getElementById('quizfb' + qi);
+  fb.className = 'fb ' + (ai === item.r ? 'good' : 'bad') + ' show';
+  fb.innerHTML = item.fb[ai];
+}
+
+function updateQuizResult() {
+  const answered = Object.keys(state.quiz).length;
+  if (answered < QUIZ.length) return;
+  const right = Object.values(state.quiz).filter(v => v).length;
+  const el = document.getElementById('quizResult');
+  el.style.display = 'block';
+  document.getElementById('quizScore').textContent = right + '/' + QUIZ.length;
+  const caps = [
+    'Das war noch nichts. Geh die Abschnitte 2 und 6 noch einmal durch, die Antworten stehen dort alle drin.',
+    'Da fehlt noch einiges. Lies die Rückmeldungen zu deinen Fehlern in Ruhe, sie erklären den Denkfehler und nicht nur die Lösung.',
+    'Die Hälfte sitzt. Nimm dir die beiden Fragen vor, bei denen es nicht gereicht hat, und schau die passende Stelle im Modul nach.',
+    'Solide. Eine Sache fehlt noch, und die Rückmeldung dazu sagt dir, welche.',
+    'Fast alles sitzt. Der eine Fehler ist eher ein Ausrutscher als eine Lücke.',
+    'Alles richtig. Du kannst mit Lernschritt 2 weitermachen.'
+  ];
+  document.getElementById('quizCap').textContent = caps[right];
+}
+
+// ══════════════════════════════════════════
+// AUFLÖSUNG DER VORHERSAGEN
+// ══════════════════════════════════════════
+function renderReveal() {
+  const box = document.getElementById('revealBox');
+  let html = '';
+
+  const p1 = state.pred.p1;
+  html += '<p><strong>Vorhersage 1 (schwere und leichte Kugel):</strong> ';
+  if (p1 === undefined) {
+    html += 'Du hast dich damals nicht festgelegt. Die Antwort lautet: <strong>Beide brauchen gleich lang.</strong> Die Masse hat keinen Einfluss.';
+  } else if (p1 === 1) {
+    html += 'Du hattest recht. <strong>Beide brauchen gleich lang.</strong> Das ist keineswegs selbstverständlich, die meisten tippen auf das schwerere Pendel.';
+  } else {
+    html += 'Du hattest getippt, dass es einen Unterschied gibt. Die Messung sagt: <strong>Beide brauchen gleich lang.</strong> Die Masse fällt vollständig heraus.';
+  }
+  html += '</p>';
+
+  const p2 = state.pred.p2;
+  html += '<p style="margin-bottom:0"><strong>Vorhersage 2 (5 Grad und 30 Grad):</strong> ';
+  if (p2 === undefined) {
+    html += 'Auch hier keine Festlegung. Die Antwort ist interessanter, als sie aussieht: <strong>Bei kleinen Auslenkungen praktisch gleich lang</strong>, bei großen Auslenkungen wird T aber messbar größer. Bei 40 Grad siehst du es in der Tabelle.';
+  } else if (p2 === 1) {
+    html += 'Weitgehend richtig. Bei kleinen Winkeln ändert sich T praktisch nicht. Aber sieh dir die 40-Grad-Zeile in der Tabelle an: dort wird T doch größer. Deine Antwort stimmt also nur, solange man klein auslenkt.';
+  } else {
+    html += 'Du hattest einen Unterschied erwartet. Halb richtig: bei 5 und 30 Grad ist er kaum messbar, bei 40 Grad aber schon. Der Effekt ist da, er ist nur klein, solange die Auslenkung klein bleibt.';
+  }
+  html += '</p>';
+
+  html += '<div class="note" style="margin-top:1rem;margin-bottom:0"><p style="margin-bottom:0">Dass die Antwort auf Vorhersage 2 lautet "kommt darauf an, wie genau du hinschaust", ist kein Schönheitsfehler. Genau an solchen Stellen zeigt sich, wo ein physikalisches Modell aufhört zu gelten. Darum geht es in Lernschritt 4.</p></div>';
+
+  box.innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+// ABSCHLUSS
+// ══════════════════════════════════════════
+function finishModule(ev) {
+  state.done = true;
+  SCORM.save(true);
+  const btn = ev && ev.currentTarget;
+  if (btn) {
+    btn.textContent = 'Abgeschlossen und gespeichert';
+    btn.disabled = true;
+  }
+}
+
+// ══════════════════════════════════════════
+// KURVE ZEICHNEN (Abschnitt 2)
+// ══════════════════════════════════════════
+function drawWave() {
+  const path = document.getElementById('wave');
+  if (!path) return;
+  // y = 2,5 cm * sin(2 pi t / 0,8 s); x: 80 px = 0 s, 200 px pro s; y: 150 px = 0 cm, 45 px pro cm
+  let d = '';
+  for (let px = 0; px <= 520; px += 2) {
+    const t = px / 200;
+    const y = 2.5 * Math.sin(2 * Math.PI * t / 0.8);
+    const X = 80 + px;
+    const Y = 150 - y * 45;
+    d += (px === 0 ? 'M' : 'L') + X.toFixed(1) + ',' + Y.toFixed(1);
+  }
+  path.setAttribute('d', d);
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+SCORM.init();
+
+drawWave();
+renderSteps();
+renderChoices('p1', PRED1, (i) => pick('p1', i, 'p1', PRED1, 'p1fb'), state.pred.p1);
+renderChoices('p2', PRED2, (i) => pick('p2', i, 'p2', PRED2, 'p2fb'), state.pred.p2);
+if (state.pred.p1 !== undefined) document.getElementById('p1fb').classList.add('show');
+if (state.pred.p2 !== undefined) document.getElementById('p2fb').classList.add('show');
+renderParams();
+renderRows();
+drawPlots();
+renderQ5();
+renderQuiz();
+renderReveal();
+
+// gespeicherte Ablesewerte wieder eintragen
+['r1', 'r2', 'r3'].forEach(id => {
+  if (state.read[id] != null) {
+    const el = document.getElementById(id);
+    if (el) el.value = String(state.read[id]).replace('.', ',');
+  }
+});
+
+if (state.section > 0) go(state.section);
+
+window.addEventListener('beforeunload', () => SCORM.finish());
+</script>
+
+</body>
+</html>
