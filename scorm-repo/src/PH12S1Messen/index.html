@@ -708,9 +708,16 @@ const SCORM = (() => {
       if (!api) return;
       api.LMSInitialize('');
       initialized = true;
-      const saved = api.LMSGetValue('cmi.core.lesson_location');
+      // Zustand steht in suspend_data (4096 Zeichen). lesson_location fasst nur 255
+      // und traegt deshalb nur noch die Abschnittsnummer. Aeltere Staende, die dort
+      // noch komplett abgelegt wurden, werden weiterhin gelesen.
+      let saved = api.LMSGetValue('cmi.suspend_data');
+      if (!saved) saved = api.LMSGetValue('cmi.core.lesson_location');
       if (saved) {
-        try { Object.assign(state, JSON.parse(saved)); } catch (e) {}
+        try {
+          const geladen = JSON.parse(saved);
+          if (geladen && typeof geladen === 'object') Object.assign(state, geladen);
+        } catch (e) {}
       }
       if (api.LMSGetValue('cmi.core.lesson_status') === 'not attempted') {
         api.LMSSetValue('cmi.core.lesson_status', 'incomplete');
@@ -719,16 +726,34 @@ const SCORM = (() => {
     } catch (e) { console.log('SCORM init:', e); }
   }
 
+  // Schreibt und meldet, wenn das LMS ablehnt. Stilles Scheitern hatte zur Folge,
+  // dass der komplette Fortschritt verlorenging, ohne dass es jemand merkte.
+  function setzen(element, wert) {
+    const ok = api.LMSSetValue(element, String(wert));
+    if (ok !== 'true') {
+      console.warn('[S1] LMS lehnt ab:', element,
+                   'Laenge', String(wert).length,
+                   'Fehlercode', api.LMSGetLastError());
+      return false;
+    }
+    return true;
+  }
+
   function save(completed) {
     if (!api || !initialized) return;
     try {
-      api.LMSSetValue('cmi.core.lesson_location', JSON.stringify(state));
+      const daten = JSON.stringify(state);
+      if (daten.length > 4000) {
+        console.warn('[S1] Zustand naehert sich der suspend_data-Grenze:', daten.length);
+      }
+      setzen('cmi.suspend_data', daten);
+      setzen('cmi.core.lesson_location', state.section);
       const total = 5;
       const right = Object.values(state.quiz).filter(v => v === true).length;
-      api.LMSSetValue('cmi.core.score.raw', String(Math.round(right / total * 100)));
-      api.LMSSetValue('cmi.core.score.min', '0');
-      api.LMSSetValue('cmi.core.score.max', '100');
-      if (completed || state.done) api.LMSSetValue('cmi.core.lesson_status', 'completed');
+      setzen('cmi.core.score.raw', Math.round(right / total * 100));
+      setzen('cmi.core.score.min', 0);
+      setzen('cmi.core.score.max', 100);
+      if (completed || state.done) setzen('cmi.core.lesson_status', 'completed');
       api.LMSCommit('');
     } catch (e) { console.log('SCORM save:', e); }
   }
@@ -771,7 +796,32 @@ function go(n) {
   if (n === 5) drawPlots();
   renderSteps();
   persist();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  zeigeAbschnittsAnfang(n);
+}
+
+// In Moodle laeuft das Modul in einem iframe, das so hoch ist wie sein Inhalt.
+// Gescrollt wird dann das aeussere Dokument, und window.scrollTo hier drinnen
+// bleibt wirkungslos: der Abschnitt wechselt, die Ansicht bleibt stehen und es
+// sieht aus, als sei nichts passiert. scrollIntoView scrollt dagegen alle
+// umgebenden Container mit, auch das Moodle-Fenster.
+function zeigeAbschnittsAnfang(n) {
+  // 1. Eigenes Dokument, falls es selbst einen Scrollbereich hat.
+  try { window.scrollTo(0, 0); } catch (e) {}
+  // 2. Den Abschnittsanfang in den Blick holen. Scrollt auch umgebende Container.
+  try {
+    const el = document.getElementById('sec' + n);
+    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start', behavior: 'auto' });
+  } catch (e) {}
+  // 3. Steckt das Modul in einem mitwachsenden iframe, scrollt das aeussere
+  //    Dokument. Moodle liefert den SCO selbst aus, die Herkunft ist also
+  //    dieselbe und der Rahmen laesst sich direkt anspringen. Bei fremder
+  //    Herkunft wirft der Zugriff und wird still verworfen.
+  try {
+    if (window.parent && window.parent !== window && window.frameElement) {
+      const y = window.frameElement.getBoundingClientRect().top + window.parent.scrollY;
+      window.parent.scrollTo(0, Math.max(0, y - 8));
+    }
+  } catch (e) {}
 }
 
 function renderSteps() {

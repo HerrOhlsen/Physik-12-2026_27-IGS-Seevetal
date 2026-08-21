@@ -55,6 +55,29 @@ Pakete werden als **Download-Pakettyp** eingebunden:
 
 Zielkurs: seevetal.moodle-nds.de, Kurs-ID 382 (Abi28 Physik Ohlsen gA), Sektion „Schwingungen".
 
+## Test vor dem Ausliefern
+
+`test/moodle-regressionstest.html` baut die Moodle-Umgebung nach: SCORM-1.2-API mit den
+Datentyp-Grenzen, die Moodle durchsetzt, und ein iframe, das mit seinem Inhalt waechst, sodass
+das aeussere Dokument scrollt. Genau diese Kombination hat zwei Fehler erzeugt, die beim Testen
+ohne LMS unsichtbar bleiben.
+
+```
+python -m http.server 8080 --bind 127.0.0.1
+```
+
+Dann `http://127.0.0.1:8080/test/moodle-regressionstest.html` oeffnen und auf „Tests ausfuehren"
+klicken. Anderes Modul pruefen: `?modul=../src/PH12S2Beschreiben/index.html`.
+
+Geprueft wird:
+
+1. **Die Ansicht springt beim Abschnittswechsel an den Anfang.** `window.scrollTo` allein reicht
+   nicht, wenn das Modul in einem mitwachsenden iframe steckt.
+2. **Der Zustand wird vollstaendig gespeichert.** `cmi.core.lesson_location` fasst nur 255 Zeichen;
+   der Zustand gehoert in `cmi.suspend_data` (4096 Zeichen).
+
+Wichtig: der Browser-Tab muss im Vordergrund sein, sonst misst der Test kein Layout.
+
 ## Was die Module an Moodle melden
 
 - `cmi.core.lesson_status`: `completed`, sobald die Lernenden auf „Lernschritt abschließen" klicken
