@@ -53,7 +53,9 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+/* Kein scroll-behavior: smooth. Es gilt sonst auch fuer behavior:'auto'
+   und laesst Sprünge beim Abschnittswechsel ins Leere laufen. */
+html { scroll-behavior: auto; }
 body {
   font-family: var(--font);
   font-size: 1rem;
@@ -805,12 +807,15 @@ function go(n) {
 // sieht aus, als sei nichts passiert. scrollIntoView scrollt dagegen alle
 // umgebenden Container mit, auch das Moodle-Fenster.
 function zeigeAbschnittsAnfang(n) {
-  // 1. Eigenes Dokument, falls es selbst einen Scrollbereich hat.
-  try { window.scrollTo(0, 0); } catch (e) {}
+  // Immer 'instant'. 'auto' uebernimmt den CSS-Wert, und mit scroll-behavior:smooth
+  // wird daraus eine Animation, die in Moodles SCORM-Fenster nicht ausgefuehrt wird:
+  // der Abschnitt wechselt, die Ansicht bleibt stehen. Im Player nachgemessen.
+  // 1. Eigenes Dokument, falls es selbst einen Scrollbereich hat (Moodle im Popup).
+  try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, 0); }
   // 2. Den Abschnittsanfang in den Blick holen. Scrollt auch umgebende Container.
   try {
     const el = document.getElementById('sec' + n);
-    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start', behavior: 'auto' });
+    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start', behavior: 'instant' });
   } catch (e) {}
   // 3. Steckt das Modul in einem mitwachsenden iframe, scrollt das aeussere
   //    Dokument. Moodle liefert den SCO selbst aus, die Herkunft ist also

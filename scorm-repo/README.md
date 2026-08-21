@@ -67,14 +67,21 @@ python -m http.server 8080 --bind 127.0.0.1
 ```
 
 Dann `http://127.0.0.1:8080/test/moodle-regressionstest.html` oeffnen und auf „Tests ausfuehren"
-klicken. Anderes Modul pruefen: `?modul=../src/PH12S2Beschreiben/index.html`.
+klicken.
+
+- Anderes Modul: `?modul=../src/PH12S2Beschreiben/index.html`
+- Anderes Layout: `?layout=popup` (Moodle im neuen Fenster, der Rahmen scrollt selbst) oder
+  `?layout=eingebettet` (Rahmen waechst mit dem Inhalt, das aeussere Dokument scrollt).
+  Beide pruefen, die Fehlerbilder unterscheiden sich.
 
 Geprueft wird:
 
-1. **Die Ansicht springt beim Abschnittswechsel an den Anfang.** `window.scrollTo` allein reicht
-   nicht, wenn das Modul in einem mitwachsenden iframe steckt.
+1. **Die Ansicht springt beim Abschnittswechsel an den Anfang.**
 2. **Der Zustand wird vollstaendig gespeichert.** `cmi.core.lesson_location` fasst nur 255 Zeichen;
    der Zustand gehoert in `cmi.suspend_data` (4096 Zeichen).
+3. **`scroll-behavior` erzwingt keine Animation.** Steht es im CSS auf `smooth`, gilt das auch fuer
+   `behavior: 'auto'`, und im SCORM-Fenster wird die Animation nicht ausgefuehrt: der Abschnitt
+   wechselt, die Ansicht bleibt stehen. Scrollbefehle deshalb immer mit `behavior: 'instant'`.
 
 Wichtig: der Browser-Tab muss im Vordergrund sein, sonst misst der Test kein Layout.
 

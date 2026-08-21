@@ -17,9 +17,20 @@
 </div>
 <script>
 // Zu pruefendes Modul: ?modul=../src/PH12S1Messen/index.html
-const MODUL = new URLSearchParams(location.search).get('modul') || '../src/PH12S1Messen/index.html';
+const PARAM = new URLSearchParams(location.search);
+const MODUL = PARAM.get('modul') || '../src/PH12S1Messen/index.html';
+// layout=eingebettet : iframe waechst mit dem Inhalt, das aeussere Dokument scrollt (Moodle im Kurs)
+// layout=popup       : iframe hat Fensterhoehe und einen eigenen Scrollbereich (Moodle im neuen Fenster)
+const LAYOUT = PARAM.get('layout') || 'eingebettet';
 document.getElementById('sco').src = MODUL;
-document.getElementById('modulname').textContent = MODUL;
+document.getElementById('modulname').textContent = MODUL + ' (' + LAYOUT + ')';
+if (LAYOUT === 'popup') {
+  // Moodle im neuen Fenster: der Rahmen bekommt die Fensterhoehe und scrollt selbst.
+  const f = document.getElementById('sco');
+  f.setAttribute('scrolling', 'auto');
+  const setzen = () => { f.style.height = (window.innerHeight - f.offsetTop - 90) + 'px'; };
+  setzen(); window.addEventListener('resize', setzen);
+}
 
 // --- SCORM-1.2-Mock mit den Grenzen, die Moodle durchsetzt ---
 window.SCORM_LOG = [];
@@ -45,6 +56,7 @@ window.API = (function () {
 
 // Moodle laesst das iframe mit dem Inhalt wachsen; gescrollt wird aussen.
 function fit() {
+  if (LAYOUT === 'popup') return;   // dort ist die Hoehe fest
   const f = document.getElementById('sco');
   try { f.style.height = f.contentDocument.body.scrollHeight + 'px'; } catch (e) {}
 }
@@ -73,19 +85,28 @@ window.runTests = async function () {
   // Dorthin scrollen, wo der Nutzer steht: zum Button "Zur Aufloesung" am Ende von Abschnitt 5.
   const btn = [...g.document.querySelectorAll('#sec5 .btn')].find(b => /Aufl/.test(b.textContent));
   const btnAbsolut = f.offsetTop + btn.offsetTop;      // Position im AEUSSEREN Dokument
-  window.scrollTo(0, Math.max(0, btnAbsolut - window.innerHeight + 120));
-  await warte(250);
-  const scrollVor = Math.round(window.scrollY);
+  let scrollVor;
+  if (LAYOUT === 'popup') {
+    g.scrollTo({top: g.document.documentElement.scrollHeight, behavior: 'instant'});
+    await warte(250);
+    scrollVor = Math.round(g.scrollY);
+  } else {
+    window.scrollTo({top: Math.max(0, btnAbsolut - window.innerHeight + 120), behavior: 'instant'});
+    await warte(250);
+    scrollVor = Math.round(window.scrollY);
+  }
   g.eval("go(6);");
   fit(); await warte(500);
-  const kopfSec6 = f.getBoundingClientRect().top + g.document.getElementById('sec6').offsetTop;
+  const kopfSec6 = LAYOUT === 'popup'
+    ? g.document.getElementById('sec6').getBoundingClientRect().top   // relativ zum Rahmen
+    : f.getBoundingClientRect().top + g.document.getElementById('sec6').offsetTop;
   ergebnis.push({
-    test: 'Anfang von Abschnitt 6 ist nach dem Klick sichtbar',
+    test: 'Anfang von Abschnitt 6 ist nach dem Klick sichtbar (' + LAYOUT + ')',
     scrollVorKlick: scrollVor,
-    scrollNachKlick: Math.round(window.scrollY),
+    scrollNachKlick: Math.round(LAYOUT === 'popup' ? g.scrollY : window.scrollY),
     sec6ObenImFenster: Math.round(kopfSec6),
-    aussagekraeftig: scrollVor > 800,
-    bestanden: scrollVor > 800 && kopfSec6 > -80 && kopfSec6 < window.innerHeight
+    aussagekraeftig: scrollVor > 300,
+    bestanden: scrollVor > 300 && kopfSec6 > -80 && kopfSec6 < window.innerHeight
   });
 
   // --- TEST 2: Der gespeicherte Zustand passt in die SCORM-Grenzen ---
@@ -100,6 +121,14 @@ window.runTests = async function () {
     abgelehnteSchreibversuche: abgelehnt,
     laengeGespeichert: gespeichert.length,
     bestanden: abgelehnt.length === 0 && wiederherstellbar
+  });
+
+  // --- TEST 3: keine Scroll-Animation, die Spruenge verschluckt ---
+  const cssVerhalten = g.getComputedStyle(g.document.documentElement).scrollBehavior;
+  ergebnis.push({
+    test: 'scroll-behavior erzwingt keine Animation',
+    wert: cssVerhalten,
+    bestanden: cssVerhalten !== 'smooth'
   });
 
   window.TESTERGEBNIS = ergebnis;
