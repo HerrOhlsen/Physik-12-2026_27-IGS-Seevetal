@@ -643,14 +643,42 @@ svg text {
 
   <div class="card">
     <h3>Das Ergebnis dieses Lernschritts</h3>
-    <p>Die Periodendauer eines Fadenpendels hängt <strong>nur von der Fadenlänge</strong> ab (und vom Ort, weil die Fallbeschleunigung eingeht). Nicht von der Masse. Nicht von der Auslenkung, solange sie klein bleibt.</p>
+    <p>Die Periodendauer eines Fadenpendels hängt <strong>nur von der Fadenlänge</strong> ab (und vom Ort, weil die Fallbeschleunigung eingeht). Nicht von der Masse. Nicht von der Auslenkung, solange sie klein bleibt. Warum die Masse nichts ändert, steht weiter unten, und es lohnt sich, das genau zu lesen: es ist die Stelle, an der die meisten falsch abbiegen.</p>
     <p>Und der Zusammenhang mit der Länge ist nicht proportional: Doppelte Länge heißt nicht doppelte Periodendauer. Dein zweites Diagramm zeigt, was stattdessen gilt: <strong>T² ist proportional zu l</strong>. Also wächst T mit der Wurzel aus l.</p>
     <div class="formula">T ~ &radic;l</div>
     <p style="margin-bottom:0">Die vollständige Gleichung dazu bekommst du in Lernschritt 3. Wichtig ist jetzt, dass du sie nicht glauben musst: du hast sie gemessen.</p>
   </div>
 
-  <div class="note">
-    <p><strong>Warum spielt die Masse keine Rolle?</strong> Eine schwerere Kugel wird stärker zurückgetrieben, weil die Gewichtskraft größer ist. Sie ist aber gleichzeitig träger, lässt sich also schwerer beschleunigen. Beides wächst im selben Verhältnis, und deshalb heben sich die Effekte auf. Genau derselbe Grund, aus dem alle Körper gleich schnell fallen.</p>
+  <div class="card">
+    <span class="tag">Der wichtigste Punkt</span>
+    <h3>Warum ändert die Masse nichts?</h3>
+    <p>Fast alle erwarten hier einen Unterschied, meist in einer dieser beiden Varianten:</p>
+    <ul>
+      <li>„Die schwere Kugel ist träge, die kommt schlechter in Gang. Also dauert eine Schwingung länger."</li>
+      <li>„An der schweren Kugel zieht eine größere Kraft. Also ist sie schneller wieder unten."</li>
+    </ul>
+    <p>Bemerkenswert ist: die jeweils erste Hälfte stimmt. Die schwere Kugel <em>ist</em> träger, und die Kraft auf sie <em>ist</em> größer. Falsch ist erst der Schluss daraus.</p>
+
+    <div class="note">
+      <p style="margin-bottom:0.6rem"><strong>Zwei Begriffe, die oft durcheinandergehen:</strong></p>
+      <p style="margin-bottom:0.6rem"><strong>Träge</strong> heißt: für dieselbe Beschleunigung braucht es eine größere Kraft. Es heißt nicht „langsam".</p>
+      <p style="margin-bottom:0"><strong>Wie schnell etwas in Gang kommt</strong>, hängt nicht von der Kraft ab, sondern von der Beschleunigung. Und die ist a = F / m. Entscheidend ist also nie die Kraft allein, sondern immer ihr Verhältnis zur Masse.</p>
+    </div>
+
+    <p>Damit lässt sich die Frage entscheiden, statt sie zu beschwören. Beide Kugeln um 10&deg; ausgelenkt:</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th></th><th>leichte Kugel</th><th>schwere Kugel</th></tr>
+        <tr><td class="txt">Masse m</td><td>0,05 kg</td><td>0,20 kg</td></tr>
+        <tr><td class="txt">rücktreibende Kraft F</td><td>0,085 N</td><td>0,341 N</td></tr>
+        <tr><td class="txt">Beschleunigung a = F / m</td><td>1,70 m/s²</td><td>1,70 m/s²</td></tr>
+      </table>
+    </div>
+    <p>Die schwere Kugel hat die <strong>vierfache Masse</strong> und erfährt die <strong>vierfache Kraft</strong>. In a = F / m steht die Vier damit im Zähler und im Nenner und kürzt sich weg. Übrig bleibt derselbe Wert wie bei der leichten Kugel.</p>
+    <p>Und weil beide Kugeln an jeder Stelle der Bahn dieselbe Beschleunigung haben, durchlaufen sie dieselbe Bahn in derselben Zeit. Deshalb ist T gleich. Nicht ungefähr gleich, sondern exakt.</p>
+    <p>Wer es allgemein sehen will: Die rücktreibende Kraft am Pendel ist F = m &middot; g &middot; sin(&phi;). Eingesetzt in a = F / m ergibt das</p>
+    <div class="formula">a = g &middot; sin(&phi;)</div>
+    <p style="margin-bottom:0">In dieser Gleichung kommt keine Masse mehr vor. Genau das ist auch der Grund, warum im Vakuum Feder und Hammer gleich schnell fallen: nicht weil sich zufällig zwei Effekte aufheben, sondern weil dieselbe Masse einmal die Kraft festlegt und einmal den Widerstand gegen Beschleunigung, und sie sich im Bruch F / m herauskürzt.</p>
   </div>
 
   <div class="card">
@@ -1136,10 +1164,10 @@ const QUIZ = [
     a: ['Das schwerere schwingt langsamer.', 'Beide haben dieselbe Periodendauer.', 'Das schwerere schwingt schneller.', 'Das hängt davon ab, wie weit man auslenkt.'],
     r: 1,
     fb: [
-      'Das ist die häufigste Fehlvorstellung, und sie klingt vernünftig: mehr Masse, träger, langsamer. Der Haken ist, dass die schwerere Kugel auch stärker zurückgezogen wird. Beides wächst gleich schnell und hebt sich auf.',
-      'Richtig. Größere Gewichtskraft und größere Trägheit heben sich exakt auf. Genau deshalb fallen im Vakuum auch Feder und Hammer gleich schnell.',
-      'Umgekehrt gedacht, aber derselbe Denkfehler: die Masse taucht am Ende gar nicht auf. Sie wirkt auf beiden Seiten der Rechnung und kürzt sich weg.',
-      'Die Auslenkung ist hier gar nicht das Thema, beide werden ja gleich ausgelenkt. Und bei kleinen Winkeln ändert sie ohnehin nichts.'
+      'Das ist die häufigste Fehlvorstellung. Richtig daran: die schwere Kugel ist träger. Aber träge heißt „braucht für dieselbe Beschleunigung eine größere Kraft", nicht „ist langsamer". Und diese größere Kraft ist ja vorhanden, und zwar in genau demselben Verhältnis. In a = F / m kürzt sie sich weg.',
+      'Richtig. Die vierfache Masse erfährt auch die vierfache rücktreibende Kraft. In a = F / m steht der Faktor damit oben und unten und kürzt sich heraus. Beide Kugeln haben an jeder Stelle der Bahn dieselbe Beschleunigung, also dieselbe Periodendauer.',
+      'Hier wird von der größeren Kraft direkt auf eine schnellere Bewegung geschlossen. Die Kraft allein sagt darüber aber nichts: entscheidend ist a = F / m. Die größere Kraft wirkt auf eine genauso viel größere Masse.',
+      'Die Auslenkung ist hier nicht das Thema, beide werden ja gleich weit ausgelenkt. Und solange sie klein bleibt, ändert sie an der Periodendauer ohnehin nichts.'
     ]
   },
   {
