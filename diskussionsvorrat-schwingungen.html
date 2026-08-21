@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diskussionsvorrat Schwingungen | Physik 12</title>
+<style>
+:root {
+  --ink: #1a1a1a;
+  --muted: #555;
+  --line: #d4d4d4;
+  --accent: #0e7490;
+  --accent-soft: #f0fafb;
+  --warn: #92400e;
+  --warn-soft: #fffbeb;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: var(--ink);
+  background: #fff;
+  line-height: 1.55;
+  font-size: 11pt;
+}
+.page { max-width: 20cm; margin: 0 auto; padding: 1.5cm 1.2cm 3cm; }
+
+header { border-bottom: 2px solid var(--accent); padding-bottom: 0.7rem; margin-bottom: 1.4rem; }
+h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
+.sub { color: var(--muted); font-size: 0.92rem; margin-top: 0.25rem; }
+
+.intro { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 0.8rem 1rem; margin-bottom: 1.6rem; font-size: 0.94rem; }
+.intro p + p { margin-top: 0.5rem; }
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.95rem 1.1rem;
+  margin-bottom: 1rem;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.head { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.num {
+  background: var(--accent); color: #fff; font-weight: 700; font-size: 0.78rem;
+  width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  display: inline-grid; place-items: center; flex: 0 0 auto;
+}
+h2 { font-size: 1.05rem; font-weight: 650; line-height: 1.3; }
+.meta {
+  margin-left: auto; font-size: 0.74rem; color: var(--muted);
+  font-family: ui-monospace, "Consolas", monospace; white-space: nowrap;
+}
+.hook { margin-bottom: 0.55rem; }
+.qs { margin: 0 0 0.5rem 1.1rem; }
+.qs li { margin-bottom: 0.22rem; }
+.tip {
+  font-size: 0.86rem; color: var(--warn); background: var(--warn-soft);
+  border-left: 2px solid var(--warn); padding: 0.45rem 0.7rem; margin-top: 0.5rem;
+}
+.tip strong { font-weight: 650; }
+
+footer { margin-top: 2rem; padding-top: 0.8rem; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--muted); }
+
+@media print {
+  @page { margin: 1.4cm; }
+  body { font-size: 10pt; }
+  .page { padding: 0; max-width: none; }
+  .card { border-color: #999; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Diskussionsvorrat: Schwingungen</h1>
+  <p class="sub">Physik 12 gA &middot; acht Anlässe zum Ziehen, wenn Luft ist &middot; nur für die Lehrkraft</p>
+</header>
+
+<div class="intro">
+  <p>Kein Ritualtermin, keine Reihenfolge. Wenn eine Stunde schneller fertig ist als gedacht oder eine Frage aus dem Kurs kommt, greifst du hier zu. Jede Karte trägt zwischen zehn und zwanzig Minuten, mehrere davon auch eine halbe Stunde.</p>
+  <p>Der Nebeneffekt ist nicht klein: Das KC 2022 führt <em>Erkenntniswege der Physik beschreiben und reflektieren</em> sowie <em>Bewerten</em> als verbindliche prozessbezogene Kompetenzbereiche. Was hier passiert, ist also kein Bonus, sondern Pflichtprogramm, das sonst leicht unter den Tisch fällt.</p>
+</div>
+
+<div class="card">
+  <div class="head">
+    <span class="num">1</span>
+    <h2>Warum stoppt man zehn Perioden?</h2>
+    <span class="meta">LS1 &middot; 10 min</span>
+  </div>
+  <p class="hook">Direkt nach dem Versuch, wenn der Trick gerade angewendet wurde. Der Trick selbst ist banal. Was dahintersteckt, ist es nicht: Der Messfehler verschwindet nicht, er wird nur verteilt.</p>
+  <ul class="qs">
+    <li>Wird die Messung durch den Trick <em>genauer</em>, oder sieht sie nur genauer aus?</li>
+    <li>Gibt es eine perfekte Messung? Was würde das überhaupt heißen?</li>
+    <li>Wenn jede Messung einen Fehler hat, wie kann Physik dann behaupten, etwas sicher zu wissen?</li>
+  </ul>
+  <div class="tip"><strong>Wohin es führen kann:</strong> Der Unterschied zwischen zufälligem und systematischem Fehler. Zehn Perioden helfen gegen den ersten und gar nicht gegen den zweiten. Wenn dein Maßband zwei Millimeter zu kurz ist, misst du eben hundertmal denselben falschen Wert.</div>
+</div>
+
+<div class="card">
+  <div class="head">
+    <span class="num">2</span>
+    <h2>Kleine Winkel: erlaubte Vereinfachung oder Schummelei?</h2>
+    <span class="meta">LS4 &middot; 20 min</span>
+  </div>
+  <p class="hook">In den Messwerten stehen bei 5, 10 und 20 Grad praktisch gleiche Zeiten, bei 40 Grad plötzlich eine andere. Die Formel im Buch gilt also gar nicht allgemein. Sie gilt in einem Bereich, den niemand explizit hinschreibt.</p>
+  <ul class="qs">
+    <li>Die Gleichung stimmt nur ungefähr. Warum steht sie dann so im Buch, als wäre sie exakt?</li>
+    <li>Wo sonst in eurem Physikunterricht wurde vereinfacht, ohne dass es jemand dazugesagt hat? (Reibungsfrei, punktförmig, Luftwiderstand vernachlässigt, homogenes Feld.)</li>
+    <li>Ab wann ist eine Vereinfachung nicht mehr redlich?</li>
+  </ul>
+  <div class="tip"><strong>Der Kern:</strong> Physik beschreibt nie die Wirklichkeit, sondern immer ein Modell davon. Die eigentliche Kompetenz ist nicht, das Modell zu rechnen, sondern zu wissen, wo es aufhört zu gelten. Das lässt sich später bei Feldern wörtlich wiederholen.</div>
+</div>
+
+<div class="card">
+  <div class="head">
+    <span class="num">3</span>
+    <h2>Galileis Kirchenlampe</h2>
+    <span class="meta">LS1 &middot; 10 min</span>
+  </div>
+  <p class="hook">Die Geschichte: Der junge Galilei sitzt 1583 im Dom von Pisa, langweilt sich, beobachtet eine schwingende Deckenlampe und misst ihre Schwingungsdauer mit dem eigenen Puls. So habe er entdeckt, dass die Schwingungsdauer nicht von der Amplitude abhängt.</p>
+  <ul class="qs">
+    <li>Was spricht dafür, was dagegen, dass es so war? (Die Lampe, die heute dort hängt, wurde erst 1587 aufgehängt.)</li>
+    <li>Warum erzählt man solche Geschichten? Was sollen sie leisten?</li>
+    <li>Ändert sich etwas an der Physik, wenn die Anekdote erfunden ist?</li>
+  </ul>
+  <div class="tip"><strong>Anschluss:</strong> Der Puls als Uhr ist eine erstaunlich gute Idee, solange man ruhig sitzt. Man kann kurz nachrechnen lassen, wie genau das wäre, und mit dem Zehn-Perioden-Trick aus Karte 1 vergleichen.</div>
+</div>
+
+<div class="card">
+  <div class="head">
+    <span class="num">4</span>
+    <h2>Tacoma Narrows: das falsch erklärte Lieblingsvideo</h2>
+    <span class="meta">LS4 / Resonanz &middot; 20 min</span>
+  </div>
+  <p class="hook">Die Brücke von 1940, die sich in Zeitlupe zu Tode schaukelt. In fast jedem Schulbuch steht daneben das Wort Resonanz. In der Fachliteratur steht das seit Jahrzehnten anders: es war kein Resonanzfall mit einer äußeren periodischen Anregung, sondern eine selbsterregte Schwingung durch Wirbelablösung, aeroelastisches Flattern.</p>
+  <ul class="qs">
+    <li>Warum hält sich eine falsche Erklärung so hartnäckig, obwohl es besser bekannt ist?</li>
+    <li>Ist es schlimm, wenn ein Beispiel im Unterricht anschaulich, aber falsch erklärt ist?</li>
+    <li>Wie müsste man das Video beschriften, damit es ehrlich bleibt?</li>
+  </ul>
+  <div class="tip"><strong>Hinweis für dich:</strong> Diese Karte funktioniert am besten, wenn du das Video zuerst mit der Standarderklärung zeigst und die Korrektur erst danach lieferst. Der Moment, in dem der Kurs merkt, dass ein Schulbuchbeispiel seit Jahrzehnten falsch weitergereicht wird, ist mehr wert als die Sachinformation selbst.</div>
+</div>
+
+<div class="card">
+  <div class="head">
+    <span class="num">5</span>
+    <h2>Das Meter, das ein Pendel sein sollte</h2>
+    <span class="meta">LS3 &middot; 15 min</span>
+  </div>
+  <p class="hook">Im 17. Jahrhundert gab es einen ernsthaften Vorschlag, die Längeneinheit über das Sekundenpendel zu definieren: Ein Meter sollte die Länge des Pendels sein, das genau eine Sekunde für eine Halbschwingung braucht. Das wäre elegant, weil jeder es überall nachbauen kann, ohne einen Urmeterstab zu besitzen. Es wurde verworfen.</p>
+  <ul class="qs">
+    <li>Rechnet nach: Wie lang wäre dieses Pendel? (Etwa 99,4 cm. Verblüffend nah am heutigen Meter, und das ist kein Zufall.)</li>
+    <li>Warum wurde die Idee trotzdem verworfen?</li>
+    <li>Was macht eine gute Definition einer Einheit aus?</li>
+  </ul>
+  <div class="tip"><strong>Der Haken:</strong> g ist nicht überall gleich. Ein Sekundenpendel in Paris hat eine andere Länge als eines in Cayenne, was Richer schon 1672 gemessen hat. Eine Einheit, die vom Ort abhängt, taugt nichts. Heute ist das Meter über die Lichtgeschwindigkeit definiert, also über eine Naturkonstante. Direkte Brücke zur Frage, warum Konstanten so wertvoll sind.</div>
+</div>
+
+<div class="card">
+  <div class="head">
+    <span class="num">6</span>
+    <h2>Warum Pendeluhren auf See versagen</h2>
+    <span class="meta">LS1 oder LS3 &middot; 15 min</span>
+  </div>
+  <p class="hook">Um 1700 war die genaue Uhr das größte ungelöste technische Problem Europas. Wer auf See seine Länge bestimmen wollte, brauchte eine Uhr, die die Heimatzeit mitführt. Pendeluhren an Land waren längst genau genug. An Bord waren sie unbrauchbar. Das britische Parlament setzte 1714 ein Preisgeld aus, das heute Millionen wert wäre.</p>
+  <ul class="qs">
+    <li>Warum funktioniert ausgerechnet ein Pendel auf einem Schiff nicht? (Schwanken, Temperatur, veränderliches g.)</li>
+    <li>Was müsste ein Ersatz können, was das Pendel nicht kann?</li>
+    <li>Was sagt es über eine Gesellschaft, wenn sie so viel Geld auf ein physikalisches Problem setzt?</li>
+  </ul>
+  <div class="tip"><strong>Auflösung:</strong> John Harrison ersetzte das Pendel durch eine Unruh mit Spiralfeder, also ein Feder-Masse-System, das nicht auf die Schwerkraft angewiesen ist. Genau der Übergang, den ihr im Unterricht ohnehin macht, vom Fadenpendel zum Federpendel. Nur dass hier ein Menschenleben und ein Vermögen daran hingen.</div>
+</div>
+
+<div class="card">
+  <div class="head">
+    <span class="num">7</span>
+    <h2>Wenn sich die Masse einfach wegkürzt</h2>
+    <span class="meta">LS4 &middot; 20 min</span>
+  </div>
+  <p class="hook">Beim Fadenpendel fällt die Masse aus der Gleichung heraus. Im Unterricht wird das meist mit einem Satz erledigt: schwerere Kugel, größere Kraft, aber auch träger, hebt sich auf. Genau da lohnt es sich stehenzubleiben.</p>
+  <ul class="qs">
+    <li>Warum eigentlich sollte die Trägheit eines Körpers etwas mit seiner Gewichtskraft zu tun haben? Das sind zwei völlig verschiedene Eigenschaften.</li>
+    <li>Könnte man sich eine Welt vorstellen, in der beide nicht im selben Verhältnis stehen? Was wäre dort anders?</li>
+    <li>Wie genau müsste man messen, um einen Unterschied auszuschließen?</li>
+  </ul>
+  <div class="tip"><strong>Wohin es führt:</strong> Das ist das Äquivalenzprinzip. Die Gleichheit von schwerer und träger Masse ist experimentell auf etwa 15 Nachkommastellen bestätigt, und Einstein hat daraus die Allgemeine Relativitätstheorie gebaut. Ein Fadenpendel im Klassenraum berührt eine der tiefsten offenen Fragen der Physik. Das darf man ruhig sagen.</div>
+</div>
+
+<div class="card">
+  <div class="head">
+    <span class="num">8</span>
+    <h2>Woher wisst ihr, dass die Formel stimmt?</h2>
+    <span class="meta">Abschluss &middot; 15 min</span>
+  </div>
+  <p class="hook">Am Ende der Einheit, wenn alle die Gleichung benutzen können. Die Frage kommt unvermittelt und ist ernst gemeint.</p>
+  <ul class="qs">
+    <li>Ihr habt fünf Messpunkte. Warum reicht das, um eine Aussage über alle Pendel zu machen? Oder reicht es gar nicht?</li>
+    <li>Was müsste jemand messen, damit ihr die Gleichung aufgeben würdet?</li>
+    <li>Wenn eine einzige Messung nicht passt: Ist dann die Formel falsch oder die Messung?</li>
+  </ul>
+  <div class="tip"><strong>Der Punkt:</strong> Beide Antworten auf die letzte Frage sind in der Wissenschaftsgeschichte schon vorgekommen, und man weiß es meist erst hinterher. Hier lässt sich Falsifizierbarkeit anfassen, ohne dass es nach Philosophieunterricht klingt. Gute Anschlussfrage: Was unterscheidet die Aussage „T hängt von der Länge ab" von der Aussage „Sternzeichen beeinflussen den Charakter"?</div>
+</div>
+
+<footer>
+  <p>Erstellt von Claude für Malte Ohlsen &middot; Physik 12 gA, Einheit Schwingungen &middot; Bezug: KC Physik SII Niedersachsen 2022, Kapitel 3.1 (Erkenntniswege beschreiben und reflektieren, Bewerten)</p>
+</footer>
+
+</div>
+</body>
+</html>
