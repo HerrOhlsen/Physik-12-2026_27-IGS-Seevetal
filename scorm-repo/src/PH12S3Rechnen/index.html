@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Schwingungen S3: Die Schwingungsdauer vorhersagen | Physik 12</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════════
+   TOKENS
+   ══════════════════════════════════════════ */
+:root {
+  --bg-deep: #0b1220;
+  --bg-surface: #111c2e;
+  --bg-card: #16243a;
+  --bg-elevated: #1d3049;
+
+  --ink: #e6edf5;
+  --ink-muted: #a3b4c8;
+  --ink-dim: #6f8299;
+
+  --accent: #22d3ee;
+  --accent-deep: #0891b2;
+  --accent-subtle: rgba(34, 211, 238, 0.10);
+  --accent-glow: rgba(34, 211, 238, 0.28);
+
+  --ok: #34d399;
+  --ok-bg: rgba(52, 211, 153, 0.12);
+  --ok-border: rgba(52, 211, 153, 0.35);
+  --err: #f87171;
+  --err-bg: rgba(248, 113, 113, 0.12);
+  --err-border: rgba(248, 113, 113, 0.35);
+  --warn: #fbbf24;
+  --warn-bg: rgba(251, 191, 36, 0.10);
+  --warn-border: rgba(251, 191, 36, 0.30);
+
+  --brian: #c084fc;
+  --brian-bg: rgba(192, 132, 252, 0.10);
+  --brian-border: rgba(192, 132, 252, 0.35);
+
+  --border: rgba(34, 211, 238, 0.15);
+  --border-strong: rgba(34, 211, 238, 0.32);
+
+  --font: 'Outfit', system-ui, -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-full: 100px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.32), 0 1px 4px rgba(0,0,0,0.2);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Kein scroll-behavior: smooth. Es gilt sonst auch fuer behavior:'auto'
+   und laesst Sprünge beim Abschnittswechsel ins Leere laufen. */
+html { scroll-behavior: auto; }
+body {
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--bg-deep);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34,211,238,0.10), transparent),
+    radial-gradient(ellipse 60% 50% at 90% 110%, rgba(8,145,178,0.08), transparent);
+  background-attachment: fixed;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+input, textarea, select { font-size: 16px; font-family: var(--font); }
+button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; font-family: var(--font); }
+
+/* ══════════════════════════════════════════
+   LAYOUT
+   ══════════════════════════════════════════ */
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 1.25rem 6rem; }
+
+header.top {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(11, 18, 32, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 0;
+  margin-bottom: 2rem;
+}
+.top-inner { max-width: 860px; margin: 0 auto; padding: 0 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.kicker {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent); white-space: nowrap;
+}
+.steps { display: flex; gap: 0.4rem; margin-left: auto; flex-wrap: wrap; }
+.step-dot {
+  width: 2rem; height: 0.3rem; border-radius: var(--r-full);
+  background: rgba(255,255,255,0.12); transition: background 0.25s, box-shadow 0.25s;
+  cursor: pointer; border: none; padding: 0;
+}
+.step-dot.done { background: var(--accent-deep); }
+.step-dot.here { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+
+h1 { font-size: clamp(1.6rem, 4.5vw, 2.3rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 0.6rem; }
+h2 { font-size: clamp(1.25rem, 3.5vw, 1.55rem); font-weight: 700; line-height: 1.25; margin-bottom: 0.9rem; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--ink); }
+p { margin-bottom: 1rem; color: var(--ink-muted); }
+p strong, li strong { color: var(--ink); font-weight: 600; }
+ul, ol { margin: 0 0 1rem 1.3rem; color: var(--ink-muted); }
+li { margin-bottom: 0.4rem; }
+
+.sec { display: none; animation: fade 0.3s ease; }
+.sec.active { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.card.tight { padding: 1.1rem 1.25rem; }
+
+.tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.68rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.25rem 0.6rem; border-radius: var(--r-full);
+  background: var(--accent-subtle); color: var(--accent);
+  border: 1px solid var(--border-strong); margin-bottom: 0.9rem;
+}
+.tag.zusatz { background: var(--warn-bg); color: var(--warn); border-color: var(--warn-border); }
+
+.lead { font-size: 1.05rem; color: var(--ink-muted); }
+
+/* Ziele-Liste */
+.goals { list-style: none; margin-left: 0; }
+.goals li { display: flex; gap: 0.7rem; align-items: flex-start; margin-bottom: 0.6rem; }
+.goals li::before {
+  content: ''; flex: 0 0 auto; width: 0.5rem; height: 0.5rem; margin-top: 0.6rem;
+  border-radius: 50%; background: var(--accent);
+}
+
+/* Callouts */
+.note {
+  border-left: 3px solid var(--accent); background: var(--accent-subtle);
+  border-radius: 0 var(--r-md) var(--r-md) 0; padding: 0.9rem 1.1rem; margin-bottom: 1.2rem;
+}
+.note p:last-child { margin-bottom: 0; }
+.note.warnbox { border-left-color: var(--warn); background: var(--warn-bg); }
+
+/* Brian-Karte */
+.brian {
+  border: 1px solid var(--brian-border); background: var(--brian-bg);
+  border-radius: var(--r-lg); padding: 1.3rem 1.4rem; margin-bottom: 1.5rem;
+}
+.brian .tag { background: rgba(192,132,252,0.12); color: var(--brian); border-color: var(--brian-border); }
+.brian h3 { color: var(--brian); }
+.brian-task {
+  font-family: var(--mono); font-size: 0.9rem; color: var(--ink);
+  background: rgba(0,0,0,0.28); border-radius: var(--r-sm);
+  padding: 0.6rem 0.85rem; margin: 0.7rem 0 0.9rem; display: inline-block;
+}
+.brian-link {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--brian); color: #1a0b2e; font-weight: 600; font-size: 0.95rem;
+  text-decoration: none; border-radius: var(--r-full);
+  padding: 0.6rem 1.3rem; margin: 0.2rem 0 0.9rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.brian-link:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(192,132,252,0.3); }
+
+/* Bootcamp-Hinweis */
+.rescue {
+  display: flex; gap: 0.9rem; align-items: flex-start;
+  border: 1px dashed rgba(255,255,255,0.18); border-radius: var(--r-md);
+  padding: 0.9rem 1.1rem; margin-bottom: 1.2rem; background: rgba(255,255,255,0.03);
+}
+.rescue .ico { font-size: 1.3rem; line-height: 1.3; }
+.rescue p { margin: 0; font-size: 0.94rem; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--accent); color: #06202b; font-weight: 600; font-size: 0.98rem;
+  border: none; border-radius: var(--r-full); padding: 0.7rem 1.5rem; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
+.btn:active { transform: none; }
+.btn.ghost { background: transparent; color: var(--ink-muted); border: 1px solid var(--border-strong); }
+.btn.ghost:hover { color: var(--ink); box-shadow: none; }
+.btn.small { padding: 0.45rem 1rem; font-size: 0.88rem; }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.nav { display: flex; gap: 0.8rem; align-items: center; margin-top: 2rem; flex-wrap: wrap; }
+.nav .spacer { flex: 1 1 auto; }
+
+/* Auswahlfragen */
+.choices { display: flex; flex-direction: column; gap: 0.6rem; margin: 1rem 0; }
+.choice {
+  display: flex; gap: 0.8rem; align-items: flex-start; text-align: left; width: 100%;
+  background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: var(--r-md); padding: 0.85rem 1rem; cursor: pointer; color: var(--ink);
+  font-size: 0.98rem; line-height: 1.5; transition: border-color 0.18s, background 0.18s;
+}
+.choice:hover { border-color: var(--border-strong); }
+.choice .letter {
+  flex: 0 0 auto; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  background: rgba(255,255,255,0.08); color: var(--ink-muted);
+  display: grid; place-items: center; font-family: var(--mono); font-size: 0.8rem; font-weight: 600;
+}
+.choice.picked { border-color: var(--accent); background: var(--accent-subtle); }
+.choice.picked .letter { background: var(--accent); color: #06202b; }
+.choice.right { border-color: var(--ok-border); background: var(--ok-bg); }
+.choice.right .letter { background: var(--ok); color: #04231a; }
+.choice.wrong { border-color: var(--err-border); background: var(--err-bg); }
+.choice.wrong .letter { background: var(--err); color: #2a0a0a; }
+.choice[disabled] { cursor: default; }
+
+.fb { border-radius: var(--r-md); padding: 0.8rem 1rem; margin-top: 0.7rem; font-size: 0.94rem; display: none; }
+.fb.show { display: block; }
+.fb.good { background: var(--ok-bg); border: 1px solid var(--ok-border); color: var(--ink); }
+.fb.bad { background: var(--err-bg); border: 1px solid var(--err-border); color: var(--ink); }
+.fb.hint { background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--ink); }
+
+/* Eingabefelder */
+.inputs { display: flex; flex-direction: column; gap: 0.8rem; margin: 1rem 0; }
+.field { display: flex; gap: 0.7rem; align-items: center; flex-wrap: wrap; }
+.field label { flex: 1 1 15rem; color: var(--ink-muted); font-size: 0.96rem; }
+.field input {
+  width: 6.5rem; background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--r-sm); padding: 0.5rem 0.7rem; color: var(--ink);
+  font-family: var(--mono); text-align: right;
+}
+.field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.field input.ok { border-color: var(--ok); background: var(--ok-bg); }
+.field input.no { border-color: var(--err); background: var(--err-bg); }
+.field .unit { font-family: var(--mono); color: var(--ink-dim); width: 3rem; font-size: 0.9rem; }
+
+/* Tabellen */
+.tablewrap { overflow-x: auto; margin-bottom: 1.2rem; }
+table { border-collapse: collapse; width: 100%; font-size: 0.94rem; min-width: 26rem; }
+th, td { padding: 0.55rem 0.7rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.09); }
+th { color: var(--accent); font-weight: 600; font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase; }
+td { color: var(--ink-muted); font-family: var(--mono); font-size: 0.9rem; }
+td.txt { font-family: var(--font); }
+table input {
+  width: 5rem; background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--r-sm); padding: 0.35rem 0.5rem; color: var(--ink);
+  font-family: var(--mono); text-align: right; font-size: 0.9rem;
+}
+table input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Diagramme */
+.plotbox { background: rgba(0,0,0,0.25); border-radius: var(--r-md); padding: 0.8rem; margin-bottom: 1rem; }
+.plotrow { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+@media (min-width: 720px) { .plotrow { grid-template-columns: 1fr 1fr; } }
+svg { display: block; width: 100%; height: auto; }
+svg text {
+  paint-order: stroke;
+  stroke: #101b2c;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.plot-cap { font-size: 0.85rem; color: var(--ink-dim); text-align: center; margin-top: 0.3rem; font-family: var(--mono); }
+
+/* Ergebnis-Panel */
+.result {
+  text-align: center; padding: 1.5rem;
+  border: 1px solid var(--border-strong); border-radius: var(--r-lg);
+  background: var(--accent-subtle); margin-bottom: 1.5rem;
+}
+.result .big { font-size: 2.4rem; font-weight: 800; color: var(--accent); line-height: 1; }
+.result .cap { font-size: 0.9rem; color: var(--ink-muted); margin-top: 0.4rem; }
+
+.formula {
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 1.35rem; color: var(--ink); letter-spacing: 0.02em;
+  background: rgba(0,0,0,0.25); border-radius: var(--r-sm);
+  padding: 0.7rem 1.2rem; display: inline-block; margin: 0.3rem 0 1rem;
+}
+.formula sub { font-style: normal; font-size: 0.7em; }
+
+/* Druck */
+@media print {
+  body { background: #fff; color: #000; }
+  header.top, .nav, .btn, .steps { display: none !important; }
+  .sec { display: block !important; }
+  .card, .note, .brian, .rescue { border: 1px solid #999; background: #fff; box-shadow: none; page-break-inside: avoid; }
+  h1, h2, h3, p, li, td, th { color: #000 !important; }
+  .print-only { display: block !important; }
+}
+.print-only { display: none; }
+
+/* Schieberegler */
+.regler { display: flex; gap: 1rem; align-items: center; margin-bottom: 0.9rem; flex-wrap: wrap; }
+.regler label { flex: 0 0 9rem; color: var(--ink-muted); font-size: 0.96rem; }
+.regler input[type=range] {
+  flex: 1 1 12rem; accent-color: var(--accent);
+  height: 1.6rem; background: transparent; cursor: pointer;
+}
+.regler output {
+  font-family: var(--mono); color: var(--accent); font-size: 0.95rem;
+  min-width: 5.5rem; text-align: right;
+}
+
+/* Absprung zur Simulation */
+.sim-link {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--warn); color: #2a1a00; font-weight: 600; font-size: 0.95rem;
+  text-decoration: none; border-radius: var(--r-full);
+  padding: 0.6rem 1.3rem; margin: 0.4rem 0 0.9rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.sim-link:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(251,191,36,0.28); }
+/* Formel im Fliesstext, damit l nicht wie 1 aussieht */
+.formel-inline { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 1.05em; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <span class="kicker">Physik 12 &middot; Schwingungen &middot; S3</span>
+    <nav class="steps" id="steps" aria-label="Abschnitte"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ═══════════════ 0 START ═══════════════ -->
+<section class="sec active" id="sec0">
+  <h1>Die Schwingungsdauer vorhersagen</h1>
+  <p class="lead">Bisher hast du T immer gemessen. Jetzt drehst du den Spieß um: Aus den Eigenschaften des Pendels lässt sich vorhersagen, wie lange eine Schwingung dauern <em>wird</em>, bevor sie stattgefunden hat. Genau das ist der Punkt, an dem Physik nützlich wird.</p>
+
+  <div class="card">
+    <span class="tag">Das kannst du danach</span>
+    <ul class="goals">
+      <li>Du gibst die Gleichung für die Periodendauer eines Feder-Masse-Pendels an und weißt, was darin steht.</li>
+      <li>Du hast die Abhängigkeiten von Masse und Federkonstante selbst überprüft.</li>
+      <li>Du berechnest T aus den Daten eines Pendels.</li>
+      <li>Du stellst die Gleichung um und bestimmst daraus die Länge oder die Fallbeschleunigung.</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <p style="margin-bottom:0"><strong>Für die Klausur wichtig:</strong> Von den beiden Pendeln, die hier vorkommen, ist im Kerncurriculum das <strong>Feder-Masse-Pendel</strong> das verbindliche. Das Fadenpendel kennst du aus der eigenen Messung, und es kommt in Aufgaben oft vor, aber die Gleichung, die du sicher können musst, ist die für die Feder.</p>
+  </div>
+
+  <div class="card tight">
+    <h3>So läuft dieser Schritt</h3>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Teil</th><th>Was du tust</th><th>Zeit</th></tr>
+        <tr><td class="txt">1. Die Idee</td><td class="txt">lesen</td><td>10 min</td></tr>
+        <tr><td class="txt">2. Federpendel: Masse verändern</td><td class="txt">Simulation, Messreihe</td><td>25 min</td></tr>
+        <tr><td class="txt">3. Federpendel: Feder verändern</td><td class="txt">Simulation, kürzer</td><td>15 min</td></tr>
+        <tr><td class="txt">4. Fadenpendel</td><td class="txt">lesen, mit LS1 vergleichen</td><td>15 min</td></tr>
+        <tr><td class="txt">5. Umstellen und rechnen</td><td class="txt">drei Aufgaben</td><td>30 min</td></tr>
+        <tr><td class="txt">6. Check</td><td class="txt">fünf Fragen</td><td>10 min</td></tr>
+      </table>
+    </div>
+    <p style="margin-bottom:0">Für Teil 2 und 3 brauchst du die Simulation, sie öffnet sich in einem eigenen Fenster. Für Teil 5 einen Taschenrechner.</p>
+  </div>
+
+  <div class="nav">
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(1)">Los geht es</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 1 DIE IDEE ═══════════════ -->
+<section class="sec" id="sec1">
+  <h2>1. Was du schon weißt, und was noch fehlt</h2>
+  <p>In Lernschritt 1 hast du am Fadenpendel gemessen und ausgewertet. Das Ergebnis war:</p>
+  <ul>
+    <li>T hängt <strong>nicht</strong> von der Masse ab.</li>
+    <li>T hängt <strong>nicht</strong> von der Auslenkung ab, solange sie klein bleibt.</li>
+    <li>T hängt von der <strong>Fadenlänge</strong> ab, und zwar so, dass T² proportional zu l ist.</li>
+  </ul>
+  <p>Das ist schon eine Menge. Was fehlt, ist der Vorfaktor: Aus „T² ist proportional zu l" wird erst dann eine brauchbare Gleichung, wenn du weißt, <em>mit welcher Zahl</em> multipliziert wird.</p>
+
+  <div class="card">
+    <h3>Zwei Pendel, dieselbe Struktur</h3>
+    <p>Beide Gleichungen sehen gleich gebaut aus. Oben steht immer die Größe, die die Schwingung <em>träge</em> macht, unten die, die sie <em>zurücktreibt</em>:</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th></th><th>Feder-Masse-Pendel</th><th>Fadenpendel</th></tr>
+        <tr><td class="txt">Gleichung</td><td class="txt"><span class="formel-inline">T = 2&pi; &middot; &radic;(m / D)</span></td><td class="txt"><span class="formel-inline">T = 2&pi; &middot; &radic;(l / g)</span></td></tr>
+        <tr><td class="txt">oben steht</td><td class="txt">die Masse m in kg</td><td class="txt">die Fadenlänge l in m</td></tr>
+        <tr><td class="txt">unten steht</td><td class="txt">die Federkonstante D in N/m</td><td class="txt">die Fallbeschleunigung g in m/s²</td></tr>
+        <tr><td class="txt">was fehlt</td><td class="txt">nichts, das ist alles</td><td class="txt">die Masse. Sie kommt nicht vor.</td></tr>
+      </table>
+    </div>
+    <p style="margin-bottom:0">Die Federkonstante D sagt, wie stark eine Feder zieht: Eine Feder mit D = 40 N/m braucht 40 Newton, um einen Meter gedehnt zu werden. Große Federkonstante heißt harte Feder.</p>
+  </div>
+
+  <div class="note warnbox">
+    <p style="margin-bottom:0"><strong>Beim Federpendel steht die Masse in der Gleichung, beim Fadenpendel nicht.</strong> Das ist kein Widerspruch zu Lernschritt 1: dort ging es ums Fadenpendel, und da fällt sie tatsächlich heraus. Bei der Feder bleibt sie drin, weil die rücktreibende Kraft hier von der Feder kommt und nicht von der Gewichtskraft. Sie wächst also nicht mit, wenn du mehr Masse anhängst.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(0)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(2)">Weiter zur Simulation</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 2 MASSE VARIIEREN ═══════════════ -->
+<section class="sec" id="sec2">
+  <h2>2. Federpendel: die Masse verändern</h2>
+  <p>Ein echtes Federpendel wäre hier unpraktisch, weil man Federn mit genau bekannter Federkonstante bräuchte. In der Simulation kannst du beides auf die Kommastelle genau einstellen.</p>
+
+  <div class="card">
+    <span class="tag">Simulation</span>
+    <h3>Federpendel von Walter Fendt</h3>
+    <p>Öffne die Simulation in einem eigenen Fenster und lege sie neben dieses Modul, damit du die Werte direkt eintragen kannst.</p>
+    <a class="sim-link" href="https://www.walter-fendt.de/html5/phde/springpendulum_de.htm" target="_blank" rel="noopener">Simulation öffnen &rarr;</a>
+    <p style="margin-bottom:0">Die Simulation zeigt unten links die <strong>Schwingungsdauer</strong> an. Die Eingabefelder haben Grenzen: die Federkonstante geht von 5 bis 50 N/m, die Masse von 1 bis 10 kg.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Messreihe 1</span>
+    <h3>Federkonstante festhalten, Masse verändern</h3>
+    <p>Stelle die <strong>Federkonstante auf 20,0 N/m</strong> und lasse sie dort. Trage nacheinander die Massen aus der Tabelle ein und lies die Schwingungsdauer ab. Zwei Nachkommastellen genügen.</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>m in kg</th><th>T in s (abgelesen)</th><th>T² in s²</th><th></th></tr>
+        <tbody id="reihe1"></tbody>
+      </table>
+    </div>
+    <div class="nav" style="margin-top:0.5rem">
+      <button class="btn small" onclick="pruefeReihe1()">Werte prüfen</button>
+      <div class="spacer"></div>
+      <button class="btn small ghost" onclick="zeichneReihe1()">Diagramm zeichnen</button>
+    </div>
+    <div class="fb" id="reihe1Fb"></div>
+  </div>
+
+  <div class="plotrow">
+    <div class="plotbox">
+      <svg id="plotT" viewBox="0 0 320 260" role="img" aria-label="Schwingungsdauer gegen Masse"></svg>
+      <div class="plot-cap">T gegen m</div>
+    </div>
+    <div class="plotbox">
+      <svg id="plotT2" viewBox="0 0 320 260" role="img" aria-label="Quadrat der Schwingungsdauer gegen Masse"></svg>
+      <div class="plot-cap">T² gegen m</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="tag">Auswertung</span>
+    <h3>Was sagt die Messreihe?</h3>
+    <div class="choices" id="q2"></div>
+    <div class="fb" id="q2fb"></div>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(1)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(3)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 3 FEDER VARIIEREN ═══════════════ -->
+<section class="sec" id="sec3">
+  <h2>3. Federpendel: die Feder verändern</h2>
+  <p>Zweite Messreihe, diesmal andersherum. Diese geht schneller, weil du nur auf ein Muster achten musst.</p>
+
+  <div class="card">
+    <span class="tag">Messreihe 2</span>
+    <h3>Masse festhalten, Federkonstante verändern</h3>
+    <p>Stelle die <strong>Masse auf 4,00 kg</strong> und lasse sie dort. Dann die vier Federkonstanten durchgehen.</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>D in N/m</th><th>T in s (abgelesen)</th><th></th></tr>
+        <tbody id="reihe2"></tbody>
+      </table>
+    </div>
+    <button class="btn small" onclick="pruefeReihe2()">Werte prüfen</button>
+    <div class="fb" id="reihe2Fb"></div>
+  </div>
+
+  <div class="card">
+    <span class="tag">Auswertung</span>
+    <h3>Vergleiche die erste und die letzte Zeile</h3>
+    <p>Von D = 5 N/m auf D = 20 N/m ist die Federkonstante <strong>viermal so groß</strong> geworden. Was ist mit T passiert?</p>
+    <div class="choices" id="q3"></div>
+    <div class="fb" id="q3fb"></div>
+  </div>
+
+  <div class="card">
+    <h3>Beides zusammen ergibt die Gleichung</h3>
+    <p>Die Messreihen sagen: T wächst mit der Wurzel aus m, und T fällt mit der Wurzel aus D. Genau das steht in der Gleichung, die du ab jetzt können musst:</p>
+    <div class="formula">T = 2&pi; &middot; &radic;(m / D)</div>
+    <p style="margin-bottom:0">Prüfe sie an einer deiner Zeilen nach: Bei m = 4,00 kg und D = 20,0 N/m ergibt die Gleichung 2&pi; &middot; &radic;(0,2) = 2,81 s. Genau der Wert, den die Simulation angezeigt hat. Die Gleichung ist damit nicht nur behauptet, sondern an deinen eigenen Werten geprüft.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(2)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(4)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 4 FADENPENDEL ═══════════════ -->
+<section class="sec" id="sec4">
+  <h2>4. Zurück zum Fadenpendel</h2>
+  <p>Für das Fadenpendel gilt die Gleichung</p>
+  <div class="formula">T = 2&pi; &middot; &radic;(l / g)</div>
+  <p>Sie ist genauso gebaut wie die für die Feder, nur stehen andere Größen darin. Und sie erklärt genau das, was du in Lernschritt 1 gemessen hast.</p>
+
+  <div class="card">
+    <h3>Der Abgleich mit deiner eigenen Messung</h3>
+    <p>Quadriere beide Seiten der Gleichung:</p>
+    <div class="formula">T² = 4&pi;² &middot; l / g</div>
+    <p>Da 4&pi;² und g beides feste Zahlen sind, steht hier nichts anderes als: <strong>T² ist proportional zu l</strong>. Genau das war das Ergebnis deiner Auswertung in Lernschritt 1, als das zweite Diagramm eine Gerade wurde.</p>
+    <p style="margin-bottom:0">Der Unterschied ist: damals hast du es gemessen und wusstest nicht, welche Zahl vor dem l steht. Jetzt weißt du es: 4&pi;² / g, also etwa 4,02 s²/m auf der Erde.</p>
+  </div>
+
+  <div class="note">
+    <p style="margin-bottom:0"><strong>Warum die Masse hier fehlt und bei der Feder nicht:</strong> Am Faden treibt die Gewichtskraft zurück, und die wächst mit der Masse mit, weshalb sie sich herauskürzt (siehe Lernschritt 1). An der Feder treibt die Federkraft zurück, und die hängt nur von der Dehnung und von D ab, nicht von der Masse. Sie wächst also nicht mit. Deshalb bleibt m in der Gleichung stehen.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(3)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(5)">Weiter zum Rechnen</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 5 RECHNEN ═══════════════ -->
+<section class="sec" id="sec5">
+  <h2>5. Umstellen und rechnen</h2>
+  <p>Drei Aufgaben, drei Richtungen. Die erste setzt nur ein, die anderen beiden verlangen, dass du die Gleichung umstellst. Rechne auf Papier und trage nur das Ergebnis ein.</p>
+
+  <div class="card">
+    <span class="tag zusatz">Der Stolperstein beim Umstellen</span>
+    <h3>Die Wurzel verschwindet nicht von allein</h3>
+    <p>Wer nach l auflösen will, muss beide Seiten quadrieren. Dabei wird auch der Vorfaktor 2&pi; quadriert, und das wird oft vergessen:</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th></th><th>Schritt</th></tr>
+        <tr><td class="txt">Start</td><td>T = 2&pi; &middot; &radic;(l / g)</td></tr>
+        <tr><td class="txt">quadrieren</td><td>T² = 4&pi;² &middot; l / g</td></tr>
+        <tr><td class="txt">nach l</td><td>l = g &middot; T² / (4&pi;²)</td></tr>
+      </table>
+    </div>
+    <p style="margin-bottom:0">Falsch wäre l = g &middot; T / (2&pi;). Wer das hinschreibt, hat die Wurzel nur weggelassen statt aufgelöst.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Aufgabe a</span>
+    <p>An einem dünnen Faden der Länge <strong>5,00 m</strong> hängt eine kleine, schwere Kugel. Der Ortsfaktor beträgt <strong>9,81 m/s²</strong>. Berechne die Schwingungsdauer.</p>
+    <div class="inputs">
+      <div class="field">
+        <label for="aa">Schwingungsdauer T</label>
+        <input id="aa" type="text" inputmode="decimal" autocomplete="off"><span class="unit">s</span>
+      </div>
+    </div>
+    <button class="btn small" onclick="pruefeA()">Prüfen</button>
+    <div class="fb" id="aaFb"></div>
+  </div>
+
+  <div class="card">
+    <span class="tag">Aufgabe b</span>
+    <p>An einem Ort beträgt der Ortsfaktor <strong>9,82 m/s²</strong>. Ein Fadenpendel soll dort eine Schwingungsdauer von genau <strong>2,00 s</strong> haben. Ein solches Pendel heißt Sekundenpendel. Berechne die nötige Fadenlänge.</p>
+    <div class="inputs">
+      <div class="field">
+        <label for="ab">Fadenlänge l</label>
+        <input id="ab" type="text" inputmode="decimal" autocomplete="off"><span class="unit">m</span>
+      </div>
+    </div>
+    <button class="btn small" onclick="pruefeB()">Prüfen</button>
+    <div class="fb" id="abFb"></div>
+  </div>
+
+  <div class="card">
+    <span class="tag">Aufgabe c</span>
+    <p>Auf dem Mond bestimmen Astronauten die Fallbeschleunigung mit einem Fadenpendel der Länge <strong>40,0 cm</strong>. Sie messen die Schwingungsdauer <strong>3,12 s</strong>. Berechne daraus die Fallbeschleunigung auf dem Mond.</p>
+    <div class="inputs">
+      <div class="field">
+        <label for="ac">Fallbeschleunigung g</label>
+        <input id="ac" type="text" inputmode="decimal" autocomplete="off"><span class="unit">m/s²</span>
+      </div>
+    </div>
+    <button class="btn small" onclick="pruefeC()">Prüfen</button>
+    <div class="fb" id="acFb"></div>
+  </div>
+
+  <div class="brian">
+    <span class="tag">Aufgabe in Brian</span>
+    <h3>Deinen Rechenweg prüfen lassen</h3>
+    <p>Hier zählt nicht das Ergebnis, sondern der Weg dorthin. Schicke Brian deine Rechnung mit allen Zwischenschritten. Er sagt dir, wo es hakt, aber er löst die Aufgabe nicht für dich. Wer nichts vorlegt, bekommt auch nichts.</p>
+    <div class="brian-task">PH12-S3 Rechenweg</div>
+    <a class="brian-link" href="https://student.brian.study/#/courses/14138?highlight-course-unit=28324" target="_blank" rel="noopener">In Brian öffnen &rarr;</a>
+    <p style="margin-bottom:0">Etwa 20 Minuten. Am besten direkt nach diesen drei Aufgaben, solange du deine Rechenwege noch vor dir liegen hast.</p>
+  </div>
+
+  <div class="rescue">
+    <span class="ico">&#129517;</span>
+    <p><strong>Das Umstellen ist das Problem, nicht die Physik?</strong> Physik Bootcamp <strong>Track A2 und A3</strong> („Formeln umstellen") üben genau das, inklusive Wurzeln und Quadraten.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(4)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(6)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 6 CHECK ═══════════════ -->
+<section class="sec" id="sec6">
+  <h2>6. Check</h2>
+
+  <div class="card">
+    <h3>Das Wichtigste</h3>
+    <div class="formula">T = 2&pi; &middot; &radic;(m / D)</div>
+    <p>Das ist die Gleichung, die du sicher können musst. Sie gilt für das Feder-Masse-Pendel, und du hast ihre beiden Abhängigkeiten selbst überprüft: vierfache Masse heißt doppelte Schwingungsdauer, vierfache Federkonstante heißt halbe Schwingungsdauer.</p>
+    <p style="margin-bottom:0">Für das Fadenpendel gilt dieselbe Struktur mit l und g. Beim Umstellen nach der Größe unter der Wurzel wird quadriert, und dabei wird aus 2&pi; der Faktor 4&pi;².</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Check</span>
+    <h3>Fünf Fragen zum Schluss</h3>
+    <p>Nicht benotet, niemand sieht die Antworten außer dir.</p>
+    <div id="quizBox"></div>
+    <div class="result" id="quizResult" style="display:none">
+      <div class="big" id="quizScore">0/5</div>
+      <div class="cap" id="quizCap"></div>
+    </div>
+  </div>
+
+  <div class="card tight">
+    <h3>Wie es weitergeht</h3>
+    <p style="margin-bottom:0">In <strong>Lernschritt 4</strong> geht es nicht mehr ums Rechnen, sondern ums Verstehen: Wohin wandert die Energie beim Schwingen, warum wird eine echte Schwingung kleiner, und ab wann stimmt die Gleichung nicht mehr, die du hier gelernt hast.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(5)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="finishModule(event)">Lernschritt abschließen</button>
+  </div>
+</section>
+
+</div>
+
+
+<script>
+// ══════════════════════════════════════════
+// SCORM 1.2 API WRAPPER
+// ══════════════════════════════════════════
+const SCORM = (() => {
+  let api = null;
+  let initialized = false;
+
+  function findAPI(win) {
+    let tries = 0;
+    while (win && !win.API && tries < 10) {
+      tries++;
+      if (win.parent && win.parent !== win) { win = win.parent; }
+      else if (win.opener) { win = win.opener; }
+      else break;
+    }
+    return win ? win.API : null;
+  }
+
+  function init() {
+    try {
+      api = findAPI(window);
+      if (!api) return;
+      api.LMSInitialize('');
+      initialized = true;
+      // Zustand steht in suspend_data (4096 Zeichen). lesson_location fasst nur 255
+      // und traegt deshalb nur noch die Abschnittsnummer. Aeltere Staende, die dort
+      // noch komplett abgelegt wurden, werden weiterhin gelesen.
+      let saved = api.LMSGetValue('cmi.suspend_data');
+      if (!saved) saved = api.LMSGetValue('cmi.core.lesson_location');
+      if (saved) {
+        try {
+          const geladen = JSON.parse(saved);
+          if (geladen && typeof geladen === 'object') Object.assign(state, geladen);
+        } catch (e) {}
+      }
+      if (api.LMSGetValue('cmi.core.lesson_status') === 'not attempted') {
+        api.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+        api.LMSCommit('');
+      }
+    } catch (e) { console.log('SCORM init:', e); }
+  }
+
+  // Schreibt und meldet, wenn das LMS ablehnt. Stilles Scheitern hatte zur Folge,
+  // dass der komplette Fortschritt verlorenging, ohne dass es jemand merkte.
+  function setzen(element, wert) {
+    const ok = api.LMSSetValue(element, String(wert));
+    if (ok !== 'true') {
+      console.warn('[S1] LMS lehnt ab:', element,
+                   'Laenge', String(wert).length,
+                   'Fehlercode', api.LMSGetLastError());
+      return false;
+    }
+    return true;
+  }
+
+  function save(completed) {
+    if (!api || !initialized) return;
+    try {
+      const daten = JSON.stringify(state);
+      if (daten.length > 4000) {
+        console.warn('[S1] Zustand naehert sich der suspend_data-Grenze:', daten.length);
+      }
+      setzen('cmi.suspend_data', daten);
+      setzen('cmi.core.lesson_location', state.section);
+      const total = 5;
+      const right = Object.values(state.quiz).filter(v => v === true).length;
+      setzen('cmi.core.score.raw', Math.round(right / total * 100));
+      setzen('cmi.core.score.min', 0);
+      setzen('cmi.core.score.max', 100);
+      if (completed || state.done) setzen('cmi.core.lesson_status', 'completed');
+      api.LMSCommit('');
+    } catch (e) { console.log('SCORM save:', e); }
+  }
+
+  function finish() {
+    if (!api || !initialized) return;
+    try { save(); api.LMSFinish(''); } catch (e) {}
+  }
+
+  return { init, save, finish };
+})();
+
+function plot(id, pts, xlab, ylab, fitLine) {
+  const svg = document.getElementById(id);
+  const W = 320, H = 260, L = 46, R = 14, TP = 16, B = 44;
+  const px = W - L - R, py = H - TP - B;
+
+  if (!pts.length) {
+    svg.innerHTML = '<text x="' + (W / 2) + '" y="' + (H / 2) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">noch keine Werte</text>';
+    return;
+  }
+
+  const maxX = Math.max(...pts.map(p => p.x)) * 1.1 || 1;
+  const maxY = Math.max(...pts.map(p => p.y)) * 1.15 || 1;
+  const X = v => L + (v / maxX) * px;
+  const Y = v => TP + py - (v / maxY) * py;
+
+  let s = '';
+  // Gitter
+  for (let i = 1; i <= 4; i++) {
+    const gy = TP + py - (i / 4) * py;
+    s += '<line x1="' + L + '" y1="' + gy.toFixed(1) + '" x2="' + (W - R) + '" y2="' + gy.toFixed(1) + '" stroke="rgba(255,255,255,0.07)"/>';
+    s += '<text x="' + (L - 6) + '" y="' + (gy + 4).toFixed(1) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="end">' + (maxY * i / 4).toFixed(1).replace('.', ',') + '</text>';
+  }
+  for (let i = 1; i <= 4; i++) {
+    const gx = L + (i / 4) * px;
+    s += '<line x1="' + gx.toFixed(1) + '" y1="' + TP + '" x2="' + gx.toFixed(1) + '" y2="' + (TP + py) + '" stroke="rgba(255,255,255,0.05)"/>';
+    s += '<text x="' + gx.toFixed(1) + '" y="' + (TP + py + 16) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="middle">' + (maxX * i / 4).toFixed(1).replace('.', ',') + '</text>';
+  }
+  // Achsen
+  s += '<line x1="' + L + '" y1="' + (TP + py) + '" x2="' + (W - R) + '" y2="' + (TP + py) + '" stroke="#6f8299" stroke-width="1.4"/>';
+  s += '<line x1="' + L + '" y1="' + TP + '" x2="' + L + '" y2="' + (TP + py) + '" stroke="#6f8299" stroke-width="1.4"/>';
+  s += '<text x="' + (W - R) + '" y="' + (TP + py + 34) + '" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end">' + xlab + '</text>';
+  s += '<text x="' + L + '" y="' + (TP - 4) + '" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="11">' + ylab + '</text>';
+
+  // Ausgleichsgerade durch den Ursprung, nur beim T²-Diagramm
+  if (fitLine && pts.length > 1) {
+    let sxy = 0, sxx = 0;
+    pts.forEach(p => { sxy += p.x * p.y; sxx += p.x * p.x; });
+    const m = sxx ? sxy / sxx : 0;
+    s += '<line x1="' + X(0) + '" y1="' + Y(0) + '" x2="' + X(maxX) + '" y2="' + Y(m * maxX).toFixed(1) + '" stroke="#fbbf24" stroke-width="1.6" stroke-dasharray="5 4"/>';
+  }
+
+  // Verbindungslinie im T-Diagramm, damit die Krümmung sichtbar wird
+  if (!fitLine && pts.length > 1) {
+    const sorted = [...pts].sort((a, b) => a.x - b.x);
+    s += '<polyline fill="none" stroke="rgba(34,211,238,0.35)" stroke-width="1.4" points="' +
+      sorted.map(p => X(p.x).toFixed(1) + ',' + Y(p.y).toFixed(1)).join(' ') + '"/>';
+  }
+
+  pts.forEach(p => {
+    s += '<circle cx="' + X(p.x).toFixed(1) + '" cy="' + Y(p.y).toFixed(1) + '" r="4.5" fill="#22d3ee"/>';
+  });
+
+  svg.innerHTML = s;
+}
+
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let state = {
+  section: 0,
+  reihe1: {},        // abgelesene T-Werte, Messreihe 1
+  reihe2: {},        // abgelesene T-Werte, Messreihe 2
+  q2: null, q3: null,
+  aufgaben: {},      // Ergebnisse der drei Rechenaufgaben
+  quiz: {}, quizPick: {},
+  done: false
+};
+
+const LAST = 6;
+function persist() { SCORM.save(); }
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function go(n) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec' + n).classList.add('active');
+  state.section = n;
+  if (n === 2) zeichneReihe1();
+  renderSteps();
+  persist();
+  zeigeAbschnittsAnfang(n);
+}
+
+// Immer 'instant': 'auto' uebernimmt den CSS-Wert, und eine Animation
+// wird in Moodles SCORM-Fenster nicht ausgefuehrt.
+function zeigeAbschnittsAnfang(n) {
+  try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, 0); }
+  try {
+    const el = document.getElementById('sec' + n);
+    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start', behavior: 'instant' });
+  } catch (e) {}
+  try {
+    if (window.parent && window.parent !== window && window.frameElement) {
+      const y = window.frameElement.getBoundingClientRect().top + window.parent.scrollY;
+      window.parent.scrollTo(0, Math.max(0, y - 8));
+    }
+  } catch (e) {}
+}
+
+function renderSteps() {
+  const el = document.getElementById('steps');
+  const labels = ['Start', 'Die Idee', 'Masse', 'Feder', 'Fadenpendel', 'Rechnen', 'Check'];
+  el.innerHTML = '';
+  for (let i = 0; i <= LAST; i++) {
+    const b = document.createElement('button');
+    b.className = 'step-dot' + (i === state.section ? ' here' : (i < state.section ? ' done' : ''));
+    b.title = labels[i];
+    b.setAttribute('aria-label', 'Zu Abschnitt ' + labels[i]);
+    b.onclick = () => go(i);
+    el.appendChild(b);
+  }
+}
+
+function num(v) {
+  const s = String(v).trim().replace(',', '.');
+  if (!s) return NaN;
+  return parseFloat(s);
+}
+
+// ══════════════════════════════════════════
+// MESSREIHEN
+// ══════════════════════════════════════════
+const D_FEST = 20;          // N/m in Messreihe 1
+const M_FEST = 4;           // kg  in Messreihe 2
+const MASSEN = [1, 2, 4, 8];
+const FEDERN = [5, 10, 20, 40];
+
+function T_feder(m, D) { return 2 * Math.PI * Math.sqrt(m / D); }
+
+function renderReihe1() {
+  const tb = document.getElementById('reihe1');
+  tb.innerHTML = '';
+  MASSEN.forEach((m, i) => {
+    const gespeichert = state.reihe1['m' + i] != null ? String(state.reihe1['m' + i]).replace('.', ',') : '';
+    const t2 = state.reihe1['m' + i] != null ? (state.reihe1['m' + i] ** 2).toFixed(2).replace('.', ',') : '&ndash;';
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + m.toFixed(2).replace('.', ',') + '</td>' +
+      '<td><input id="t1' + i + '" type="text" inputmode="decimal" autocomplete="off" value="' + gespeichert + '" oninput="reihe1Eingabe(' + i + ',this.value)"></td>' +
+      '<td id="q1' + i + '">' + t2 + '</td>' +
+      '<td id="f1' + i + '" class="txt" style="color:var(--ink-dim)"></td>';
+    tb.appendChild(tr);
+  });
+}
+
+function reihe1Eingabe(i, wert) {
+  const v = num(wert);
+  state.reihe1['m' + i] = isNaN(v) ? null : v;
+  const zelle = document.getElementById('q1' + i);
+  zelle.innerHTML = isNaN(v) ? '&ndash;' : (v * v).toFixed(2).replace('.', ',');
+  persist();
+}
+
+function pruefeReihe1() {
+  let richtig = 0;
+  MASSEN.forEach((m, i) => {
+    const soll = T_feder(m, D_FEST);
+    const v = state.reihe1['m' + i];
+    const el = document.getElementById('t1' + i);
+    const zelle = document.getElementById('f1' + i);
+    if (v != null && Math.abs(v - soll) <= 0.06) {
+      el.classList.add('ok'); el.classList.remove('no');
+      zelle.innerHTML = '<span style="color:var(--ok)">passt</span>';
+      richtig++;
+    } else {
+      el.classList.add('no'); el.classList.remove('ok');
+      zelle.innerHTML = v == null ? '' : '<span style="color:var(--err)">nachsehen</span>';
+    }
+  });
+  const fb = document.getElementById('reihe1Fb');
+  if (richtig === MASSEN.length) {
+    fb.className = 'fb good show';
+    fb.innerHTML = 'Alle vier Werte passen. Sieh dir jetzt die erste und die dritte Zeile an: die Masse ist von 1 kg auf 4 kg gestiegen, also auf das Vierfache. Die Schwingungsdauer ist von 1,40 s auf 2,81 s gestiegen, also auf das Doppelte. Vierfache Masse, doppelte Zeit: das ist der Wurzelzusammenhang.';
+    zeichneReihe1();
+  } else {
+    fb.className = 'fb bad show';
+    fb.innerHTML = richtig + ' von ' + MASSEN.length + ' passen. Prüfe, ob in der Simulation die Federkonstante wirklich auf <strong>20,0 N/m</strong> steht. Sie springt zurück, wenn du einen Wert außerhalb von 5 bis 50 eingibst.';
+  }
+  persist();
+}
+
+function zeichneReihe1() {
+  const punkte = [], punkte2 = [];
+  MASSEN.forEach((m, i) => {
+    const v = state.reihe1['m' + i];
+    if (v != null && !isNaN(v)) { punkte.push({ x: m, y: v }); punkte2.push({ x: m, y: v * v }); }
+  });
+  plot('plotT', punkte, 'm in kg', 'T in s', false);
+  plot('plotT2', punkte2, 'm in kg', 'T² in s²', true);
+}
+
+function renderReihe2() {
+  const tb = document.getElementById('reihe2');
+  tb.innerHTML = '';
+  FEDERN.forEach((D, i) => {
+    const gespeichert = state.reihe2['d' + i] != null ? String(state.reihe2['d' + i]).replace('.', ',') : '';
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + D.toFixed(1).replace('.', ',') + '</td>' +
+      '<td><input id="t2' + i + '" type="text" inputmode="decimal" autocomplete="off" value="' + gespeichert + '" oninput="reihe2Eingabe(' + i + ',this.value)"></td>' +
+      '<td id="f2' + i + '" class="txt" style="color:var(--ink-dim)"></td>';
+    tb.appendChild(tr);
+  });
+}
+
+function reihe2Eingabe(i, wert) {
+  const v = num(wert);
+  state.reihe2['d' + i] = isNaN(v) ? null : v;
+  persist();
+}
+
+function pruefeReihe2() {
+  let richtig = 0;
+  FEDERN.forEach((D, i) => {
+    const soll = T_feder(M_FEST, D);
+    const v = state.reihe2['d' + i];
+    const el = document.getElementById('t2' + i);
+    const zelle = document.getElementById('f2' + i);
+    if (v != null && Math.abs(v - soll) <= 0.08) {
+      el.classList.add('ok'); el.classList.remove('no');
+      zelle.innerHTML = '<span style="color:var(--ok)">passt</span>';
+      richtig++;
+    } else {
+      el.classList.add('no'); el.classList.remove('ok');
+      zelle.innerHTML = v == null ? '' : '<span style="color:var(--err)">nachsehen</span>';
+    }
+  });
+  const fb = document.getElementById('reihe2Fb');
+  if (richtig === FEDERN.length) {
+    fb.className = 'fb good show';
+    fb.innerHTML = 'Alle vier passen. Jetzt der Vergleich: von D = 5 N/m auf D = 20 N/m ist die Federkonstante viermal so groß, und die Schwingungsdauer ist von 5,62 s auf 2,81 s gefallen, also auf die Hälfte.';
+  } else {
+    fb.className = 'fb bad show';
+    fb.innerHTML = richtig + ' von ' + FEDERN.length + ' passen. Steht die Masse in der Simulation wirklich auf <strong>4,00 kg</strong>?';
+  }
+  persist();
+}
+
+// ══════════════════════════════════════════
+// RECHENAUFGABEN
+// ══════════════════════════════════════════
+function pruefeAufgabe(id, soll, tol, fbId, gut, hinweise) {
+  const el = document.getElementById(id);
+  const v = num(el.value);
+  const fb = document.getElementById(fbId);
+  if (!isNaN(v) && Math.abs(v - soll) <= tol) {
+    el.classList.add('ok'); el.classList.remove('no');
+    state.aufgaben[id] = v;
+    fb.className = 'fb good show';
+    fb.innerHTML = gut;
+  } else {
+    el.classList.add('no'); el.classList.remove('ok');
+    fb.className = 'fb bad show';
+    let txt = 'Noch nicht. ';
+    for (const h of hinweise) { if (!isNaN(v) && Math.abs(v - h.wert) <= h.tol) { txt += h.text; persist(); fb.innerHTML = txt; return; } }
+    txt += hinweise.length ? hinweise[hinweise.length - 1].sonst || '' : '';
+    fb.innerHTML = txt || 'Noch nicht. Rechne den Weg noch einmal Schritt für Schritt durch.';
+  }
+  persist();
+}
+
+function pruefeA() {
+  pruefeAufgabe('aa', 4.486, 0.06, 'aaFb',
+    'Richtig, T = 4,49 s. Ein Pendel von fünf Metern braucht also fast viereinhalb Sekunden pro Schwingung. Das ist die Größenordnung eines Kirchturmpendels.',
+    [{ wert: 2.243, tol: 0.05, text: 'Das ist genau die Hälfte des richtigen Werts. Hast du den Faktor 2&pi; vergessen und nur mit &pi; gerechnet?' },
+     { wert: 0.714, tol: 0.05, text: 'Du hast die Wurzel richtig gezogen, aber den Faktor 2&pi; nicht dazumultipliziert.' },
+     { wert: 3.202, tol: 0.08, text: 'Hier fehlt die Wurzel: du hast 5,00 / 9,81 direkt mit 2&pi; multipliziert.' },
+     { wert: 8.801, tol: 0.15, text: 'Du hast g durch l geteilt statt l durch g. Unter der Wurzel steht die Länge oben.', sonst: 'Rechne der Reihe nach: erst 5,00 / 9,81 = 0,5097, dann die Wurzel daraus = 0,7139, dann mal 2&pi;.' }]);
+}
+
+function pruefeB() {
+  pruefeAufgabe('ab', 0.995, 0.02, 'abFb',
+    'Richtig, l = 0,995 m, also fast genau ein Meter. Genau diese Nähe war im 17. Jahrhundert der Grund für den Vorschlag, das Meter über das Sekundenpendel zu definieren.',
+    [{ wert: 3.126, tol: 0.08, text: 'Du hast vermutlich l = g &middot; T / (2&pi;) gerechnet. Die Wurzel wurde damit nur weggelassen, nicht aufgelöst. Quadriere beide Seiten, dann steht 4&pi;² im Nenner.' },
+     { wert: 39.28, tol: 0.5, text: 'Hier fehlt die Division durch 4&pi;². Du hast g &middot; T² stehen gelassen.' },
+     { wert: 6.252, tol: 0.12, text: 'Du hast durch 2&pi; geteilt statt durch 4&pi;². Beim Quadrieren wird auch der Vorfaktor quadriert.', sonst: 'Stelle um zu l = g &middot; T² / (4&pi;²) und setze dann ein: 9,82 &middot; 4,00 / 39,48.' }]);
+}
+
+function pruefeC() {
+  pruefeAufgabe('ac', 1.622, 0.05, 'acFb',
+    'Richtig, g = 1,62 m/s². Das ist etwa ein Sechstel des Erdwerts, und es ist der tatsächliche Wert auf dem Mond. Aus einer Pendelmessung lässt sich also die Schwerkraft eines Himmelskörpers bestimmen.',
+    [{ wert: 162.2, tol: 3, text: 'Hundertmal zu groß. Du hast die Länge in Zentimetern eingesetzt. 40,0 cm sind 0,400 m.' },
+     { wert: 0.258, tol: 0.02, text: 'Du hast mit 2&pi; statt mit 4&pi;² gerechnet. Beim Quadrieren wird aus 2&pi; der Faktor 4&pi;² &asymp; 39,5.' },
+     { wert: 5.061, tol: 0.1, text: 'Im Nenner steht T², nicht T. Quadriere die 3,12 s zuerst.', sonst: 'Stelle um zu g = 4&pi;² &middot; l / T² und setze dann ein: 39,48 &middot; 0,400 / 3,12².' }]);
+}
+
+// ══════════════════════════════════════════
+// AUSWAHLFRAGEN
+// ══════════════════════════════════════════
+const LETTERS = ['A', 'B', 'C', 'D'];
+
+const F2 = {
+  a: ['T ist proportional zu m: doppelte Masse, doppelte Schwingungsdauer.',
+      'T² ist proportional zu m: vierfache Masse, doppelte Schwingungsdauer.',
+      'T hängt gar nicht von der Masse ab, genau wie beim Fadenpendel.',
+      'Je größer die Masse, desto kleiner die Schwingungsdauer.'],
+  r: 1,
+  fb: ['Sieh in deine Tabelle: von 1 kg auf 2 kg steigt T von 1,40 s auf 1,99 s. Bei einem proportionalen Zusammenhang müsste dort 2,80 s stehen.',
+       'Richtig. Genau derselbe Zusammenhang wie beim Fadenpendel mit der Länge, nur steht hier die Masse an dieser Stelle. Deshalb wird auch hier das T²-Diagramm zur Geraden.',
+       'Beim Fadenpendel stimmt das, hier nicht. Deine Messreihe zeigt es deutlich: acht Kilogramm brauchen fast dreimal so lang wie eines.',
+       'Umgekehrt. Mehr Masse heißt beim Federpendel eine längere Schwingungsdauer, weil die Feder mehr Trägheit zu bewegen hat.']
+};
+
+const F3 = {
+  a: ['T ist auf das Vierfache gestiegen.',
+      'T ist auf die Hälfte gefallen.',
+      'T ist auf ein Viertel gefallen.',
+      'T ist gleich geblieben.'],
+  r: 1,
+  fb: ['T ist kleiner geworden, nicht größer. Eine härtere Feder zieht schneller zurück.',
+       'Richtig: von 5,62 s auf 2,81 s. Vierfache Federkonstante, halbe Schwingungsdauer. Auch hier steckt also eine Wurzel dahinter, diesmal im Nenner.',
+       'Auf ein Viertel wäre es bei einem umgekehrt proportionalen Zusammenhang. Es ist aber nur die Hälfte, weil die Wurzel dazwischensteht.',
+       'Vergleiche die beiden Zeilen noch einmal: 5,62 s und 2,81 s sind deutlich verschieden.']
+};
+
+function renderChoices(boxId, daten, key, fbId) {
+  const box = document.getElementById(boxId);
+  box.innerHTML = '';
+  const gewaehlt = state[key];
+  daten.a.forEach((text, i) => {
+    const b = document.createElement('button');
+    b.className = 'choice';
+    b.innerHTML = '<span class="letter">' + LETTERS[i] + '</span><span>' + text + '</span>';
+    if (gewaehlt != null) {
+      b.disabled = true;
+      if (i === daten.r) b.className = 'choice right';
+      else if (i === gewaehlt) b.className = 'choice wrong';
+    } else {
+      b.onclick = () => { state[key] = i; renderChoices(boxId, daten, key, fbId); persist(); };
+    }
+    box.appendChild(b);
+  });
+  if (gewaehlt != null) {
+    const fb = document.getElementById(fbId);
+    fb.className = 'fb ' + (gewaehlt === daten.r ? 'good' : 'bad') + ' show';
+    fb.innerHTML = daten.fb[gewaehlt];
+  }
+}
+
+// ══════════════════════════════════════════
+// CHECK
+// ══════════════════════════════════════════
+const QUIZ = [
+  {
+    q: 'Wie lautet die Gleichung für die Periodendauer eines Feder-Masse-Pendels?',
+    a: ['T = 2π · √(D / m)', 'T = 2π · √(m / D)', 'T = 2π · m / D', 'T = 2π · √(m · D)'],
+    r: 1,
+    fb: ['Hier stehen m und D vertauscht. Prüfe es an deiner Messreihe: mehr Masse ergab eine größere Schwingungsdauer, m muss also oben stehen.',
+         'Richtig. Oben die Masse, unten die Federkonstante, das Ganze unter der Wurzel und mal 2π.',
+         'Die Wurzel fehlt. Ohne sie würde doppelte Masse auch doppelte Schwingungsdauer bedeuten, und das hast du gerade widerlegt.',
+         'Mit einem Produkt würde eine härtere Feder die Schwingung langsamer machen. Deine zweite Messreihe zeigt das Gegenteil.']
+  },
+  {
+    q: 'Ein Federpendel schwingt mit T = 2,0 s. Was passiert, wenn du die Masse vervierfachst?',
+    a: ['T wird 8,0 s.', 'T wird 4,0 s.', 'T bleibt 2,0 s.', 'T wird 1,0 s.'],
+    r: 1,
+    fb: ['Das wäre eine Vervierfachung. Die Masse steht aber unter der Wurzel, deshalb wirkt sie abgeschwächt.',
+         'Richtig. Die Wurzel aus 4 ist 2, also verdoppelt sich die Schwingungsdauer.',
+         'Beim Fadenpendel bliebe sie gleich, beim Federpendel nicht. Hier steht die Masse in der Gleichung.',
+         'Mehr Masse macht die Schwingung langsamer, nicht schneller.']
+  },
+  {
+    q: 'Du stellst T = 2π · √(l / g) nach l um. Was ist richtig?',
+    a: ['l = g · T / (2π)', 'l = g · T² / (4π²)', 'l = g · T² / (2π)', 'l = T² / (4π² · g)'],
+    r: 1,
+    fb: ['Hier wurde die Wurzel weggelassen statt aufgelöst. Beim Quadrieren wird auch der Vorfaktor quadriert.',
+         'Richtig. Quadrieren macht aus T das T² und aus 2π das 4π².',
+         'T ist richtig quadriert, der Vorfaktor aber nicht. Aus 2π wird beim Quadrieren 4π².',
+         'Hier steht g im Nenner statt im Zähler. Kontrolle über die Einheiten: m/s² · s² ergibt Meter, das passt nur mit g oben.']
+  },
+  {
+    q: 'Warum taucht die Masse in der Gleichung des Fadenpendels nicht auf, in der des Federpendels aber schon?',
+    a: ['Beim Fadenpendel ist die Masse zu klein, um eine Rolle zu spielen.',
+        'Am Faden treibt die Gewichtskraft zurück und wächst mit der Masse mit, an der Feder die Federkraft, die das nicht tut.',
+        'Das ist eine Vereinfachung, genau genommen hängt auch das Fadenpendel von der Masse ab.',
+        'Beim Federpendel wirkt keine Schwerkraft.'],
+    r: 1,
+    fb: ['Die Größe der Masse ist nicht der Punkt. Auch eine sehr schwere Kugel am Faden ändert nichts an der Schwingungsdauer.',
+         'Richtig. Nur wenn die rücktreibende Kraft im selben Verhältnis mitwächst wie die Trägheit, kürzt sich die Masse heraus. Bei der Feder tut sie das nicht.',
+         'Es ist keine Vereinfachung. Die Masse kürzt sich exakt heraus, und du hast es in Lernschritt 1 auch gemessen.',
+         'Die Schwerkraft wirkt natürlich auch dort, sie dehnt die Feder in die Ruhelage. Für die Schwingung um diese Ruhelage ist aber die Federkraft entscheidend.']
+  },
+  {
+    q: 'Ein Fadenpendel schwingt auf dem Mond, wo g etwa sechsmal kleiner ist als auf der Erde. Was gilt für die Schwingungsdauer?',
+    a: ['Sie ist etwa sechsmal so groß.', 'Sie ist etwa 2,4-mal so groß.', 'Sie ist etwa sechsmal kleiner.', 'Sie ist genauso groß, g kürzt sich heraus.'],
+    r: 1,
+    fb: ['g steht unter der Wurzel, deshalb wirkt es abgeschwächt. Sechsmal kleineres g ergibt nicht die sechsfache Zeit.',
+         'Richtig. Die Wurzel aus 6 ist etwa 2,45, also dauert dort eine Schwingung rund zweieinhalbmal so lang. Genau das haben die Astronauten in Aufgabe c gemessen.',
+         'Kleineres g heißt schwächere Rückstellung, also eine langsamere Schwingung. Die Schwingungsdauer wird größer, nicht kleiner.',
+         'g steht in der Gleichung und kürzt sich nicht heraus. Herausgekürzt hat sich die Masse, das ist etwas anderes.']
+  }
+];
+
+function renderQuiz() {
+  const box = document.getElementById('quizBox');
+  box.innerHTML = '';
+  QUIZ.forEach((item, qi) => {
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = '1.4rem';
+    const h = document.createElement('p');
+    h.innerHTML = '<strong>' + (qi + 1) + '. ' + item.q + '</strong>';
+    h.style.color = 'var(--ink)';
+    wrap.appendChild(h);
+    const ch = document.createElement('div');
+    ch.className = 'choices'; ch.id = 'quiz' + qi;
+    wrap.appendChild(ch);
+    const fb = document.createElement('div');
+    fb.className = 'fb'; fb.id = 'quizfb' + qi;
+    wrap.appendChild(fb);
+    box.appendChild(wrap);
+    item.a.forEach((text, ai) => {
+      const b = document.createElement('button');
+      b.className = 'choice';
+      b.innerHTML = '<span class="letter">' + LETTERS[ai] + '</span><span>' + text + '</span>';
+      b.onclick = () => answerQuiz(qi, ai);
+      ch.appendChild(b);
+    });
+    if (state.quiz[qi] !== undefined) showQuizAnswer(qi, state.quizPick[qi]);
+  });
+  updateQuizResult();
+}
+
+function answerQuiz(qi, ai) {
+  if (state.quiz[qi] !== undefined) return;
+  state.quizPick[qi] = ai;
+  state.quiz[qi] = (ai === QUIZ[qi].r);
+  showQuizAnswer(qi, ai);
+  updateQuizResult();
+  persist();
+}
+
+function showQuizAnswer(qi, ai) {
+  const item = QUIZ[qi];
+  const ch = document.getElementById('quiz' + qi);
+  Array.from(ch.children).forEach((c, j) => {
+    c.disabled = true;
+    if (j === item.r) c.className = 'choice right';
+    else if (j === ai) c.className = 'choice wrong';
+    else c.className = 'choice';
+  });
+  const fb = document.getElementById('quizfb' + qi);
+  fb.className = 'fb ' + (ai === item.r ? 'good' : 'bad') + ' show';
+  fb.innerHTML = item.fb[ai];
+}
+
+function updateQuizResult() {
+  if (Object.keys(state.quiz).length < QUIZ.length) return;
+  const richtig = Object.values(state.quiz).filter(v => v).length;
+  const el = document.getElementById('quizResult');
+  el.style.display = 'block';
+  document.getElementById('quizScore').textContent = richtig + '/' + QUIZ.length;
+  const caps = [
+    'Das war noch nichts. Geh Abschnitt 3 und 5 noch einmal durch.',
+    'Da fehlt einiges. Lies die Rückmeldungen zu deinen Fehlern in Ruhe.',
+    'Die Hälfte sitzt. Nimm dir die Fragen vor, bei denen es nicht gereicht hat.',
+    'Solide. Eine Sache fehlt noch.',
+    'Fast alles sitzt. Der eine Fehler ist eher ein Ausrutscher.',
+    'Alles richtig. Die Gleichung sitzt, du kannst mit Lernschritt 4 weitermachen.'
+  ];
+  document.getElementById('quizCap').textContent = caps[richtig];
+}
+
+// ══════════════════════════════════════════
+// ABSCHLUSS
+// ══════════════════════════════════════════
+function finishModule(ev) {
+  state.done = true;
+  SCORM.save(true);
+  const btn = ev && ev.currentTarget;
+  if (btn) { btn.textContent = 'Abgeschlossen und gespeichert'; btn.disabled = true; }
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+SCORM.init();
+
+renderSteps();
+renderReihe1();
+renderReihe2();
+renderChoices('q2', F2, 'q2', 'q2fb');
+renderChoices('q3', F3, 'q3', 'q3fb');
+renderQuiz();
+zeichneReihe1();
+
+['aa', 'ab', 'ac'].forEach(id => {
+  if (state.aufgaben[id] != null) document.getElementById(id).value = String(state.aufgaben[id]).replace('.', ',');
+});
+
+if (state.section > 0) go(state.section);
+
+window.addEventListener('beforeunload', () => SCORM.finish());
+
+</script>
+
+</body>
+</html>

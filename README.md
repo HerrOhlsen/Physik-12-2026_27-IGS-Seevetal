@@ -130,9 +130,27 @@ dieser Fehler vorliegt. Die letzte Zeile der Tabelle ist t = 3,7 s, also die Ein
 
 T = 2π·√(m/D) mit kurzer Bestätigungsmessung (Masse variieren, Federkonstante variieren), dazu T = 2π·√(l/g) als Anschluss an LS1. Rechenaufgaben, Umstellen, Größenordnungen prüfen.
 
-- SCORM-Modul: noch zu bauen
+- SCORM-Modul: `PH12S3Rechnen` (gebaut)
 - Brian: `PH12-S3 Rechenweg` (Dialogform: Feedback, Lösung wird nicht verraten)
 - Bootcamp: Track A2/A3 (Formeln umstellen), Track B (Rechnen und Einheiten)
+
+**Die Bestätigungsmessung läuft als Simulation** (Federpendel von Walter Fendt,
+<https://www.walter-fendt.de/html5/phde/springpendulum_de.htm>), weil das Fadenpendel in LS1 schon
+real gemessen wurde und Federn mit bekannter Federkonstante in der Sammlung fehlen. Entschieden am
+2026-08-22. Zu bedenken: das KC formuliert „experimentell bestätigen", eine Simulation ist streng
+genommen keins. Für Klausur und Abitur folgenlos, aber bewusst entschieden.
+
+Die App liegt auch lokal unter `Physik Arbeitsblätter/Walter Fendt Apps zur Physik/html5phde/phde/`
+(`springpendulum_de.htm` plus `springpendulum.js`, `springpendulum_de.js`, `page_phde.js` und
+`../ph/app.css`). Wer den externen Aufruf vermeiden will, lädt diese Dateien als Verzeichnis in
+Moodle hoch und tauscht die URL im Modul.
+
+**Grenzen der Simulation**, an denen die Messreihen ausgerichtet sind: Federkonstante 5 bis 50 N/m,
+Masse 1 bis 10 kg. Werte außerhalb springen kommentarlos auf den Randwert zurück.
+
+Die drei Rechenaufgaben stammen aus dem vorhandenen Moodle-Material (Fadenpendel 5 m, Sekundenpendel,
+Fallbeschleunigung auf dem Mond). Das Modul erkennt sieben typische Fehler an ihrem Zahlenwert und
+meldet jeweils den konkreten Denkfehler zurück, statt nur „falsch" zu sagen.
 
 ### LS4 Deuten: Energie, Dämpfung, Modellgrenzen (2 Std., Kür)
 

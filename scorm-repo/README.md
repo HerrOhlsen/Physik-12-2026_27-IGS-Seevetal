@@ -10,7 +10,7 @@ Abgrenzung: Das **Bootcamp** trainiert Basiskompetenzen (Formeln, Einheiten, Dia
 |---------|-------------|--------|
 | PH12S1Messen | Schwingungen S1: Wovon hängt die Schwingungsdauer ab? | gebaut |
 | PH12S2Beschreiben | Schwingungen S2: Die Schwingung als Gleichung | gebaut |
-| PH12S3Rechnen | Schwingungen S3: Feder-Masse-Pendel und Fadenpendel | geplant |
+| PH12S3Rechnen | Schwingungen S3: Die Schwingungsdauer vorhersagen | gebaut |
 | PH12S4Deuten | Schwingungen S4: Energie, Dämpfung, Modellgrenzen | geplant |
 
 ## Repo-Struktur
