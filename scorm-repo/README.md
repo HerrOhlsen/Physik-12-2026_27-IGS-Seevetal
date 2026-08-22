@@ -9,7 +9,7 @@ Abgrenzung: Das **Bootcamp** trainiert Basiskompetenzen (Formeln, Einheiten, Dia
 | ModulId | Lernschritt | Status |
 |---------|-------------|--------|
 | PH12S1Messen | Schwingungen S1: Wovon hängt die Schwingungsdauer ab? | gebaut |
-| PH12S2Beschreiben | Schwingungen S2: die Schwingungsgleichung | geplant |
+| PH12S2Beschreiben | Schwingungen S2: Die Schwingung als Gleichung | gebaut |
 | PH12S3Rechnen | Schwingungen S3: Feder-Masse-Pendel und Fadenpendel | geplant |
 | PH12S4Deuten | Schwingungen S4: Energie, Dämpfung, Modellgrenzen | geplant |
 
@@ -69,7 +69,7 @@ python -m http.server 8080 --bind 127.0.0.1
 Dann `http://127.0.0.1:8080/test/moodle-regressionstest.html` oeffnen und auf „Tests ausfuehren"
 klicken.
 
-- Anderes Modul: `?modul=../src/PH12S2Beschreiben/index.html`
+- Anderes Modul: `?modul=../src/PH12S2Beschreiben/index.html` (der Test ist modulunabhängig)
 - Anderes Layout: `?layout=popup` (Moodle im neuen Fenster, der Rahmen scrollt selbst) oder
   `?layout=eingebettet` (Rahmen waechst mit dem Inhalt, das aeussere Dokument scrollt).
   Beide pruefen, die Fehlerbilder unterscheiden sich.

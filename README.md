@@ -113,9 +113,16 @@ Fadenpendel in Gruppen, drei Messreihen (Länge, Masse, Auslenkung), phyphox als
 
 y(t) = ŷ · sin(2π t / T), Bedeutung der Parameter, Skizzieren, Ablesen. Vorhandenes Material: die beiden Aufgaben-Textfelder im Moodle-Kurs.
 
-- SCORM-Modul: noch zu bauen
+- SCORM-Modul: `PH12S2Beschreiben` (gebaut)
 - Brian: `PH12-S2 Sinuskurve` (Dialogform: abfragen)
 - Bootcamp: Track A (Formeln), Track C (Diagramme)
+
+Aufbau: Motivation über eine Frage, die das Ablesen nicht beantworten kann (wo ist der Körper bei
+t = 3,7 s, wenn nur bis 2,0 s gemessen wurde), dann zwei Schieberegler für ŷ und T mit stehender
+Vergleichskurve, dann Skizzieren auf Papier mit aufdeckbarer Lösung, dann Ablesen aus einer Kurve,
+dann eine Wertetabelle. Die Rechenübung erkennt einen falsch eingestellten Taschenrechner: Wer
+im Gradmodus rechnet, bekommt keinen allgemeinen Hinweis, sondern die Rückmeldung, dass genau
+dieser Fehler vorliegt. Die letzte Zeile der Tabelle ist t = 3,7 s, also die Eingangsfrage.
 
 ### LS3 Rechnen: Feder-Masse-Pendel und Fadenpendel (4 Std.)
 

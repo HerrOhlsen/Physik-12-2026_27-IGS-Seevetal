@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Schwingungen S2: Die Schwingung als Gleichung | Physik 12</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════════
+   TOKENS
+   ══════════════════════════════════════════ */
+:root {
+  --bg-deep: #0b1220;
+  --bg-surface: #111c2e;
+  --bg-card: #16243a;
+  --bg-elevated: #1d3049;
+
+  --ink: #e6edf5;
+  --ink-muted: #a3b4c8;
+  --ink-dim: #6f8299;
+
+  --accent: #22d3ee;
+  --accent-deep: #0891b2;
+  --accent-subtle: rgba(34, 211, 238, 0.10);
+  --accent-glow: rgba(34, 211, 238, 0.28);
+
+  --ok: #34d399;
+  --ok-bg: rgba(52, 211, 153, 0.12);
+  --ok-border: rgba(52, 211, 153, 0.35);
+  --err: #f87171;
+  --err-bg: rgba(248, 113, 113, 0.12);
+  --err-border: rgba(248, 113, 113, 0.35);
+  --warn: #fbbf24;
+  --warn-bg: rgba(251, 191, 36, 0.10);
+  --warn-border: rgba(251, 191, 36, 0.30);
+
+  --brian: #c084fc;
+  --brian-bg: rgba(192, 132, 252, 0.10);
+  --brian-border: rgba(192, 132, 252, 0.35);
+
+  --border: rgba(34, 211, 238, 0.15);
+  --border-strong: rgba(34, 211, 238, 0.32);
+
+  --font: 'Outfit', system-ui, -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-full: 100px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.32), 0 1px 4px rgba(0,0,0,0.2);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Kein scroll-behavior: smooth. Es gilt sonst auch fuer behavior:'auto'
+   und laesst Sprünge beim Abschnittswechsel ins Leere laufen. */
+html { scroll-behavior: auto; }
+body {
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--bg-deep);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34,211,238,0.10), transparent),
+    radial-gradient(ellipse 60% 50% at 90% 110%, rgba(8,145,178,0.08), transparent);
+  background-attachment: fixed;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+input, textarea, select { font-size: 16px; font-family: var(--font); }
+button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; font-family: var(--font); }
+
+/* ══════════════════════════════════════════
+   LAYOUT
+   ══════════════════════════════════════════ */
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 1.25rem 6rem; }
+
+header.top {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(11, 18, 32, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 0;
+  margin-bottom: 2rem;
+}
+.top-inner { max-width: 860px; margin: 0 auto; padding: 0 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.kicker {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent); white-space: nowrap;
+}
+.steps { display: flex; gap: 0.4rem; margin-left: auto; flex-wrap: wrap; }
+.step-dot {
+  width: 2rem; height: 0.3rem; border-radius: var(--r-full);
+  background: rgba(255,255,255,0.12); transition: background 0.25s, box-shadow 0.25s;
+  cursor: pointer; border: none; padding: 0;
+}
+.step-dot.done { background: var(--accent-deep); }
+.step-dot.here { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+
+h1 { font-size: clamp(1.6rem, 4.5vw, 2.3rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 0.6rem; }
+h2 { font-size: clamp(1.25rem, 3.5vw, 1.55rem); font-weight: 700; line-height: 1.25; margin-bottom: 0.9rem; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--ink); }
+p { margin-bottom: 1rem; color: var(--ink-muted); }
+p strong, li strong { color: var(--ink); font-weight: 600; }
+ul, ol { margin: 0 0 1rem 1.3rem; color: var(--ink-muted); }
+li { margin-bottom: 0.4rem; }
+
+.sec { display: none; animation: fade 0.3s ease; }
+.sec.active { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.card.tight { padding: 1.1rem 1.25rem; }
+
+.tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.68rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.25rem 0.6rem; border-radius: var(--r-full);
+  background: var(--accent-subtle); color: var(--accent);
+  border: 1px solid var(--border-strong); margin-bottom: 0.9rem;
+}
+.tag.zusatz { background: var(--warn-bg); color: var(--warn); border-color: var(--warn-border); }
+
+.lead { font-size: 1.05rem; color: var(--ink-muted); }
+
+/* Ziele-Liste */
+.goals { list-style: none; margin-left: 0; }
+.goals li { display: flex; gap: 0.7rem; align-items: flex-start; margin-bottom: 0.6rem; }
+.goals li::before {
+  content: ''; flex: 0 0 auto; width: 0.5rem; height: 0.5rem; margin-top: 0.6rem;
+  border-radius: 50%; background: var(--accent);
+}
+
+/* Callouts */
+.note {
+  border-left: 3px solid var(--accent); background: var(--accent-subtle);
+  border-radius: 0 var(--r-md) var(--r-md) 0; padding: 0.9rem 1.1rem; margin-bottom: 1.2rem;
+}
+.note p:last-child { margin-bottom: 0; }
+.note.warnbox { border-left-color: var(--warn); background: var(--warn-bg); }
+
+/* Brian-Karte */
+.brian {
+  border: 1px solid var(--brian-border); background: var(--brian-bg);
+  border-radius: var(--r-lg); padding: 1.3rem 1.4rem; margin-bottom: 1.5rem;
+}
+.brian .tag { background: rgba(192,132,252,0.12); color: var(--brian); border-color: var(--brian-border); }
+.brian h3 { color: var(--brian); }
+.brian-task {
+  font-family: var(--mono); font-size: 0.9rem; color: var(--ink);
+  background: rgba(0,0,0,0.28); border-radius: var(--r-sm);
+  padding: 0.6rem 0.85rem; margin: 0.7rem 0 0.9rem; display: inline-block;
+}
+.brian-link {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--brian); color: #1a0b2e; font-weight: 600; font-size: 0.95rem;
+  text-decoration: none; border-radius: var(--r-full);
+  padding: 0.6rem 1.3rem; margin: 0.2rem 0 0.9rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.brian-link:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(192,132,252,0.3); }
+
+/* Bootcamp-Hinweis */
+.rescue {
+  display: flex; gap: 0.9rem; align-items: flex-start;
+  border: 1px dashed rgba(255,255,255,0.18); border-radius: var(--r-md);
+  padding: 0.9rem 1.1rem; margin-bottom: 1.2rem; background: rgba(255,255,255,0.03);
+}
+.rescue .ico { font-size: 1.3rem; line-height: 1.3; }
+.rescue p { margin: 0; font-size: 0.94rem; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--accent); color: #06202b; font-weight: 600; font-size: 0.98rem;
+  border: none; border-radius: var(--r-full); padding: 0.7rem 1.5rem; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
+.btn:active { transform: none; }
+.btn.ghost { background: transparent; color: var(--ink-muted); border: 1px solid var(--border-strong); }
+.btn.ghost:hover { color: var(--ink); box-shadow: none; }
+.btn.small { padding: 0.45rem 1rem; font-size: 0.88rem; }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.nav { display: flex; gap: 0.8rem; align-items: center; margin-top: 2rem; flex-wrap: wrap; }
+.nav .spacer { flex: 1 1 auto; }
+
+/* Auswahlfragen */
+.choices { display: flex; flex-direction: column; gap: 0.6rem; margin: 1rem 0; }
+.choice {
+  display: flex; gap: 0.8rem; align-items: flex-start; text-align: left; width: 100%;
+  background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: var(--r-md); padding: 0.85rem 1rem; cursor: pointer; color: var(--ink);
+  font-size: 0.98rem; line-height: 1.5; transition: border-color 0.18s, background 0.18s;
+}
+.choice:hover { border-color: var(--border-strong); }
+.choice .letter {
+  flex: 0 0 auto; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  background: rgba(255,255,255,0.08); color: var(--ink-muted);
+  display: grid; place-items: center; font-family: var(--mono); font-size: 0.8rem; font-weight: 600;
+}
+.choice.picked { border-color: var(--accent); background: var(--accent-subtle); }
+.choice.picked .letter { background: var(--accent); color: #06202b; }
+.choice.right { border-color: var(--ok-border); background: var(--ok-bg); }
+.choice.right .letter { background: var(--ok); color: #04231a; }
+.choice.wrong { border-color: var(--err-border); background: var(--err-bg); }
+.choice.wrong .letter { background: var(--err); color: #2a0a0a; }
+.choice[disabled] { cursor: default; }
+
+.fb { border-radius: var(--r-md); padding: 0.8rem 1rem; margin-top: 0.7rem; font-size: 0.94rem; display: none; }
+.fb.show { display: block; }
+.fb.good { background: var(--ok-bg); border: 1px solid var(--ok-border); color: var(--ink); }
+.fb.bad { background: var(--err-bg); border: 1px solid var(--err-border); color: var(--ink); }
+.fb.hint { background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--ink); }
+
+/* Eingabefelder */
+.inputs { display: flex; flex-direction: column; gap: 0.8rem; margin: 1rem 0; }
+.field { display: flex; gap: 0.7rem; align-items: center; flex-wrap: wrap; }
+.field label { flex: 1 1 15rem; color: var(--ink-muted); font-size: 0.96rem; }
+.field input {
+  width: 6.5rem; background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--r-sm); padding: 0.5rem 0.7rem; color: var(--ink);
+  font-family: var(--mono); text-align: right;
+}
+.field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.field input.ok { border-color: var(--ok); background: var(--ok-bg); }
+.field input.no { border-color: var(--err); background: var(--err-bg); }
+.field .unit { font-family: var(--mono); color: var(--ink-dim); width: 3rem; font-size: 0.9rem; }
+
+/* Tabellen */
+.tablewrap { overflow-x: auto; margin-bottom: 1.2rem; }
+table { border-collapse: collapse; width: 100%; font-size: 0.94rem; min-width: 26rem; }
+th, td { padding: 0.55rem 0.7rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.09); }
+th { color: var(--accent); font-weight: 600; font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase; }
+td { color: var(--ink-muted); font-family: var(--mono); font-size: 0.9rem; }
+td.txt { font-family: var(--font); }
+table input {
+  width: 5rem; background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--r-sm); padding: 0.35rem 0.5rem; color: var(--ink);
+  font-family: var(--mono); text-align: right; font-size: 0.9rem;
+}
+table input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Diagramme */
+.plotbox { background: rgba(0,0,0,0.25); border-radius: var(--r-md); padding: 0.8rem; margin-bottom: 1rem; }
+.plotrow { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+@media (min-width: 720px) { .plotrow { grid-template-columns: 1fr 1fr; } }
+svg { display: block; width: 100%; height: auto; }
+svg text {
+  paint-order: stroke;
+  stroke: #101b2c;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.plot-cap { font-size: 0.85rem; color: var(--ink-dim); text-align: center; margin-top: 0.3rem; font-family: var(--mono); }
+
+/* Ergebnis-Panel */
+.result {
+  text-align: center; padding: 1.5rem;
+  border: 1px solid var(--border-strong); border-radius: var(--r-lg);
+  background: var(--accent-subtle); margin-bottom: 1.5rem;
+}
+.result .big { font-size: 2.4rem; font-weight: 800; color: var(--accent); line-height: 1; }
+.result .cap { font-size: 0.9rem; color: var(--ink-muted); margin-top: 0.4rem; }
+
+.formula {
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 1.35rem; color: var(--ink); letter-spacing: 0.02em;
+  background: rgba(0,0,0,0.25); border-radius: var(--r-sm);
+  padding: 0.7rem 1.2rem; display: inline-block; margin: 0.3rem 0 1rem;
+}
+.formula sub { font-style: normal; font-size: 0.7em; }
+
+/* Druck */
+@media print {
+  body { background: #fff; color: #000; }
+  header.top, .nav, .btn, .steps { display: none !important; }
+  .sec { display: block !important; }
+  .card, .note, .brian, .rescue { border: 1px solid #999; background: #fff; box-shadow: none; page-break-inside: avoid; }
+  h1, h2, h3, p, li, td, th { color: #000 !important; }
+  .print-only { display: block !important; }
+}
+.print-only { display: none; }
+
+/* Schieberegler */
+.regler { display: flex; gap: 1rem; align-items: center; margin-bottom: 0.9rem; flex-wrap: wrap; }
+.regler label { flex: 0 0 9rem; color: var(--ink-muted); font-size: 0.96rem; }
+.regler input[type=range] {
+  flex: 1 1 12rem; accent-color: var(--accent);
+  height: 1.6rem; background: transparent; cursor: pointer;
+}
+.regler output {
+  font-family: var(--mono); color: var(--accent); font-size: 0.95rem;
+  min-width: 5.5rem; text-align: right;
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <span class="kicker">Physik 12 &middot; Schwingungen &middot; S2</span>
+    <nav class="steps" id="steps" aria-label="Abschnitte"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ═══════════════ 0 START ═══════════════ -->
+<section class="sec active" id="sec0">
+  <h1>Die Schwingung als Gleichung</h1>
+  <p class="lead">In Lernschritt 1 hast du eine Kurve gemessen und Werte daraus abgelesen. Ablesen geht aber nur dort, wo die Kurve gezeichnet ist. Mit einer Gleichung kannst du zu <em>jedem</em> Zeitpunkt ausrechnen, wo der Körper gerade ist. Auch zu einem, den niemand gemessen hat.</p>
+
+  <div class="card">
+    <span class="tag">Das kannst du danach</span>
+    <ul class="goals">
+      <li>Du erklärst, was ŷ und T in der Gleichung y(t) = ŷ &middot; sin(2&pi;t / T) jeweils mit der Kurve machen.</li>
+      <li>Du skizzierst zu einer gegebenen Gleichung die passende Kurve.</li>
+      <li>Du liest aus einer gegebenen Kurve die Gleichung ab.</li>
+      <li>Du berechnest die Auslenkung zu einem beliebigen Zeitpunkt und stellst dafür den Taschenrechner richtig ein.</li>
+    </ul>
+  </div>
+
+  <div class="card tight">
+    <h3>So läuft dieser Schritt</h3>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Teil</th><th>Was du tust</th><th>Zeit</th></tr>
+        <tr><td class="txt">1. Wozu eine Gleichung?</td><td class="txt">lesen, eine Frage beantworten</td><td>10 min</td></tr>
+        <tr><td class="txt">2. Die zwei Stellschrauben</td><td class="txt">ausprobieren, Schieberegler</td><td>20 min</td></tr>
+        <tr><td class="txt">3. Von der Gleichung zur Kurve</td><td class="txt">skizzieren, auf Papier</td><td>25 min</td></tr>
+        <tr><td class="txt">4. Von der Kurve zur Gleichung</td><td class="txt">ablesen, eintragen</td><td>15 min</td></tr>
+        <tr><td class="txt">5. Einsetzen und ausrechnen</td><td class="txt">rechnen</td><td>20 min</td></tr>
+        <tr><td class="txt">6. Check</td><td class="txt">fünf Fragen</td><td>10 min</td></tr>
+      </table>
+    </div>
+    <p style="margin-bottom:0">Für Teil 3 brauchst du Papier und Bleistift, für Teil 5 einen Taschenrechner.</p>
+  </div>
+
+  <div class="nav">
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(1)">Los geht es</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 1 WOZU ═══════════════ -->
+<section class="sec" id="sec1">
+  <h2>1. Wozu überhaupt eine Gleichung?</h2>
+  <p>Hier ist die Schwingung eines Pendels, aufgezeichnet über zwei Sekunden. Du kannst ablesen, wo der Körper zu den eingezeichneten Zeiten war.</p>
+
+  <div class="plotbox">
+    <svg id="plotMotiv" viewBox="0 0 640 260" role="img" aria-label="Aufgezeichnete Schwingung über zwei Sekunden"></svg>
+    <div class="plot-cap">gemessene Auslenkung, aufgezeichnet bis t = 2,0 s</div>
+  </div>
+
+  <div class="card">
+    <h3>Die Frage, die das Ablesen nicht beantwortet</h3>
+    <p>Wo ist der Körper bei <strong>t = 3,7 s</strong>?</p>
+    <div class="choices" id="q1"></div>
+    <div class="fb" id="q1fb"></div>
+  </div>
+
+  <div class="note">
+    <p style="margin-bottom:0">Genau dafür gibt es die Gleichung. Sie ist keine zusätzliche Hürde, sondern die Abkürzung: einmal aufgestellt, liefert sie jeden Wert, auch weit außerhalb des gemessenen Bereichs. Und sie ist die Sprache, in der in der Klausur nach Schwingungen gefragt wird.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(0)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(2)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 2 STELLSCHRAUBEN ═══════════════ -->
+<section class="sec" id="sec2">
+  <h2>2. Die zwei Stellschrauben</h2>
+  <p>Jede harmonische Schwingung lässt sich so schreiben:</p>
+  <div class="formula">y(t) = ŷ &middot; sin(2&pi;t / T)</div>
+  <p>Darin steckt nur zweierlei, das sich von Schwingung zu Schwingung unterscheidet: die Amplitude ŷ und die Periodendauer T. Alles andere ist immer gleich. Probiere aus, was die beiden mit der Kurve machen.</p>
+
+  <div class="card">
+    <div class="regler">
+      <label for="sA">Amplitude ŷ</label>
+      <input type="range" id="sA" min="0.5" max="5" step="0.1" value="3" oninput="regeln()">
+      <output id="oA">3,0 cm</output>
+    </div>
+    <div class="regler">
+      <label for="sT">Periodendauer T</label>
+      <input type="range" id="sT" min="0.4" max="3" step="0.1" value="2" oninput="regeln()">
+      <output id="oT">2,0 s</output>
+    </div>
+    <div class="formula" id="gleichungLive" style="margin-top:0.8rem">y(t) = 3,0 cm &middot; sin(2&pi;t / 2,0 s)</div>
+    <div class="plotbox">
+      <svg id="plotLive" viewBox="0 0 640 280" role="img" aria-label="Kurve, die sich mit den Schiebereglern ändert"></svg>
+    </div>
+    <p style="margin-bottom:0"><strong>Beobachte gezielt:</strong> Verändere zuerst nur ŷ und achte darauf, ob die Kurve breiter wird oder höher. Dann nur T. Die graue Kurve im Hintergrund bleibt als Vergleich stehen (ŷ = 3,0 cm, T = 2,0 s).</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Kontrolle</span>
+    <h3>Hast du den Unterschied gesehen?</h3>
+    <div class="choices" id="q2"></div>
+    <div class="fb" id="q2fb"></div>
+  </div>
+
+  <div class="note warnbox">
+    <p style="margin-bottom:0"><strong>Die häufigste Verwechslung:</strong> Ein <em>größeres</em> T bedeutet eine <em>langsamere</em> Schwingung, nicht eine schnellere. T ist die Zeit für eine ganze Schwingung. Wer länger braucht, ist langsamer.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(1)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(3)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 3 GLEICHUNG → KURVE ═══════════════ -->
+<section class="sec" id="sec3">
+  <h2>3. Von der Gleichung zur Kurve</h2>
+  <p>Skizzieren heißt nicht: Wertetabelle mit zwanzig Zeilen. Vier Punkte genügen, den Rest verbindest du zu einer Sinuskurve. Diese vier Punkte liegen immer an denselben Stellen.</p>
+
+  <div class="card">
+    <h3>Das Vorgehen in vier Schritten</h3>
+    <ol>
+      <li><strong>ŷ ablesen:</strong> die Zahl vor dem Sinus. Sie legt fest, wie hoch die Kurve reicht.</li>
+      <li><strong>T ablesen:</strong> die Zahl, die unter dem 2&pi; steht. Sie legt fest, wann eine Schwingung vorbei ist.</li>
+      <li><strong>Achsen beschriften:</strong> y bis ŷ nach oben und unten, t bis mindestens T.</li>
+      <li><strong>Vier Punkte setzen</strong> und verbinden: bei 0 ist y = 0, bei T/4 der Hochpunkt, bei T/2 wieder 0, bei 3T/4 der Tiefpunkt, bei T wieder 0.</li>
+    </ol>
+    <p style="margin-bottom:0">Der letzte Schritt ist der ganze Trick. Er funktioniert bei jeder Sinusschwingung gleich, egal welche Zahlen davorstehen.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Aufgabe auf Papier</span>
+    <h3>Skizziere diese beiden Schwingungen</h3>
+    <p><strong>a)</strong></p>
+    <div class="formula">y(t) = 3 cm &middot; sin(2&pi;t / 0,5 s)</div>
+    <p><strong>b)</strong> Hier steht ein Minus vor der Amplitude. Überlege zuerst, was das ändert.</p>
+    <div class="formula">y(t) = &minus;2 cm &middot; sin(2&pi;t / 1,0 s)</div>
+    <p>Zeichne beide auf Papier, bevor du die Lösung aufdeckst. Wer zuerst schaut, lernt nichts.</p>
+    <button class="btn small" onclick="loesungZeigen()">Lösung aufdecken</button>
+    <div id="loesungBox" style="display:none">
+      <div class="plotrow" style="margin-top:1.2rem">
+        <div class="plotbox">
+          <svg id="plotLoesA" viewBox="0 0 320 240" role="img" aria-label="Lösung zu Aufgabe a"></svg>
+          <div class="plot-cap">a) ŷ = 3 cm, T = 0,5 s</div>
+        </div>
+        <div class="plotbox">
+          <svg id="plotLoesB" viewBox="0 0 320 240" role="img" aria-label="Lösung zu Aufgabe b"></svg>
+          <div class="plot-cap">b) ŷ = 2 cm, T = 1,0 s, gespiegelt</div>
+        </div>
+      </div>
+      <div class="note">
+        <p style="margin-bottom:0"><strong>Zu b):</strong> Das Minus spiegelt die Kurve an der Zeitachse. Der Körper startet also nicht nach oben, sondern nach unten. Die Amplitude bleibt 2 cm, denn sie ist ein Abstand und kann nicht negativ sein.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="rescue">
+    <span class="ico">&#129517;</span>
+    <p><strong>Unsicher beim Zeichnen von Achsen und Maßstab?</strong> Physik Bootcamp <strong>Track C</strong> („Diagramme") übt genau das.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(2)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(4)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 4 KURVE → GLEICHUNG ═══════════════ -->
+<section class="sec" id="sec4">
+  <h2>4. Von der Kurve zur Gleichung</h2>
+  <p>Jetzt andersherum, und das ist die Richtung, die in Klausuren häufiger vorkommt: Du bekommst eine Kurve und sollst die Gleichung dazu aufschreiben.</p>
+
+  <div class="plotbox">
+    <svg id="plotAufg" viewBox="0 0 640 280" role="img" aria-label="Kurve, zu der die Gleichung gesucht ist"></svg>
+  </div>
+
+  <div class="card">
+    <span class="tag">Übung</span>
+    <h3>Lies ŷ und T ab und setze die Gleichung zusammen</h3>
+    <div class="inputs">
+      <div class="field">
+        <label for="eA">Amplitude ŷ</label>
+        <input id="eA" type="text" inputmode="decimal" autocomplete="off"><span class="unit">cm</span>
+      </div>
+      <div class="field">
+        <label for="eT">Periodendauer T</label>
+        <input id="eT" type="text" inputmode="decimal" autocomplete="off"><span class="unit">s</span>
+      </div>
+    </div>
+    <button class="btn small" onclick="pruefeAblesen()">Prüfen</button>
+    <div class="fb" id="ablesenFb"></div>
+  </div>
+
+  <div class="note">
+    <p style="margin-bottom:0"><strong>Tipp für das Ablesen von T:</strong> Nimm nicht den Abstand von einem Nulldurchgang zum nächsten, das ist nur eine halbe Schwingung. Nimm zwei gleichartige Stellen: Hochpunkt zu Hochpunkt oder Tiefpunkt zu Tiefpunkt.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(3)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(5)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 5 RECHNEN ═══════════════ -->
+<section class="sec" id="sec5">
+  <h2>5. Einsetzen und ausrechnen</h2>
+  <p>Jetzt löst du die Frage aus Teil 1. Gegeben ist die Schwingung</p>
+  <div class="formula">y(t) = 4,0 cm &middot; sin(2&pi;t / 2,0 s)</div>
+
+  <div class="card">
+    <span class="tag zusatz">Bevor du rechnest</span>
+    <h3>Der Taschenrechner muss auf Bogenmaß stehen</h3>
+    <p>Der Ausdruck 2&pi;t / T ist ein Winkel im <strong>Bogenmaß</strong>, nicht in Grad. Steht dein Taschenrechner auf DEG, bekommst du Unsinn heraus, ohne dass eine Fehlermeldung erscheint. Das ist die häufigste Fehlerquelle in diesem Abschnitt.</p>
+    <p style="margin-bottom:0">Umstellen: bei Casio meist <span class="brian-task" style="margin:0;padding:0.2rem 0.5rem">SHIFT</span> <span class="brian-task" style="margin:0;padding:0.2rem 0.5rem">MODE</span> und dann Rad wählen. Im Display steht danach <strong>R</strong> oder <strong>RAD</strong>. Prüfe es mit sin(3,14) &asymp; 0. Kommt dagegen 0,0548 heraus, steht er noch auf Grad.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Vorgerechnet</span>
+    <h3>Beispiel: Wo ist der Körper bei t = 0,25 s?</h3>
+    <ol>
+      <li>Einsetzen: y = 4,0 cm &middot; sin(2&pi; &middot; 0,25 s / 2,0 s)</li>
+      <li>Klammer ausrechnen: 2&pi; &middot; 0,25 / 2,0 = 0,785</li>
+      <li>Sinus bilden: sin(0,785) = 0,707</li>
+      <li>Multiplizieren: y = 4,0 cm &middot; 0,707 = <strong>2,8 cm</strong></li>
+    </ol>
+    <p style="margin-bottom:0">Plausibilitätsprüfung: 0,25 s ist ein Achtel der Periodendauer, der Körper ist also auf dem Weg nach oben, aber noch nicht ganz oben. 2,8 cm von maximal 4,0 cm passt.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Übung</span>
+    <h3>Fülle die Wertetabelle aus</h3>
+    <p>Dieselbe Schwingung, vier weitere Zeitpunkte. Auf eine Nachkommastelle runden.</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>t in s</th><th>y(t) in cm</th><th></th></tr>
+        <tbody id="rechenZeilen"></tbody>
+      </table>
+    </div>
+    <button class="btn small" onclick="pruefeRechnen()">Prüfen</button>
+    <div class="fb" id="rechenFb"></div>
+  </div>
+
+  <div class="rescue">
+    <span class="ico">&#129517;</span>
+    <p><strong>Beim Einsetzen in Formeln unsicher?</strong> Physik Bootcamp <strong>Track A</strong> („Formeln umstellen") und <strong>Track B</strong> („Rechnen und Einheiten").</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(4)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(6)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 6 CHECK ═══════════════ -->
+<section class="sec" id="sec6">
+  <h2>6. Check</h2>
+
+  <div class="card">
+    <h3>Das Wichtigste in drei Sätzen</h3>
+    <p>Jede harmonische Schwingung lässt sich mit y(t) = ŷ &middot; sin(2&pi;t / T) beschreiben. <strong>ŷ</strong> legt fest, wie weit die Kurve nach oben und unten reicht, <strong>T</strong>, wie lange eine ganze Schwingung dauert.</p>
+    <p style="margin-bottom:0">Mit dieser Gleichung kannst du die Auslenkung zu jedem Zeitpunkt ausrechnen, auch außerhalb des gemessenen Bereichs. Der Taschenrechner muss dabei auf Bogenmaß stehen.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Check</span>
+    <h3>Fünf Fragen zum Schluss</h3>
+    <p>Nicht benotet, niemand sieht die Antworten außer dir.</p>
+    <div id="quizBox"></div>
+    <div class="result" id="quizResult" style="display:none">
+      <div class="big" id="quizScore">0/5</div>
+      <div class="cap" id="quizCap"></div>
+    </div>
+  </div>
+
+  <div class="brian">
+    <span class="tag">Aufgabe in Brian</span>
+    <h3>Lass dich abfragen</h3>
+    <p>Diesmal stellt Brian die Fragen und du antwortest, ohne im Heft nachzuschlagen. Sich etwas selbst aus dem Kopf zu holen ist anstrengender als Nachlesen und bleibt genau deshalb besser hängen.</p>
+    <div class="brian-task">PH12-S2 Sinuskurve</div>
+    <a class="brian-link" href="https://student.brian.study/#/courses/14138?highlight-course-unit=28324" target="_blank" rel="noopener">In Brian öffnen &rarr;</a>
+    <p style="margin-bottom:0">Der Link öffnet den Bereich „Schwingungen" in einem neuen Fenster. Etwa 15 Minuten.</p>
+  </div>
+
+  <div class="card tight">
+    <h3>Wie es weitergeht</h3>
+    <p style="margin-bottom:0">In <strong>Lernschritt 3</strong> kommt die Gleichung dazu, mit der du T ausrechnen kannst, ohne zu messen: für das Fadenpendel aus der Länge, für das Feder-Masse-Pendel aus Masse und Federkonstante.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(5)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="finishModule(event)">Lernschritt abschließen</button>
+  </div>
+</section>
+
+</div>
+
+
+<script>
+// ══════════════════════════════════════════
+// SCORM 1.2 API WRAPPER
+// ══════════════════════════════════════════
+const SCORM = (() => {
+  let api = null;
+  let initialized = false;
+
+  function findAPI(win) {
+    let tries = 0;
+    while (win && !win.API && tries < 10) {
+      tries++;
+      if (win.parent && win.parent !== win) { win = win.parent; }
+      else if (win.opener) { win = win.opener; }
+      else break;
+    }
+    return win ? win.API : null;
+  }
+
+  function init() {
+    try {
+      api = findAPI(window);
+      if (!api) return;
+      api.LMSInitialize('');
+      initialized = true;
+      // Zustand steht in suspend_data (4096 Zeichen). lesson_location fasst nur 255
+      // und traegt deshalb nur noch die Abschnittsnummer. Aeltere Staende, die dort
+      // noch komplett abgelegt wurden, werden weiterhin gelesen.
+      let saved = api.LMSGetValue('cmi.suspend_data');
+      if (!saved) saved = api.LMSGetValue('cmi.core.lesson_location');
+      if (saved) {
+        try {
+          const geladen = JSON.parse(saved);
+          if (geladen && typeof geladen === 'object') Object.assign(state, geladen);
+        } catch (e) {}
+      }
+      if (api.LMSGetValue('cmi.core.lesson_status') === 'not attempted') {
+        api.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+        api.LMSCommit('');
+      }
+    } catch (e) { console.log('SCORM init:', e); }
+  }
+
+  // Schreibt und meldet, wenn das LMS ablehnt. Stilles Scheitern hatte zur Folge,
+  // dass der komplette Fortschritt verlorenging, ohne dass es jemand merkte.
+  function setzen(element, wert) {
+    const ok = api.LMSSetValue(element, String(wert));
+    if (ok !== 'true') {
+      console.warn('[S1] LMS lehnt ab:', element,
+                   'Laenge', String(wert).length,
+                   'Fehlercode', api.LMSGetLastError());
+      return false;
+    }
+    return true;
+  }
+
+  function save(completed) {
+    if (!api || !initialized) return;
+    try {
+      const daten = JSON.stringify(state);
+      if (daten.length > 4000) {
+        console.warn('[S1] Zustand naehert sich der suspend_data-Grenze:', daten.length);
+      }
+      setzen('cmi.suspend_data', daten);
+      setzen('cmi.core.lesson_location', state.section);
+      const total = 5;
+      const right = Object.values(state.quiz).filter(v => v === true).length;
+      setzen('cmi.core.score.raw', Math.round(right / total * 100));
+      setzen('cmi.core.score.min', 0);
+      setzen('cmi.core.score.max', 100);
+      if (completed || state.done) setzen('cmi.core.lesson_status', 'completed');
+      api.LMSCommit('');
+    } catch (e) { console.log('SCORM save:', e); }
+  }
+
+  function finish() {
+    if (!api || !initialized) return;
+    try { save(); api.LMSFinish(''); } catch (e) {}
+  }
+
+  return { init, save, finish };
+})();
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let state = {
+  section: 0,
+  q1: null,          // Frage in Abschnitt 1
+  q2: null,          // Frage in Abschnitt 2
+  regler: { A: 3, T: 2 },
+  loesungGezeigt: false,
+  ablesen: {},       // abgelesene Werte in Abschnitt 4
+  rechnen: {},       // Wertetabelle in Abschnitt 5
+  quiz: {},
+  quizPick: {},
+  done: false
+};
+
+const LAST = 6;
+function persist() { SCORM.save(); }
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function go(n) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec' + n).classList.add('active');
+  state.section = n;
+  if (n === 1) zeichneMotiv();
+  if (n === 2) regeln();
+  if (n === 4) zeichneAufgabe();
+  renderSteps();
+  persist();
+  zeigeAbschnittsAnfang(n);
+}
+
+// In Moodle laeuft das Modul in einem Rahmen. Immer 'instant': 'auto' uebernimmt
+// den CSS-Wert, und eine Animation wird im SCORM-Fenster nicht ausgefuehrt.
+function zeigeAbschnittsAnfang(n) {
+  try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, 0); }
+  try {
+    const el = document.getElementById('sec' + n);
+    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start', behavior: 'instant' });
+  } catch (e) {}
+  try {
+    if (window.parent && window.parent !== window && window.frameElement) {
+      const y = window.frameElement.getBoundingClientRect().top + window.parent.scrollY;
+      window.parent.scrollTo(0, Math.max(0, y - 8));
+    }
+  } catch (e) {}
+}
+
+function renderSteps() {
+  const el = document.getElementById('steps');
+  const labels = ['Start', 'Wozu', 'Stellschrauben', 'Skizzieren', 'Ablesen', 'Rechnen', 'Check'];
+  el.innerHTML = '';
+  for (let i = 0; i <= LAST; i++) {
+    const b = document.createElement('button');
+    b.className = 'step-dot' + (i === state.section ? ' here' : (i < state.section ? ' done' : ''));
+    b.title = labels[i];
+    b.setAttribute('aria-label', 'Zu Abschnitt ' + labels[i]);
+    b.onclick = () => go(i);
+    el.appendChild(b);
+  }
+}
+
+// ══════════════════════════════════════════
+// KURVEN ZEICHNEN
+// ══════════════════════════════════════════
+// Zeichnet y(t) = A * sin(2 pi t / T) in ein SVG mit Achsen und Gitter.
+function zeichneSinus(id, opt) {
+  const svg = document.getElementById(id);
+  if (!svg) return;
+  const vb = svg.getAttribute('viewBox').split(' ').map(Number);
+  const W = vb[2], H = vb[3];
+  const L = 48, R = 16, TP = 14, B = 34;
+  const px = W - L - R, py = H - TP - B;
+
+  const tMax = opt.tMax, yMax = opt.yMax;
+  const X = t => L + (t / tMax) * px;
+  const Y = y => TP + py / 2 - (y / yMax) * (py / 2);
+
+  const bahn = (A, T, bis) => {
+    let d = '';
+    for (let i = 0; i <= 400; i++) {
+      const t = (bis / 400) * i;
+      const p = (i === 0 ? 'M' : 'L') + X(t).toFixed(1) + ',' + Y(A * Math.sin(2 * Math.PI * t / T)).toFixed(1);
+      d += p;
+    }
+    return d;
+  };
+
+  let s = '';
+  // Gitter
+  const yStufen = 4, tStufen = Math.max(2, Math.round(tMax * 2));
+  for (let i = 0; i <= yStufen; i++) {
+    const gy = TP + (i / yStufen) * py;
+    s += '<line x1="' + L + '" y1="' + gy.toFixed(1) + '" x2="' + (W - R) + '" y2="' + gy.toFixed(1) + '" stroke="rgba(255,255,255,0.06)"/>';
+  }
+  for (let i = 1; i <= tStufen; i++) {
+    const t = (tMax / tStufen) * i;
+    s += '<line x1="' + X(t).toFixed(1) + '" y1="' + TP + '" x2="' + X(t).toFixed(1) + '" y2="' + (TP + py) + '" stroke="rgba(255,255,255,0.05)"/>';
+    s += '<text x="' + X(t).toFixed(1) + '" y="' + (TP + py + 18) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="middle">' + t.toFixed(1).replace('.', ',') + '</text>';
+  }
+  // y-Beschriftung
+  const beschriften = v => {
+    const gerundet = Math.round(Math.abs(v) * 10) / 10;          // symmetrisch, kein -0
+    const txt = (v < 0 ? '-' : '') + String(gerundet).replace('.', ',');
+    return '<text x="' + (L - 8) + '" y="' + (Y(v) + 4).toFixed(1) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end">' + txt + '</text>';
+  };
+  [yMax, yMax / 2, -yMax / 2, -yMax].forEach(v => { s += beschriften(v); });
+  // Achsen
+  s += '<line x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '" stroke="#6f8299" stroke-width="1.4"/>';
+  s += '<line x1="' + L + '" y1="' + TP + '" x2="' + L + '" y2="' + (TP + py) + '" stroke="#6f8299" stroke-width="1.4"/>';
+  s += '<text x="' + (W - R) + '" y="' + (TP + py + 32) + '" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end">t in s</text>';
+  s += '<text x="' + L + '" y="' + (TP - 2) + '" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="12">y in cm</text>';
+
+  // Vergleichskurve im Hintergrund
+  if (opt.vergleich) {
+    s += '<path d="' + bahn(opt.vergleich.A, opt.vergleich.T, tMax) + '" fill="none" stroke="rgba(163,180,200,0.35)" stroke-width="1.6" stroke-dasharray="5 4"/>';
+  }
+  // Hauptkurve
+  const bis = opt.gezeichnetBis != null ? opt.gezeichnetBis : tMax;
+  s += '<path d="' + bahn(opt.A, opt.T, bis) + '" fill="none" stroke="#22d3ee" stroke-width="2.5"/>';
+
+  // Bereich ohne Messwerte
+  if (opt.gezeichnetBis != null && opt.gezeichnetBis < tMax) {
+    s += '<rect x="' + X(opt.gezeichnetBis) + '" y="' + TP + '" width="' + (X(tMax) - X(opt.gezeichnetBis)) + '" height="' + py + '" fill="rgba(255,255,255,0.03)"/>';
+    s += '<line x1="' + X(opt.gezeichnetBis) + '" y1="' + TP + '" x2="' + X(opt.gezeichnetBis) + '" y2="' + (TP + py) + '" stroke="#6f8299" stroke-width="1" stroke-dasharray="4 4"/>';
+    const mitte = (X(opt.gezeichnetBis) + X(tMax)) / 2;
+    s += '<text x="' + mitte.toFixed(1) + '" y="' + (TP + 26) + '" fill="#6f8299" font-family="Outfit, sans-serif" font-size="13" text-anchor="middle">nicht gemessen</text>';
+  }
+  // Markierte Stelle
+  if (opt.marke != null) {
+    s += '<line x1="' + X(opt.marke) + '" y1="' + TP + '" x2="' + X(opt.marke) + '" y2="' + (TP + py) + '" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 3"/>';
+    s += '<text x="' + (X(opt.marke) + 6) + '" y="' + (TP + 44) + '" fill="#fbbf24" font-family="IBM Plex Mono, monospace" font-size="13">t = ' + String(opt.marke).replace('.', ',') + ' s</text>';
+  }
+  svg.innerHTML = s;
+}
+
+function zeichneMotiv() {
+  zeichneSinus('plotMotiv', { A: 4, T: 2, tMax: 4.0, yMax: 5, gezeichnetBis: 2.0, marke: 3.7 });
+}
+
+// --- Abschnitt 2: Schieberegler ---
+function regeln() {
+  const A = parseFloat(document.getElementById('sA').value);
+  const T = parseFloat(document.getElementById('sT').value);
+  state.regler = { A: A, T: T };
+  document.getElementById('oA').textContent = A.toFixed(1).replace('.', ',') + ' cm';
+  document.getElementById('oT').textContent = T.toFixed(1).replace('.', ',') + ' s';
+  document.getElementById('gleichungLive').innerHTML =
+    'y(t) = ' + A.toFixed(1).replace('.', ',') + ' cm &middot; sin(2&pi;t / ' + T.toFixed(1).replace('.', ',') + ' s)';
+  zeichneSinus('plotLive', { A: A, T: T, tMax: 4, yMax: 6, vergleich: { A: 3, T: 2 } });
+  persist();
+}
+
+// --- Abschnitt 3: Loesungskurven ---
+function loesungZeigen() {
+  state.loesungGezeigt = true;
+  document.getElementById('loesungBox').style.display = 'block';
+  zeichneSinus('plotLoesA', { A: 3, T: 0.5, tMax: 1.5, yMax: 4 });
+  zeichneSinus('plotLoesB', { A: -2, T: 1.0, tMax: 2.5, yMax: 3 });
+  persist();
+}
+
+// --- Abschnitt 4: Kurve zum Ablesen ---
+const AUFG = { A: 1.5, T: 1.2 };
+function zeichneAufgabe() {
+  zeichneSinus('plotAufg', { A: AUFG.A, T: AUFG.T, tMax: 3, yMax: 2 });
+}
+
+function num(v) {
+  const s = String(v).trim().replace(',', '.');
+  if (!s) return NaN;
+  return parseFloat(s);
+}
+
+function pruefeAblesen() {
+  const ziele = [
+    { id: 'eA', wert: AUFG.A, tol: 0.25, name: 'Amplitude', hilfe: 'Miss von der Nulllinie bis zum Hochpunkt, nicht vom Tiefpunkt bis zum Hochpunkt.' },
+    { id: 'eT', wert: AUFG.T, tol: 0.2, name: 'Periodendauer', hilfe: 'Nimm zwei Hochpunkte und miss den Abstand dazwischen. Von einem Nulldurchgang zum nächsten wäre nur die halbe Schwingung.' }
+  ];
+  let allesGut = true; const meldungen = [];
+  ziele.forEach(z => {
+    const el = document.getElementById(z.id);
+    const v = num(el.value);
+    if (!isNaN(v) && Math.abs(v - z.wert) <= z.tol) {
+      el.classList.add('ok'); el.classList.remove('no');
+      state.ablesen[z.id] = v;
+    } else {
+      el.classList.add('no'); el.classList.remove('ok');
+      allesGut = false;
+      meldungen.push('<strong>' + z.name + ':</strong> ' + z.hilfe);
+    }
+  });
+  const fb = document.getElementById('ablesenFb');
+  if (allesGut) {
+    fb.className = 'fb good show';
+    fb.innerHTML = 'Beides stimmt. Die Gleichung lautet damit:<div class="formula" style="margin:0.6rem 0 0">y(t) = 1,5 cm &middot; sin(2&pi;t / 1,2 s)</div>';
+  } else {
+    fb.className = 'fb bad show';
+    fb.innerHTML = meldungen.join('<br>');
+  }
+  persist();
+}
+
+// --- Abschnitt 5: Wertetabelle ---
+const RECHEN = [0.50, 0.75, 1.50, 3.70];
+function yWert(t) { return 4.0 * Math.sin(2 * Math.PI * t / 2.0); }
+
+function renderRechenZeilen() {
+  const tb = document.getElementById('rechenZeilen');
+  tb.innerHTML = '';
+  RECHEN.forEach((t, i) => {
+    const tr = document.createElement('tr');
+    const gespeichert = state.rechnen['r' + i] != null ? String(state.rechnen['r' + i]).replace('.', ',') : '';
+    tr.innerHTML = '<td>' + t.toFixed(2).replace('.', ',') + '</td>' +
+      '<td><input id="r' + i + '" type="text" inputmode="decimal" autocomplete="off" value="' + gespeichert + '"></td>' +
+      '<td id="rf' + i + '" class="txt" style="color:var(--ink-dim)"></td>';
+    tb.appendChild(tr);
+  });
+}
+
+function pruefeRechnen() {
+  let richtig = 0;
+  const hinweise = [];
+  RECHEN.forEach((t, i) => {
+    const el = document.getElementById('r' + i);
+    const soll = yWert(t);
+    const v = num(el.value);
+    const zelle = document.getElementById('rf' + i);
+    if (!isNaN(v) && Math.abs(v - soll) <= 0.25) {
+      el.classList.add('ok'); el.classList.remove('no');
+      zelle.innerHTML = '<span style="color:var(--ok)">richtig</span>';
+      state.rechnen['r' + i] = v;
+      richtig++;
+    } else {
+      el.classList.add('no'); el.classList.remove('ok');
+      zelle.innerHTML = '<span style="color:var(--err)">nochmal</span>';
+      // Gradmodus erkennen: der Bogenmass-Ausdruck wird vom Rechner als Grad gelesen.
+      // (Wer stattdessen mit 360*t/T Grad rechnet, liegt richtig, das ist derselbe Winkel.)
+      const inGrad = 4.0 * Math.sin(Math.PI / 180 * (2 * Math.PI * t / 2.0));
+      if (!isNaN(v) && Math.abs(v - inGrad) <= 0.25 && Math.abs(inGrad - soll) > 0.3) {
+        hinweise.push('Bei t = ' + t.toFixed(2).replace('.', ',') + ' s passt dein Wert zu einer Rechnung im <strong>Gradmodus</strong>. Stell den Taschenrechner auf Bogenmaß um.');
+      }
+    }
+  });
+  const fb = document.getElementById('rechenFb');
+  if (richtig === RECHEN.length) {
+    fb.className = 'fb good show';
+    fb.innerHTML = 'Alle vier stimmen. Und damit ist auch die Frage vom Anfang beantwortet: bei t = 3,7 s ist der Körper bei <strong>&minus;3,2 cm</strong>, also unterhalb der Ruhelage. Das war aus dem Diagramm nicht ablesbar, mit der Gleichung ist es eine Zeile Rechnung.';
+  } else {
+    fb.className = 'fb bad show';
+    let txt = richtig + ' von ' + RECHEN.length + ' stimmen.';
+    if (hinweise.length) txt += '<br>' + hinweise.join('<br>');
+    else txt += ' Prüfe die Reihenfolge: erst die Klammer 2&pi;t / T ausrechnen, dann den Sinus davon, dann mal 4,0 cm.';
+    fb.innerHTML = txt;
+  }
+  persist();
+}
+
+// ══════════════════════════════════════════
+// AUSWAHLFRAGEN
+// ══════════════════════════════════════════
+const LETTERS = ['A', 'B', 'C', 'D'];
+
+const F1 = {
+  a: ['Ein längeres Diagramm, das bis 3,7 s reicht.',
+      'Eine Gleichung, die zu dieser Schwingung passt.',
+      'Eine neue Messung, diesmal über vier Sekunden.',
+      'Gar nichts, nach 3,7 s schwingt das Pendel längst nicht mehr.'],
+  r: 1,
+  fb: ['Das würde für diese eine Frage reichen. Aber für die nächste Frage bräuchtest du wieder ein neues Diagramm. Es gibt etwas, das alle Zeitpunkte auf einmal abdeckt.',
+       'Genau. Eine Gleichung deckt jeden Zeitpunkt ab, auch solche, die nie gemessen wurden. Das ist der Grund, warum sich der Aufwand lohnt.',
+       'Messen ginge, ist aber der Umweg. Aus den vorhandenen Daten lässt sich eine Gleichung aufstellen, die dann jede weitere Frage beantwortet.',
+       'Ein Pendel schwingt durchaus länger als vier Sekunden. Die Amplitude nimmt langsam ab, aber nach 3,7 s ist noch reichlich Bewegung da.']
+};
+
+const F2 = {
+  a: ['Ein größeres T macht die Kurve höher.',
+      'Ein größeres T zieht die Kurve in die Länge, die Schwingung wird langsamer.',
+      'Ein größeres T staucht die Kurve, die Schwingung wird schneller.',
+      'T verändert nur, an welcher Stelle die Kurve startet.'],
+  r: 1,
+  fb: ['Höher macht die Kurve nur ŷ. Schiebe im Regler oben einmal nur T und achte auf die Höhe der Berge: sie bleibt gleich.',
+       'Richtig. T ist die Zeit für eine ganze Schwingung. Ein größeres T heißt: länger pro Schwingung, also langsamer.',
+       'Genau umgekehrt. Größeres T heißt mehr Zeit pro Schwingung. Probiere es im Regler aus und zähle, wie viele Berge in vier Sekunden passen.',
+       'Der Startpunkt bleibt bei dieser Gleichung immer bei y = 0. T verändert die Breite der Kurve.']
+};
+
+function renderChoices(boxId, daten, key, fbId) {
+  const box = document.getElementById(boxId);
+  box.innerHTML = '';
+  const gewaehlt = state[key];
+  daten.a.forEach((text, i) => {
+    const b = document.createElement('button');
+    b.className = 'choice';
+    b.innerHTML = '<span class="letter">' + LETTERS[i] + '</span><span>' + text + '</span>';
+    if (gewaehlt != null) {
+      b.disabled = true;
+      if (i === daten.r) b.className = 'choice right';
+      else if (i === gewaehlt) b.className = 'choice wrong';
+    } else {
+      b.onclick = () => { state[key] = i; renderChoices(boxId, daten, key, fbId); persist(); };
+    }
+    box.appendChild(b);
+  });
+  if (gewaehlt != null) {
+    const fb = document.getElementById(fbId);
+    fb.className = 'fb ' + (gewaehlt === daten.r ? 'good' : 'bad') + ' show';
+    fb.innerHTML = daten.fb[gewaehlt];
+  }
+}
+
+// ══════════════════════════════════════════
+// CHECK
+// ══════════════════════════════════════════
+const QUIZ = [
+  {
+    q: 'Wie groß ist die Amplitude bei y(t) = 5 cm · sin(2πt / 4 s)?',
+    a: ['4 cm', '5 cm', '2,5 cm', '10 cm'],
+    r: 1,
+    fb: ['Die 4 steht bei der Periodendauer, nicht bei der Amplitude. Sie sagt, dass eine Schwingung 4 Sekunden dauert.',
+         'Richtig. Die Amplitude ist die Zahl vor dem Sinus, also die größte Auslenkung.',
+         'Hier wurde halbiert. Das wäre nötig, wenn der Abstand zwischen den Umkehrpunkten gegeben wäre. In der Gleichung steht aber schon die Amplitude selbst.',
+         'Hier wurde verdoppelt. Der Gesamtausschlag von unten nach oben wäre tatsächlich 10 cm, die Amplitude ist aber nur die Hälfte davon.']
+  },
+  {
+    q: 'Zwei Schwingungen haben dieselbe Amplitude. Die eine hat T = 1 s, die andere T = 3 s. Welche schwingt schneller?',
+    a: ['Die mit T = 1 s.', 'Die mit T = 3 s.', 'Beide gleich schnell, die Amplitude ist ja gleich.', 'Das hängt von der Masse ab.'],
+    r: 0,
+    fb: ['Richtig. Sie braucht nur eine Sekunde pro Schwingung, die andere drei. In derselben Zeit schafft sie dreimal so viele Schwingungen.',
+         'Ein größeres T bedeutet mehr Zeit pro Schwingung, also langsamer. Denk an eine Rundenzeit: wer länger für eine Runde braucht, ist nicht schneller.',
+         'Die Amplitude sagt nichts über das Tempo, nur über die Weite des Ausschlags. Das Tempo steckt in T.',
+         'Die Masse kommt in dieser Gleichung gar nicht vor. Und beim Fadenpendel hat sie auch auf T keinen Einfluss, wie du in Lernschritt 1 gemessen hast.']
+  },
+  {
+    q: 'Du rechnest y(t) mit dem Taschenrechner aus. Was muss eingestellt sein?',
+    a: ['Grad (DEG), weil ein Winkel im Spiel ist.', 'Bogenmaß (RAD), weil 2πt / T ein Winkel im Bogenmaß ist.', 'Das ist egal, der Sinus ist immer derselbe.', 'Gradient (GRAD).'],
+    r: 1,
+    fb: ['Ein Winkel ist es, aber nicht in Grad. Der Ausdruck enthält π, und das ist das sichere Zeichen für Bogenmaß.',
+         'Richtig. Kontrolle: sin(3,14) muss ungefähr 0 ergeben. Kommt 0,0548 heraus, steht der Rechner noch auf Grad.',
+         'Es ist leider nicht egal, und das ist das Tückische: Der Rechner zeigt keine Fehlermeldung, sondern eine falsche Zahl.',
+         'Diese Einheit gibt es zwar, sie wird hier aber nicht gebraucht.']
+  },
+  {
+    q: 'Gegeben ist y(t) = 2 cm · sin(2πt / 1 s). Wo ist der Körper bei t = 0,25 s?',
+    a: ['Bei 0 cm.', 'Bei 2 cm, also am oberen Umkehrpunkt.', 'Bei 1 cm.', 'Bei −2 cm.'],
+    r: 1,
+    fb: ['Bei 0 cm ist der Körper zu den Zeiten 0, 0,5 s und 1,0 s. 0,25 s liegt genau dazwischen.',
+         'Richtig. 0,25 s ist ein Viertel von T = 1 s, und nach einer Viertelperiode ist die maximale Auslenkung erreicht.',
+         'Das wäre die Hälfte der Amplitude. Der Sinus wächst aber nicht gleichmäßig: nach einer Viertelperiode ist er schon bei seinem Maximum.',
+         'Der untere Umkehrpunkt kommt erst bei drei Vierteln der Periodendauer, also bei 0,75 s.']
+  },
+  {
+    q: 'Was bedeutet ein Minuszeichen vor der Amplitude, also y(t) = −3 cm · sin(2πt / T)?',
+    a: ['Die Amplitude ist negativ, also −3 cm.', 'Die Kurve ist an der Zeitachse gespiegelt, der Körper startet nach unten.', 'Die Schwingung läuft rückwärts in der Zeit.', 'Das Minus lässt sich einfach weglassen.'],
+    r: 1,
+    fb: ['Eine Amplitude ist ein Abstand und kann nicht negativ sein. Sie beträgt hier 3 cm. Das Minus sagt etwas über die Richtung des Starts.',
+         'Richtig. Der Betrag 3 cm bleibt die Amplitude, das Minus dreht die Kurve um: es geht zuerst nach unten statt nach oben.',
+         'Rückwärts in der Zeit gibt es hier nicht. Gespiegelt wird an der Zeitachse, nicht an der y-Achse.',
+         'Weglassen ändert die Kurve: sie würde dann nach oben statt nach unten starten. Für die Amplitude ist das Minus egal, für den Verlauf nicht.']
+  }
+];
+
+function renderQuiz() {
+  const box = document.getElementById('quizBox');
+  box.innerHTML = '';
+  QUIZ.forEach((item, qi) => {
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = '1.4rem';
+    const h = document.createElement('p');
+    h.innerHTML = '<strong>' + (qi + 1) + '. ' + item.q + '</strong>';
+    h.style.color = 'var(--ink)';
+    wrap.appendChild(h);
+    const ch = document.createElement('div');
+    ch.className = 'choices'; ch.id = 'quiz' + qi;
+    wrap.appendChild(ch);
+    const fb = document.createElement('div');
+    fb.className = 'fb'; fb.id = 'quizfb' + qi;
+    wrap.appendChild(fb);
+    box.appendChild(wrap);
+
+    item.a.forEach((text, ai) => {
+      const b = document.createElement('button');
+      b.className = 'choice';
+      b.innerHTML = '<span class="letter">' + LETTERS[ai] + '</span><span>' + text + '</span>';
+      b.onclick = () => answerQuiz(qi, ai);
+      ch.appendChild(b);
+    });
+    if (state.quiz[qi] !== undefined) showQuizAnswer(qi, state.quizPick[qi]);
+  });
+  updateQuizResult();
+}
+
+function answerQuiz(qi, ai) {
+  if (state.quiz[qi] !== undefined) return;
+  state.quizPick[qi] = ai;
+  state.quiz[qi] = (ai === QUIZ[qi].r);
+  showQuizAnswer(qi, ai);
+  updateQuizResult();
+  persist();
+}
+
+function showQuizAnswer(qi, ai) {
+  const item = QUIZ[qi];
+  const ch = document.getElementById('quiz' + qi);
+  Array.from(ch.children).forEach((c, j) => {
+    c.disabled = true;
+    if (j === item.r) c.className = 'choice right';
+    else if (j === ai) c.className = 'choice wrong';
+    else c.className = 'choice';
+  });
+  const fb = document.getElementById('quizfb' + qi);
+  fb.className = 'fb ' + (ai === item.r ? 'good' : 'bad') + ' show';
+  fb.innerHTML = item.fb[ai];
+}
+
+function updateQuizResult() {
+  if (Object.keys(state.quiz).length < QUIZ.length) return;
+  const richtig = Object.values(state.quiz).filter(v => v).length;
+  const el = document.getElementById('quizResult');
+  el.style.display = 'block';
+  document.getElementById('quizScore').textContent = richtig + '/' + QUIZ.length;
+  const caps = [
+    'Das war noch nichts. Geh Abschnitt 2 und 5 noch einmal durch, die Antworten stehen dort.',
+    'Da fehlt einiges. Lies die Rückmeldungen zu deinen Fehlern in Ruhe, sie erklären den Denkfehler.',
+    'Die Hälfte sitzt. Nimm dir die beiden Fragen vor, bei denen es nicht gereicht hat.',
+    'Solide. Eine Sache fehlt noch, und die Rückmeldung dazu sagt dir, welche.',
+    'Fast alles sitzt. Der eine Fehler ist eher ein Ausrutscher als eine Lücke.',
+    'Alles richtig. Du kannst mit Lernschritt 3 weitermachen.'
+  ];
+  document.getElementById('quizCap').textContent = caps[richtig];
+}
+
+// ══════════════════════════════════════════
+// ABSCHLUSS
+// ══════════════════════════════════════════
+function finishModule(ev) {
+  state.done = true;
+  SCORM.save(true);
+  const btn = ev && ev.currentTarget;
+  if (btn) { btn.textContent = 'Abgeschlossen und gespeichert'; btn.disabled = true; }
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+SCORM.init();
+
+renderSteps();
+renderChoices('q1', F1, 'q1', 'q1fb');
+renderChoices('q2', F2, 'q2', 'q2fb');
+renderRechenZeilen();
+renderQuiz();
+zeichneMotiv();
+zeichneAufgabe();
+
+// gespeicherte Reglerstellung und Eingaben wiederherstellen
+document.getElementById('sA').value = state.regler.A;
+document.getElementById('sT').value = state.regler.T;
+regeln();
+if (state.loesungGezeigt) loesungZeigen();
+['eA', 'eT'].forEach(id => {
+  if (state.ablesen[id] != null) document.getElementById(id).value = String(state.ablesen[id]).replace('.', ',');
+});
+
+if (state.section > 0) go(state.section);
+
+window.addEventListener('beforeunload', () => SCORM.finish());
+
+</script>
+
+</body>
+</html>

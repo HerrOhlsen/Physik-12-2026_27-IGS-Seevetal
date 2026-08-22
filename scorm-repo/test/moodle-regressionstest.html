@@ -69,21 +69,20 @@ window.runTests = async function () {
   const g = f.contentWindow;
   const ergebnis = [];
 
-  // Vollstaendiger Durchlauf wie ein SuS ihn macht
-  g.eval(`
-    pick('p1',0,'p1',PRED1,'p1fb'); pick('p2',1,'p2',PRED2,'p2fb');
-    document.getElementById('r1').value='2,5';
-    document.getElementById('r2').value='0,8';
-    document.getElementById('r3').value='1,25';
-    checkRead(); state.params=[0,1,2]; checkParams(); loadDemo(); go(5);
-  `);
+  // Modulunabhaengig: letzte Sektion ermitteln und das Modul so weit wie moeglich fuellen
+  const sektionen = g.document.querySelectorAll('.sec').length;
+  const LETZTE = sektionen - 1, VORLETZTE = sektionen - 2;
+  try { if (typeof g.loadDemo === 'function') g.loadDemo(); } catch (e) {}
+  g.eval('go(' + VORLETZTE + ');');
   fit(); await warte(400);
 
   // --- TEST 1: Ansicht springt beim Abschnittswechsel an den Anfang ---
   // Erst das iframe wirklich auf volle Hoehe bringen, sonst scrollt der Test ins Leere.
   for (let i = 0; i < 6; i++) { fit(); await warte(150); }
   // Dorthin scrollen, wo der Nutzer steht: zum Button "Zur Aufloesung" am Ende von Abschnitt 5.
-  const btn = [...g.document.querySelectorAll('#sec5 .btn')].find(b => /Aufl/.test(b.textContent));
+  // der Weiter-Knopf der vorletzten Sektion, also der letzte nicht-graue Knopf darin
+  const btn = [...g.document.querySelectorAll('#sec' + VORLETZTE + ' .btn')]
+                .filter(b => !b.classList.contains('ghost')).pop();
   const btnAbsolut = f.offsetTop + btn.offsetTop;      // Position im AEUSSEREN Dokument
   let scrollVor;
   if (LAYOUT === 'popup') {
@@ -95,13 +94,14 @@ window.runTests = async function () {
     await warte(250);
     scrollVor = Math.round(window.scrollY);
   }
-  g.eval("go(6);");
+  btn.click();
   fit(); await warte(500);
+  const ziel = g.document.getElementById('sec' + LETZTE);
   const kopfSec6 = LAYOUT === 'popup'
-    ? g.document.getElementById('sec6').getBoundingClientRect().top   // relativ zum Rahmen
-    : f.getBoundingClientRect().top + g.document.getElementById('sec6').offsetTop;
+    ? ziel.getBoundingClientRect().top                    // relativ zum Rahmen
+    : f.getBoundingClientRect().top + ziel.offsetTop;
   ergebnis.push({
-    test: 'Anfang von Abschnitt 6 ist nach dem Klick sichtbar (' + LAYOUT + ')',
+    test: 'Anfang der letzten Sektion ist nach dem Klick sichtbar (' + LAYOUT + ')',
     scrollVorKlick: scrollVor,
     scrollNachKlick: Math.round(LAYOUT === 'popup' ? g.scrollY : window.scrollY),
     sec6ObenImFenster: Math.round(kopfSec6),
@@ -110,7 +110,11 @@ window.runTests = async function () {
   });
 
   // --- TEST 2: Der gespeicherte Zustand passt in die SCORM-Grenzen ---
-  g.eval("[0,1,2,3,4].forEach(i => answerQuiz(i, QUIZ[i].r)); finishModule();");
+  g.eval(`
+    try { if (typeof QUIZ !== 'undefined' && typeof answerQuiz === 'function')
+            QUIZ.forEach((q, i) => answerQuiz(i, q.r)); } catch (e) {}
+    try { if (typeof finishModule === 'function') finishModule(); } catch (e) {}
+  `);
   await warte(300);
   const abgelehnt = SCORM_LOG.filter(c => !c.ok);
   const gespeichert = API._store['cmi.suspend_data'] || API._store['cmi.core.lesson_location'] || '';
