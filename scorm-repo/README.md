@@ -90,7 +90,7 @@ Wichtig: der Browser-Tab muss im Vordergrund sein, sonst misst der Test kein Lay
 - `cmi.core.lesson_status`: `completed`, sobald die Lernenden auf „Lernschritt abschließen" klicken
 - `cmi.core.score.raw`: Prozentwert aus dem Selbstcheck am Ende
 
-Der Selbstcheck ist bewusst **nicht** die Leistungsmessung. Die liegt in Brian (`PH12-S5 Abschluss-Quiz`). Der Score hier dient nur dazu, dass du im Moodle-Bericht siehst, wer sich überhaupt geprüft hat.
+Der Selbstcheck ist bewusst **nicht** die Leistungsmessung. Die liegt in Brian (`Abschlussquiz: Faden- & Federpendel`). Der Score hier dient nur dazu, dass du im Moodle-Bericht siehst, wer sich überhaupt geprüft hat.
 
 ## Rollback
 

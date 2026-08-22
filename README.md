@@ -53,6 +53,22 @@ Beim Abgleich mit dem KC (S. 37 bis 39) ist ein Punkt aufgefallen, der die Planu
 
 ---
 
+## Der Brian-Kurs
+
+Kurs „Abi28 Physik 12 Ohlsen", Bereich **Schwingungen**:
+<https://student.brian.study/#/courses/14138?highlight-course-unit=28324>
+
+| Aktivität in Brian | Typ | gehört zu |
+|---|---|---|
+| PH12-S1 Messplan zum Fadenpendel | Dialog, Feedback | LS1 |
+| PH12-S2 Sinuskurve | Dialog, abfragen | LS2 |
+| PH12-S3 Rechenweg | Dialog, Feedback ohne Lösung | LS3 |
+| PH12-S4 Pendel erklären | Dialog, Form offen | LS4 |
+| Abschlussquiz: Faden- & Federpendel | Quiz | Abschluss |
+
+Das SCORM-Modul verlinkt auf diesen Bereich, immer mit `target="_blank"`. Ein Link im selben
+Fenster würde den SCO ersetzen und die SCORM-Sitzung samt Fortschritt beenden.
+
 ## Das Muster
 
 Fünf Lernschritte statt einer Materialliste. Jeder Lernschritt hat dieselben vier Bausteine, immer in derselben Reihenfolge. Nach zwei Schritten kennen die Lernenden die Choreografie und fragen nicht mehr, was sie tun sollen.
@@ -86,7 +102,7 @@ Konzept-Quickie „schwingendes Pendel" als Vorhersage im Plenum, Phänomene sam
 Fadenpendel in Gruppen, drei Messreihen (Länge, Masse, Auslenkung), phyphox als Messinstrument. Der Erkenntnisweg läuft vom Phänomen über die Messung zur Beschreibung, nicht umgekehrt.
 
 - SCORM-Modul: `PH12S1Messen` (gebaut)
-- Brian: `PH12-S1 Versuchsplanung`
+- Brian: `PH12-S1 Messplan zum Fadenpendel`
 - Bootcamp bei Lücken: Track C (Diagramme)
 
 **Bewusste Abweichung vom bisherigen Kurs:** Der Versuch steht vor der Mathematik der Sinusfunktion, nicht danach. Ein Kurs mit dieser Ausgangslage schaltet bei „Streckung und Stauchung von sin(x)" als zweitem Schritt geschlossen ab. Nach einer eigenen Messung hat die Kurve einen Zweck.
@@ -116,12 +132,12 @@ T = 2π·√(m/D) mit kurzer Bestätigungsmessung (Masse variieren, Federkonstan
 **Nicht KC-Pflicht im gA.** Energieumwandlung, warum die Masse herausfällt, warum die Gleichung nur für kleine Winkel gilt, warum eine reale Schwingung kleiner wird, aber nicht langsamer.
 
 - SCORM-Modul: noch zu bauen
-- Brian: `PH12-S4 Erklärung` (Dialogform **offen**, die Lernenden wählen selbst)
+- Brian: `PH12-S4 Pendel erklären` (Dialogform **offen**, die Lernenden wählen selbst)
 - Präsenz: Diskussionsvorrat, Karten 2, 4 und 7
 
 ### Abschluss (1 Std.)
 
-Brian: `PH12-S5 Abschluss-Quiz` (14 Multiple-Choice-Fragen). Einzige Stelle, an der du systematisch siehst, wo der Kurs vor der Klausur steht.
+Brian: `Abschlussquiz: Faden- & Federpendel` (14 Multiple-Choice-Fragen). Einzige Stelle, an der du systematisch siehst, wo der Kurs vor der Klausur steht.
 
 **Summe: etwa 15 Stunden, also 5 Wochen.** Danach Wellen, Klausur 1 nach beidem.
 
@@ -131,10 +147,10 @@ Brian: `PH12-S5 Abschluss-Quiz` (14 Multiple-Choice-Fragen). Einzige Stelle, an 
 
 | Aktivität | Form | Begründung |
 |---|---|---|
-| S1 Versuchsplanung | Feedback auf eigene Produktion | Es gibt nichts abzufragen, es gibt einen Plan zu prüfen. |
+| S1 Messplan | Feedback auf eigene Produktion | Es gibt nichts abzufragen, es gibt einen Plan zu prüfen. |
 | S2 Sinuskurve | abfragen | Niedrigschwelliger Einstieg in die Dialogform, reines Retrieval. |
 | S3 Rechenweg | Feedback, ohne Lösung | Die wertvollste Form: erzwingt eigene Produktion vor der Rückmeldung. |
-| S4 Erklärung | offen, die Lernenden wählen | Nach drei erlebten Formen sollen sie selbst entscheiden. |
+| S4 Pendel erklären | offen, die Lernenden wählen | Nach drei erlebten Formen sollen sie selbst entscheiden. |
 
 Die Reihenfolge ist Absicht. Bei dieser Ausgangslage wählt ein Kurs, dem man die Wahl von Anfang an lässt, zuverlässig die bequemste Form, und das ist „erklär es mir". Deshalb kommt die Wahlfreiheit zum Schluss, wenn sie die Alternativen kennen. Wer dann trotzdem „erklär es mir" wählt, hat einen Grund, und darüber lässt sich im Kurs reden. Das ist selbst ein guter Diskussionsanlass.
 
@@ -145,11 +161,11 @@ Die Reihenfolge ist Absicht. Bei dieser Ausgangslage wählt ein Kurs, dem man di
 | Datei | Was |
 |---|---|
 | `README.md` | dieser Plan |
-| `brian-auftraege/PH12-S1_Versuchsplanung.md` | Prompt zum Kopieren, Dialog |
+| `brian-auftraege/PH12-S1_Messplan-zum-Fadenpendel.md` | Prompt zum Kopieren, Dialog |
 | `brian-auftraege/PH12-S2_Sinuskurve.md` | Prompt zum Kopieren, Dialog |
 | `brian-auftraege/PH12-S3_Rechenweg.md` | Prompt zum Kopieren, Dialog |
-| `brian-auftraege/PH12-S4_Erklaerung.md` | Prompt zum Kopieren, Dialog |
-| `brian-auftraege/PH12-S5_Abschluss-Quiz.md` | Prompt zum Kopieren, Quiz-Erstellung |
+| `brian-auftraege/PH12-S4_Pendel-erklaeren.md` | Prompt zum Kopieren, Dialog |
+| `brian-auftraege/PH12-S5_Abschlussquiz.md` | Prompt zum Kopieren, Quiz-Erstellung |
 | `diskussionsvorrat-schwingungen.html` | 8 Diskussionsanlässe, druckbar, nur für die Lehrkraft |
 | `scorm-repo/` | Quellen der SCORM-Module, Aufbau und Moodle-Einbindung siehe dortige README |
 
@@ -165,8 +181,8 @@ Ein Push auf `scorm-repo/src/**` löst die GitHub Action aus, die die ZIPs neu b
 
 - [ ] SCORM-Modul LS1 im Browser testen und inhaltlich abnehmen
 - [ ] SCORM-URL in Moodle 382 eintragen (Lernpaket, Pakettyp „Download", URL siehe `scorm-repo/README.md`)
-- [ ] fünf Brian-Aktivitäten anlegen, Aufgaben-Screenshots aus Moodle als Material mitgeben
-- [ ] Brian-URLs nachtragen, falls feste Links gewünscht sind
+- [x] fünf Brian-Aktivitäten angelegt (2026-08-22)
+- [x] Brian-Link im SCORM-Modul eingebaut (öffnet in neuem Fenster, damit die SCORM-Sitzung erhalten bleibt)
 - [ ] Federpendel-Bestätigungsmessung für LS3 vorbereiten (Material prüfen: Federn mit bekannter Federkonstante vorhanden?)
 - [ ] Ersatzleistungs-Frage für den Prüfling klären
 - [ ] LS2 bis LS4 bauen, sobald das Muster an LS1 abgenommen ist

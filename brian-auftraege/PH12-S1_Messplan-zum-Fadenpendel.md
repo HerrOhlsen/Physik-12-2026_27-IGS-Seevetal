@@ -1,11 +1,12 @@
-# Brian-Aktivität: PH12-S1 Versuchsplanung
+# Brian-Aktivität: PH12-S1 Messplan zum Fadenpendel
 
 | | |
 |---|---|
-| **Aktivitätsname in Brian** | `PH12-S1 Versuchsplanung` |
+| **Aktivitätsname in Brian** | `PH12-S1 Messplan zum Fadenpendel` (angelegt) |
 | **Typ** | KI-Dialog |
 | **Dialogform** | festgelegt: Feedback auf eigene Produktion |
 | **Gehört zu** | Lernschritt 1 (Messen), SCORM-Modul Abschnitt 3 |
+| **Kursbereich** | [Schwingungen in Brian](https://student.brian.study/#/courses/14138?highlight-course-unit=28324) |
 | **Zeitbedarf** | ca. 10 Minuten |
 | **Wann** | vor der Messstunde |
 | **Material mitgeben** | nichts nötig |

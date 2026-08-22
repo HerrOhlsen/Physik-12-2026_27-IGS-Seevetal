@@ -2,10 +2,11 @@
 
 | | |
 |---|---|
-| **Aktivitätsname in Brian** | `PH12-S3 Rechenweg` |
+| **Aktivitätsname in Brian** | `PH12-S3 Rechenweg` (angelegt) |
 | **Typ** | KI-Dialog |
 | **Dialogform** | festgelegt: Feedback auf eigene Produktion |
 | **Gehört zu** | Lernschritt 3 (Rechnen) |
+| **Kursbereich** | [Schwingungen in Brian](https://student.brian.study/#/courses/14138?highlight-course-unit=28324) |
 | **Zeitbedarf** | ca. 20 Minuten |
 | **Wann** | nach den ersten eigenen Rechenversuchen, nicht davor |
 | **Material mitgeben** | die Screenshots „Aufgaben zu Fadenpendel (Schwingungsdauer)" aus dem Moodle-Kurs |

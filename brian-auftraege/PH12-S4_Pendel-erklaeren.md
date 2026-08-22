@@ -1,11 +1,12 @@
-# Brian-Aktivität: PH12-S4 Erklärung
+# Brian-Aktivität: PH12-S4 Pendel erklären
 
 | | |
 |---|---|
-| **Aktivitätsname in Brian** | `PH12-S4 Erklärung` |
+| **Aktivitätsname in Brian** | `PH12-S4 Pendel erklären` (angelegt) |
 | **Typ** | KI-Dialog |
 | **Dialogform** | **offen: die Lernenden wählen selbst** (Feedback, abfragen oder offen tutorieren) |
 | **Gehört zu** | Lernschritt 4 (Deuten) |
+| **Kursbereich** | [Schwingungen in Brian](https://student.brian.study/#/courses/14138?highlight-course-unit=28324) |
 | **Zeitbedarf** | ca. 20 Minuten |
 | **Wann** | am Ende der Einheit, vor der Klausurvorbereitung |
 | **Material mitgeben** | nichts nötig |

@@ -161,6 +161,14 @@ li { margin-bottom: 0.4rem; }
   background: rgba(0,0,0,0.28); border-radius: var(--r-sm);
   padding: 0.6rem 0.85rem; margin: 0.7rem 0 0.9rem; display: inline-block;
 }
+.brian-link {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--brian); color: #1a0b2e; font-weight: 600; font-size: 0.95rem;
+  text-decoration: none; border-radius: var(--r-full);
+  padding: 0.6rem 1.3rem; margin: 0.2rem 0 0.9rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.brian-link:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(192,132,252,0.3); }
 
 /* Bootcamp-Hinweis */
 .rescue {
@@ -491,8 +499,10 @@ svg text {
     <span class="tag">Aufgabe in Brian</span>
     <h3>Deine Versuchsplanung begründen</h3>
     <p>Jetzt kommt der Teil, den ein Ankreuztest nicht abnehmen kann: Du musst deinen Plan aufschreiben und begründen. Brian gibt dir dazu Rückmeldung.</p>
-    <div class="brian-task">PH12-S1 Versuchsplanung</div>
-    <p style="margin-bottom:0">Du findest die Aufgabe in Brian in deinem Physikkurs unter diesem Namen. Bearbeite sie, bevor ihr im Unterricht messt. Es dauert etwa 10 Minuten.</p>
+    <div class="brian-task">PH12-S1 Messplan zum Fadenpendel</div>
+    <p>Bearbeite die Aufgabe, bevor ihr im Unterricht messt. Es dauert etwa 10 Minuten.</p>
+    <a class="brian-link" href="https://student.brian.study/#/courses/14138?highlight-course-unit=28324" target="_blank" rel="noopener">In Brian öffnen &rarr;</a>
+    <p style="margin-bottom:0">Der Link öffnet den Bereich „Schwingungen" in deinem Physikkurs in einem neuen Fenster. Dort findest du die Aufgabe unter dem Namen oben.</p>
   </div>
 
   <div class="nav">
@@ -695,8 +705,9 @@ svg text {
   <div class="brian">
     <span class="tag">Aufgabe in Brian</span>
     <h3>Abschluss dieser Einheit</h3>
-    <p>Am Ende der gesamten Einheit Schwingungen wartet in Brian das Abschluss-Quiz. Für diesen Lernschritt reicht die Aufgabe zur Versuchsplanung, die du in Teil 3 gefunden hast.</p>
-    <div class="brian-task" style="margin-bottom:0">PH12-S5 Abschluss-Quiz</div>
+    <p>Am Ende der gesamten Einheit Schwingungen wartet in Brian das Abschlussquiz. Für diesen Lernschritt reicht der Messplan aus Teil 3.</p>
+    <div class="brian-task">Abschlussquiz: Faden- &amp; Federpendel</div>
+    <a class="brian-link" href="https://student.brian.study/#/courses/14138?highlight-course-unit=28324" target="_blank" rel="noopener">Brian-Kurs öffnen &rarr;</a>
   </div>
 
   <div class="card tight">

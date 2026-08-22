@@ -1,10 +1,11 @@
-# Brian-Aktivität: PH12-S5 Abschluss-Quiz
+# Brian-Aktivität: Abschlussquiz Faden- und Federpendel
 
 | | |
 |---|---|
-| **Aktivitätsname in Brian** | `PH12-S5 Abschluss-Quiz` |
+| **Aktivitätsname in Brian** | `Abschlussquiz: Faden- & Federpendel` (angelegt) |
 | **Typ** | KI-Quiz (Multiple Choice) |
 | **Gehört zu** | Abschluss der gesamten Einheit Schwingungen |
+| **Kursbereich** | [Schwingungen in Brian](https://student.brian.study/#/courses/14138?highlight-course-unit=28324) |
 | **Zeitbedarf** | ca. 20 Minuten |
 | **Wann** | etwa eine Woche vor der Klausur |
 | **Material mitgeben** | optional die PDFs „Glossar Schwingungen" und „Bewegungsgleichungen von Schwingungen" aus dem Moodle-Kurs |

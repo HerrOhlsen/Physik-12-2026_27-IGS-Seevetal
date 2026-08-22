@@ -2,10 +2,11 @@
 
 | | |
 |---|---|
-| **Aktivitätsname in Brian** | `PH12-S2 Sinuskurve` |
+| **Aktivitätsname in Brian** | `PH12-S2 Sinuskurve` (angelegt) |
 | **Typ** | KI-Dialog |
 | **Dialogform** | festgelegt: abfragen |
 | **Gehört zu** | Lernschritt 2 (Beschreiben) |
+| **Kursbereich** | [Schwingungen in Brian](https://student.brian.study/#/courses/14138?highlight-course-unit=28324) |
 | **Zeitbedarf** | ca. 15 Minuten |
 | **Wann** | nach der Erarbeitung der Schwingungsgleichung, vor der Übungsphase |
 | **Material mitgeben** | die Screenshots „Parameter der Schwingungsgleichung" und „Skizzieren von Schwingungen" aus dem Moodle-Kurs |
