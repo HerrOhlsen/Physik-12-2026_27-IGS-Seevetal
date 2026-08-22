@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Schwingungen S4: Was hinter der Gleichung steckt | Physik 12</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════════
+   TOKENS
+   ══════════════════════════════════════════ */
+:root {
+  --bg-deep: #0b1220;
+  --bg-surface: #111c2e;
+  --bg-card: #16243a;
+  --bg-elevated: #1d3049;
+
+  --ink: #e6edf5;
+  --ink-muted: #a3b4c8;
+  --ink-dim: #6f8299;
+
+  --accent: #22d3ee;
+  --accent-deep: #0891b2;
+  --accent-subtle: rgba(34, 211, 238, 0.10);
+  --accent-glow: rgba(34, 211, 238, 0.28);
+
+  --ok: #34d399;
+  --ok-bg: rgba(52, 211, 153, 0.12);
+  --ok-border: rgba(52, 211, 153, 0.35);
+  --err: #f87171;
+  --err-bg: rgba(248, 113, 113, 0.12);
+  --err-border: rgba(248, 113, 113, 0.35);
+  --warn: #fbbf24;
+  --warn-bg: rgba(251, 191, 36, 0.10);
+  --warn-border: rgba(251, 191, 36, 0.30);
+
+  --brian: #c084fc;
+  --brian-bg: rgba(192, 132, 252, 0.10);
+  --brian-border: rgba(192, 132, 252, 0.35);
+
+  --border: rgba(34, 211, 238, 0.15);
+  --border-strong: rgba(34, 211, 238, 0.32);
+
+  --font: 'Outfit', system-ui, -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-full: 100px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.32), 0 1px 4px rgba(0,0,0,0.2);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Kein scroll-behavior: smooth. Es gilt sonst auch fuer behavior:'auto'
+   und laesst Sprünge beim Abschnittswechsel ins Leere laufen. */
+html { scroll-behavior: auto; }
+body {
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--bg-deep);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34,211,238,0.10), transparent),
+    radial-gradient(ellipse 60% 50% at 90% 110%, rgba(8,145,178,0.08), transparent);
+  background-attachment: fixed;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+input, textarea, select { font-size: 16px; font-family: var(--font); }
+button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; font-family: var(--font); }
+
+/* ══════════════════════════════════════════
+   LAYOUT
+   ══════════════════════════════════════════ */
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 1.25rem 6rem; }
+
+header.top {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(11, 18, 32, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 0;
+  margin-bottom: 2rem;
+}
+.top-inner { max-width: 860px; margin: 0 auto; padding: 0 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.kicker {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent); white-space: nowrap;
+}
+.steps { display: flex; gap: 0.4rem; margin-left: auto; flex-wrap: wrap; }
+.step-dot {
+  width: 2rem; height: 0.3rem; border-radius: var(--r-full);
+  background: rgba(255,255,255,0.12); transition: background 0.25s, box-shadow 0.25s;
+  cursor: pointer; border: none; padding: 0;
+}
+.step-dot.done { background: var(--accent-deep); }
+.step-dot.here { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+
+h1 { font-size: clamp(1.6rem, 4.5vw, 2.3rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 0.6rem; }
+h2 { font-size: clamp(1.25rem, 3.5vw, 1.55rem); font-weight: 700; line-height: 1.25; margin-bottom: 0.9rem; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--ink); }
+p { margin-bottom: 1rem; color: var(--ink-muted); }
+p strong, li strong { color: var(--ink); font-weight: 600; }
+ul, ol { margin: 0 0 1rem 1.3rem; color: var(--ink-muted); }
+li { margin-bottom: 0.4rem; }
+
+.sec { display: none; animation: fade 0.3s ease; }
+.sec.active { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.card.tight { padding: 1.1rem 1.25rem; }
+
+.tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.68rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.25rem 0.6rem; border-radius: var(--r-full);
+  background: var(--accent-subtle); color: var(--accent);
+  border: 1px solid var(--border-strong); margin-bottom: 0.9rem;
+}
+.tag.zusatz { background: var(--warn-bg); color: var(--warn); border-color: var(--warn-border); }
+
+.lead { font-size: 1.05rem; color: var(--ink-muted); }
+
+/* Ziele-Liste */
+.goals { list-style: none; margin-left: 0; }
+.goals li { display: flex; gap: 0.7rem; align-items: flex-start; margin-bottom: 0.6rem; }
+.goals li::before {
+  content: ''; flex: 0 0 auto; width: 0.5rem; height: 0.5rem; margin-top: 0.6rem;
+  border-radius: 50%; background: var(--accent);
+}
+
+/* Callouts */
+.note {
+  border-left: 3px solid var(--accent); background: var(--accent-subtle);
+  border-radius: 0 var(--r-md) var(--r-md) 0; padding: 0.9rem 1.1rem; margin-bottom: 1.2rem;
+}
+.note p:last-child { margin-bottom: 0; }
+.note.warnbox { border-left-color: var(--warn); background: var(--warn-bg); }
+
+/* Brian-Karte */
+.brian {
+  border: 1px solid var(--brian-border); background: var(--brian-bg);
+  border-radius: var(--r-lg); padding: 1.3rem 1.4rem; margin-bottom: 1.5rem;
+}
+.brian .tag { background: rgba(192,132,252,0.12); color: var(--brian); border-color: var(--brian-border); }
+.brian h3 { color: var(--brian); }
+.brian-task {
+  font-family: var(--mono); font-size: 0.9rem; color: var(--ink);
+  background: rgba(0,0,0,0.28); border-radius: var(--r-sm);
+  padding: 0.6rem 0.85rem; margin: 0.7rem 0 0.9rem; display: inline-block;
+}
+.brian-link {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--brian); color: #1a0b2e; font-weight: 600; font-size: 0.95rem;
+  text-decoration: none; border-radius: var(--r-full);
+  padding: 0.6rem 1.3rem; margin: 0.2rem 0 0.9rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.brian-link:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(192,132,252,0.3); }
+
+/* Bootcamp-Hinweis */
+.rescue {
+  display: flex; gap: 0.9rem; align-items: flex-start;
+  border: 1px dashed rgba(255,255,255,0.18); border-radius: var(--r-md);
+  padding: 0.9rem 1.1rem; margin-bottom: 1.2rem; background: rgba(255,255,255,0.03);
+}
+.rescue .ico { font-size: 1.3rem; line-height: 1.3; }
+.rescue p { margin: 0; font-size: 0.94rem; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--accent); color: #06202b; font-weight: 600; font-size: 0.98rem;
+  border: none; border-radius: var(--r-full); padding: 0.7rem 1.5rem; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
+.btn:active { transform: none; }
+.btn.ghost { background: transparent; color: var(--ink-muted); border: 1px solid var(--border-strong); }
+.btn.ghost:hover { color: var(--ink); box-shadow: none; }
+.btn.small { padding: 0.45rem 1rem; font-size: 0.88rem; }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.nav { display: flex; gap: 0.8rem; align-items: center; margin-top: 2rem; flex-wrap: wrap; }
+.nav .spacer { flex: 1 1 auto; }
+
+/* Auswahlfragen */
+.choices { display: flex; flex-direction: column; gap: 0.6rem; margin: 1rem 0; }
+.choice {
+  display: flex; gap: 0.8rem; align-items: flex-start; text-align: left; width: 100%;
+  background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: var(--r-md); padding: 0.85rem 1rem; cursor: pointer; color: var(--ink);
+  font-size: 0.98rem; line-height: 1.5; transition: border-color 0.18s, background 0.18s;
+}
+.choice:hover { border-color: var(--border-strong); }
+.choice .letter {
+  flex: 0 0 auto; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  background: rgba(255,255,255,0.08); color: var(--ink-muted);
+  display: grid; place-items: center; font-family: var(--mono); font-size: 0.8rem; font-weight: 600;
+}
+.choice.picked { border-color: var(--accent); background: var(--accent-subtle); }
+.choice.picked .letter { background: var(--accent); color: #06202b; }
+.choice.right { border-color: var(--ok-border); background: var(--ok-bg); }
+.choice.right .letter { background: var(--ok); color: #04231a; }
+.choice.wrong { border-color: var(--err-border); background: var(--err-bg); }
+.choice.wrong .letter { background: var(--err); color: #2a0a0a; }
+.choice[disabled] { cursor: default; }
+
+.fb { border-radius: var(--r-md); padding: 0.8rem 1rem; margin-top: 0.7rem; font-size: 0.94rem; display: none; }
+.fb.show { display: block; }
+.fb.good { background: var(--ok-bg); border: 1px solid var(--ok-border); color: var(--ink); }
+.fb.bad { background: var(--err-bg); border: 1px solid var(--err-border); color: var(--ink); }
+.fb.hint { background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--ink); }
+
+/* Eingabefelder */
+.inputs { display: flex; flex-direction: column; gap: 0.8rem; margin: 1rem 0; }
+.field { display: flex; gap: 0.7rem; align-items: center; flex-wrap: wrap; }
+.field label { flex: 1 1 15rem; color: var(--ink-muted); font-size: 0.96rem; }
+.field input {
+  width: 6.5rem; background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--r-sm); padding: 0.5rem 0.7rem; color: var(--ink);
+  font-family: var(--mono); text-align: right;
+}
+.field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.field input.ok { border-color: var(--ok); background: var(--ok-bg); }
+.field input.no { border-color: var(--err); background: var(--err-bg); }
+.field .unit { font-family: var(--mono); color: var(--ink-dim); width: 3rem; font-size: 0.9rem; }
+
+/* Tabellen */
+.tablewrap { overflow-x: auto; margin-bottom: 1.2rem; }
+table { border-collapse: collapse; width: 100%; font-size: 0.94rem; min-width: 26rem; }
+th, td { padding: 0.55rem 0.7rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.09); }
+th { color: var(--accent); font-weight: 600; font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase; }
+td { color: var(--ink-muted); font-family: var(--mono); font-size: 0.9rem; }
+td.txt { font-family: var(--font); }
+table input {
+  width: 5rem; background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--r-sm); padding: 0.35rem 0.5rem; color: var(--ink);
+  font-family: var(--mono); text-align: right; font-size: 0.9rem;
+}
+table input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Diagramme */
+.plotbox { background: rgba(0,0,0,0.25); border-radius: var(--r-md); padding: 0.8rem; margin-bottom: 1rem; }
+.plotrow { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+@media (min-width: 720px) { .plotrow { grid-template-columns: 1fr 1fr; } }
+svg { display: block; width: 100%; height: auto; }
+svg text {
+  paint-order: stroke;
+  stroke: #101b2c;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.plot-cap { font-size: 0.85rem; color: var(--ink-dim); text-align: center; margin-top: 0.3rem; font-family: var(--mono); }
+
+/* Ergebnis-Panel */
+.result {
+  text-align: center; padding: 1.5rem;
+  border: 1px solid var(--border-strong); border-radius: var(--r-lg);
+  background: var(--accent-subtle); margin-bottom: 1.5rem;
+}
+.result .big { font-size: 2.4rem; font-weight: 800; color: var(--accent); line-height: 1; }
+.result .cap { font-size: 0.9rem; color: var(--ink-muted); margin-top: 0.4rem; }
+
+.formula {
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 1.35rem; color: var(--ink); letter-spacing: 0.02em;
+  background: rgba(0,0,0,0.25); border-radius: var(--r-sm);
+  padding: 0.7rem 1.2rem; display: inline-block; margin: 0.3rem 0 1rem;
+}
+.formula sub { font-style: normal; font-size: 0.7em; }
+
+/* Druck */
+@media print {
+  body { background: #fff; color: #000; }
+  header.top, .nav, .btn, .steps { display: none !important; }
+  .sec { display: block !important; }
+  .card, .note, .brian, .rescue { border: 1px solid #999; background: #fff; box-shadow: none; page-break-inside: avoid; }
+  h1, h2, h3, p, li, td, th { color: #000 !important; }
+  .print-only { display: block !important; }
+}
+.print-only { display: none; }
+
+/* Schieberegler */
+.regler { display: flex; gap: 1rem; align-items: center; margin-bottom: 0.9rem; flex-wrap: wrap; }
+.regler label { flex: 0 0 9rem; color: var(--ink-muted); font-size: 0.96rem; }
+.regler input[type=range] {
+  flex: 1 1 12rem; accent-color: var(--accent);
+  height: 1.6rem; background: transparent; cursor: pointer;
+}
+.regler output {
+  font-family: var(--mono); color: var(--accent); font-size: 0.95rem;
+  min-width: 5.5rem; text-align: right;
+}
+
+/* Absprung zur Simulation */
+.sim-link {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--warn); color: #2a1a00; font-weight: 600; font-size: 0.95rem;
+  text-decoration: none; border-radius: var(--r-full);
+  padding: 0.6rem 1.3rem; margin: 0.4rem 0 0.9rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.sim-link:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(251,191,36,0.28); }
+/* Formel im Fliesstext, damit l nicht wie 1 aussieht */
+.formel-inline { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 1.05em; }
+
+/* Energiebalken */
+.energiezeile { display: flex; flex-direction: column; gap: 0.9rem; margin: 1.2rem 0; }
+.ebalken { display: flex; flex-direction: column; gap: 0.3rem; }
+.ebeschriftung {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 0.92rem; color: var(--ink-muted);
+}
+.ebeschriftung span:last-child { font-family: var(--mono); color: var(--ink); }
+.ebalken-huelle {
+  height: 1.5rem; background: rgba(0,0,0,0.3); border-radius: var(--r-sm);
+  overflow: hidden; border: 1px solid rgba(255,255,255,0.07);
+}
+.ebalken-fuell { height: 100%; width: 0; border-radius: var(--r-sm); transition: width 0.05s linear; }
+.ebalken-fuell.pot { background: linear-gradient(90deg, #a855f7, #c084fc); }
+.ebalken-fuell.kin { background: linear-gradient(90deg, #10b981, #34d399); }
+.ebalken-fuell.ges { background: linear-gradient(90deg, #d97706, #fbbf24); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <span class="kicker">Physik 12 &middot; Schwingungen &middot; S4</span>
+    <nav class="steps" id="steps" aria-label="Abschnitte"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ═══════════════ 0 START ═══════════════ -->
+<section class="sec active" id="sec0">
+  <h1>Was hinter der Gleichung steckt</h1>
+  <p class="lead">Rechnen kannst du jetzt. In diesem letzten Schritt geht es um die Fragen, die eine Gleichung nicht beantwortet: Wohin verschwindet die Energie, wenn das Pendel oben kurz stillsteht? Warum wird eine echte Schwingung kleiner, aber nicht langsamer? Und ab wann stimmt das, was du gelernt hast, einfach nicht mehr?</p>
+
+  <div class="note">
+    <p style="margin-bottom:0"><strong>Dieser Lernschritt ist Zugabe.</strong> Für die Klausur brauchst du ihn nicht zwingend, das Pflichtprogramm steht in den Schritten 1 bis 3. Er ist trotzdem der interessanteste Teil, weil hier klar wird, wie Physik eigentlich arbeitet: nicht mit der Wirklichkeit, sondern mit Modellen davon.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Das kannst du danach</span>
+    <ul class="goals">
+      <li>Du beschreibst, wie sich Energie beim Schwingen umwandelt und wo welche Form maximal ist.</li>
+      <li>Du erklärst, warum eine reale Schwingung kleiner wird, ihre Periodendauer aber fast gleich bleibt.</li>
+      <li>Du benennst die Bedingung, unter der die Gleichung aus Lernschritt 3 überhaupt gilt.</li>
+      <li>Du erkennst dieselbe Art von Vereinfachung an anderen Stellen im Physikunterricht wieder.</li>
+    </ul>
+  </div>
+
+  <div class="nav">
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(1)">Los geht es</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 1 ENERGIE ═══════════════ -->
+<section class="sec" id="sec1">
+  <h2>1. Wohin geht die Energie?</h2>
+  <p>Im Umkehrpunkt steht der Körper einen Augenblick still. Seine Geschwindigkeit ist null, also auch seine Bewegungsenergie. Trotzdem ist die Energie nicht weg, sonst bliebe das Pendel dort hängen.</p>
+
+  <div class="card">
+    <p>Ein Federpendel mit <strong>m = 0,50 kg</strong> und <strong>D = 5,0 N/m</strong>, ausgelenkt um <strong>4,0 cm</strong>. Daraus ergibt sich T = 2,0 s und eine Gesamtenergie von 4,0 mJ. Schiebe den Regler durch eine Schwingung und beobachte die beiden Balken.</p>
+    <div class="regler">
+      <label for="sT">Zeitpunkt t</label>
+      <input type="range" id="sT" min="0" max="2" step="0.02" value="0" oninput="energieRegeln()">
+      <output id="oT">0,00 s</output>
+    </div>
+
+    <div class="plotbox">
+      <svg id="plotY" viewBox="0 0 640 200" role="img" aria-label="Auslenkung mit Markierung des gewählten Zeitpunkts"></svg>
+      <div class="plot-cap">Auslenkung y gegen die Zeit</div>
+    </div>
+
+    <div class="energiezeile">
+      <div class="ebalken">
+        <div class="ebeschriftung"><span>Lageenergie (in der Feder)</span><span id="wPot">0,0 mJ</span></div>
+        <div class="ebalken-huelle"><div class="ebalken-fuell pot" id="bPot"></div></div>
+      </div>
+      <div class="ebalken">
+        <div class="ebeschriftung"><span>Bewegungsenergie</span><span id="wKin">4,0 mJ</span></div>
+        <div class="ebalken-huelle"><div class="ebalken-fuell kin" id="bKin"></div></div>
+      </div>
+      <div class="ebalken">
+        <div class="ebeschriftung"><span><strong>Summe</strong></span><span id="wGes">4,0 mJ</span></div>
+        <div class="ebalken-huelle"><div class="ebalken-fuell ges" id="bGes"></div></div>
+      </div>
+    </div>
+
+    <p style="margin-bottom:0"><strong>Achte auf den dritten Balken.</strong> Er bewegt sich nicht. Die beiden oberen tauschen dauernd hin und her, ihre Summe bleibt gleich.</p>
+  </div>
+
+  <div class="plotbox">
+    <svg id="plotE" viewBox="0 0 640 240" role="img" aria-label="Energieverlauf über eine Schwingung"></svg>
+    <div class="plot-cap">Lageenergie, Bewegungsenergie und ihre Summe über eine Schwingung</div>
+  </div>
+
+  <div class="card">
+    <span class="tag">Kontrolle</span>
+    <h3>Wo ist die Bewegungsenergie am größten?</h3>
+    <div class="choices" id="q1"></div>
+    <div class="fb" id="q1fb"></div>
+  </div>
+
+  <div class="note">
+    <p style="margin-bottom:0"><strong>Nebenbei fällt hier etwas auf:</strong> Die Energie schwingt doppelt so schnell wie das Pendel. Während der Körper eine Schwingung macht, durchläuft jede Energieform zwei volle Berge. Das liegt daran, dass es der Energie egal ist, ob die Auslenkung positiv oder negativ ist: rechts außen und links außen ist die Lageenergie gleich groß.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(0)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(2)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 2 DÄMPFUNG ═══════════════ -->
+<section class="sec" id="sec2">
+  <h2>2. Warum echte Pendel irgendwann aufhören</h2>
+  <p>In Lernschritt 1 hast du gemessen, und dabei ist dir vielleicht aufgefallen, dass das Pendel nach ein paar Minuten deutlich kleiner schwingt. Reibung an der Luft und im Aufhängepunkt entzieht dem System Energie. Die Frage ist: Was genau ändert sich dadurch?</p>
+
+  <div class="card">
+    <div class="regler">
+      <label for="sDaempf">Reibung</label>
+      <input type="range" id="sDaempf" min="0" max="0.6" step="0.02" value="0.15" oninput="daempfRegeln()">
+      <output id="oDaempf">mittel</output>
+    </div>
+    <div class="plotbox">
+      <svg id="plotD" viewBox="0 0 640 260" role="img" aria-label="Gedämpfte Schwingung mit markierten Nulldurchgängen"></svg>
+      <div class="plot-cap">gedämpfte Schwingung, die senkrechten Striche markieren die Nulldurchgänge</div>
+    </div>
+    <p style="margin-bottom:0">Vergleiche die Abstände zwischen den senkrechten Strichen. Die Berge werden kleiner, aber die Striche behalten ihren Abstand. Erst bei sehr starker Reibung ganz rechts am Regler rücken sie messbar auseinander.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Kontrolle</span>
+    <h3>Was ändert sich durch Reibung?</h3>
+    <div class="choices" id="q2"></div>
+    <div class="fb" id="q2fb"></div>
+  </div>
+
+  <div class="note warnbox">
+    <p style="margin-bottom:0"><strong>Das ist überraschend und lohnt einen Moment:</strong> Man würde erwarten, dass ein Pendel, das schwächer schwingt, auch langsamer schwingt. Es legt aber auch einen kürzeren Weg zurück, und beides gleicht sich fast vollständig aus. Genau dasselbe Argument wie bei der Auslenkung in Lernschritt 1: größerer Ausschlag heißt längerer Weg, aber auch höhere Geschwindigkeit.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(1)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(3)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 3 MODELLGRENZE ═══════════════ -->
+<section class="sec" id="sec3">
+  <h2>3. Wo die Gleichung aufhört zu gelten</h2>
+  <p>Erinnerst du dich an die Messreihe zur Auslenkung aus Lernschritt 1? Bei 5, 10 und 20 Grad stand fast dieselbe Zeit, bei 40 Grad plötzlich eine größere. Das war kein Messfehler. Hier ist der Grund.</p>
+
+  <div class="card">
+    <h3>Eine Näherung, die niemand dazusagt</h3>
+    <p>Die rücktreibende Kraft am Fadenpendel ist nicht proportional zum Winkel, sondern zu <strong>sin(&phi;)</strong>. Damit wäre die Bewegung mathematisch deutlich schwieriger. Deshalb wird ein Trick benutzt: Für kleine Winkel im Bogenmaß gilt</p>
+    <div class="formula">sin(&phi;) &asymp; &phi;</div>
+    <p>Nur unter dieser Annahme kommt die Gleichung T = 2&pi;&middot;&radic;(l/g) überhaupt zustande. Wie gut die Annahme ist, hängt davon ab, wie klein „klein" ist:</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Winkel</th><th>&phi; im Bogenmaß</th><th>sin(&phi;)</th><th>Abweichung</th><th>T wird länger um</th></tr>
+        <tbody id="winkelTabelle"></tbody>
+      </table>
+    </div>
+    <p style="margin-bottom:0">Bei 5 Grad liegen &phi; und sin(&phi;) so dicht beieinander, dass keine Messung den Unterschied sieht. Bei 40 Grad sind es fast neun Prozent, und die Schwingung dauert drei Prozent länger als berechnet.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Der Abgleich</span>
+    <h3>Genau das hast du gemessen</h3>
+    <p>Die Werte aus Lernschritt 1 neben dem, was das Modell mit Korrektur vorhersagt (Fadenpendel, l = 0,50 m):</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Auslenkung</th><th>gemessen in LS1</th><th>Modell ohne Korrektur</th><th>Modell mit Korrektur</th></tr>
+        <tr><td>5&deg;</td><td>1,42 s</td><td>1,42 s</td><td>1,42 s</td></tr>
+        <tr><td>10&deg;</td><td>1,42 s</td><td>1,42 s</td><td>1,42 s</td></tr>
+        <tr><td>20&deg;</td><td>1,43 s</td><td>1,42 s</td><td>1,43 s</td></tr>
+        <tr><td>40&deg;</td><td>1,46 s</td><td>1,42 s</td><td>1,46 s</td></tr>
+      </table>
+    </div>
+    <p style="margin-bottom:0">Die dritte Spalte weicht bei 40 Grad ab, die vierte trifft. Der Messwert war also richtig, und das einfache Modell war es nicht. Wer hier „Messfehler" gesagt hätte, hätte die interessanteste Beobachtung der ganzen Messreihe weggeworfen.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(2)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(4)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 4 MODELLE ═══════════════ -->
+<section class="sec" id="sec4">
+  <h2>4. Was ein Modell leistet</h2>
+  <p>Die Gleichung aus Lernschritt 3 beschreibt kein einziges Pendel dieser Welt exakt. Sie setzt voraus, dass der Faden masselos ist, dass keine Reibung wirkt, dass der Körper punktförmig ist und dass die Auslenkung klein bleibt. Nichts davon trifft je vollständig zu.</p>
+  <p>Trotzdem ist sie nicht falsch. Sie ist <em>genau genug</em>, und das ist etwas anderes.</p>
+
+  <div class="card">
+    <h3>Dieselbe Sorte Annahme, an anderen Stellen</h3>
+    <p>Wenn du einmal darauf achtest, findest du sie überall im Physikunterricht:</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Was gesagt wird</th><th>Was stillschweigend angenommen wird</th></tr>
+        <tr><td class="txt">„Der Körper fällt frei."</td><td class="txt">kein Luftwiderstand</td></tr>
+        <tr><td class="txt">„Die Kugel ist ein Massepunkt."</td><td class="txt">keine Ausdehnung, keine Drehung</td></tr>
+        <tr><td class="txt">„Im Plattenkondensator ist das Feld homogen."</td><td class="txt">unendlich große Platten, keine Randeffekte</td></tr>
+        <tr><td class="txt">„Der Widerstand ist konstant."</td><td class="txt">keine Erwärmung</td></tr>
+        <tr><td class="txt">„Das Pendel schwingt harmonisch."</td><td class="txt">kleine Auslenkung, keine Reibung</td></tr>
+      </table>
+    </div>
+    <p style="margin-bottom:0">Die letzte Zeile ist deine. Das Feld im Kondensator kommt im zweiten Halbjahr, und dort wird dieselbe Frage wieder auftauchen.</p>
+  </div>
+
+  <div class="note">
+    <p style="margin-bottom:0"><strong>Die eigentliche Fähigkeit</strong> ist deshalb nicht, ein Modell zu rechnen. Das ist der leichtere Teil. Sie besteht darin zu wissen, wo es aufhört zu gelten, und zu erkennen, wann eine Abweichung ein Messfehler ist und wann sie einem etwas sagen will.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(3)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="go(5)">Weiter</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 5 CHECK ═══════════════ -->
+<section class="sec" id="sec5">
+  <h2>5. Check</h2>
+
+  <div class="card">
+    <h3>Das Wichtigste</h3>
+    <p>Beim Schwingen wandelt sich Energie zwischen Lage- und Bewegungsenergie hin und her. Ohne Reibung bleibt ihre Summe konstant. In den Umkehrpunkten ist alles Lageenergie, beim Durchgang durch die Ruhelage alles Bewegungsenergie.</p>
+    <p>Reibung nimmt der Schwingung Amplitude, aber praktisch keine Periodendauer.</p>
+    <p style="margin-bottom:0">Die Gleichung T = 2&pi;&middot;&radic;(l/g) beruht auf der Näherung sin(&phi;) &asymp; &phi; und gilt deshalb nur für kleine Auslenkungen. Bei 40 Grad ist die Abweichung bereits messbar.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">Check</span>
+    <h3>Fünf Fragen zum Schluss</h3>
+    <p>Nicht benotet, niemand sieht die Antworten außer dir.</p>
+    <div id="quizBox"></div>
+    <div class="result" id="quizResult" style="display:none">
+      <div class="big" id="quizScore">0/5</div>
+      <div class="cap" id="quizCap"></div>
+    </div>
+  </div>
+
+  <div class="brian">
+    <span class="tag">Aufgabe in Brian</span>
+    <h3>Diesmal entscheidest du selbst</h3>
+    <p>Bei den bisherigen Brian-Aufgaben war vorgegeben, wie gearbeitet wird. Hier nicht. Brian fragt dich am Anfang, was du brauchst: eine Rückmeldung auf eine selbst geschriebene Erklärung, eine Abfrage, oder eine Erklärung von ihm.</p>
+    <p>Ehrlich dazu: Am meisten bleibt bei den ersten beiden hängen, weil man dabei selbst etwas produzieren muss. Die dritte ist die bequemste. Welche du wählst, ist deine Entscheidung, und es lohnt sich, kurz darüber nachzudenken, warum.</p>
+    <div class="brian-task">PH12-S4 Pendel erklären</div>
+    <a class="brian-link" href="https://student.brian.study/#/courses/14138?highlight-course-unit=28324" target="_blank" rel="noopener">In Brian öffnen &rarr;</a>
+    <p style="margin-bottom:0">Etwa 20 Minuten.</p>
+  </div>
+
+  <div class="card tight">
+    <h3>Damit ist die Einheit durch</h3>
+    <p style="margin-bottom:0">Vor der Klausur wartet in Brian noch das <strong>Abschlussquiz: Faden- &amp; Federpendel</strong>. Es geht über die ganze Einheit, nicht nur über diesen Schritt. Danach geht es weiter mit Wellen, und dort wirst du fast alles wiedersehen, was du hier gelernt hast: Amplitude, Periodendauer, Frequenz, nur eben in Bewegung durch den Raum.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn ghost" onclick="go(4)">Zurück</button>
+    <div class="spacer"></div>
+    <button class="btn" onclick="finishModule(event)">Lernschritt abschließen</button>
+  </div>
+</section>
+
+</div>
+
+
+<script>
+// ══════════════════════════════════════════
+// SCORM 1.2 API WRAPPER
+// ══════════════════════════════════════════
+const SCORM = (() => {
+  let api = null;
+  let initialized = false;
+
+  function findAPI(win) {
+    let tries = 0;
+    while (win && !win.API && tries < 10) {
+      tries++;
+      if (win.parent && win.parent !== win) { win = win.parent; }
+      else if (win.opener) { win = win.opener; }
+      else break;
+    }
+    return win ? win.API : null;
+  }
+
+  function init() {
+    try {
+      api = findAPI(window);
+      if (!api) return;
+      api.LMSInitialize('');
+      initialized = true;
+      // Zustand steht in suspend_data (4096 Zeichen). lesson_location fasst nur 255
+      // und traegt deshalb nur noch die Abschnittsnummer. Aeltere Staende, die dort
+      // noch komplett abgelegt wurden, werden weiterhin gelesen.
+      let saved = api.LMSGetValue('cmi.suspend_data');
+      if (!saved) saved = api.LMSGetValue('cmi.core.lesson_location');
+      if (saved) {
+        try {
+          const geladen = JSON.parse(saved);
+          if (geladen && typeof geladen === 'object') Object.assign(state, geladen);
+        } catch (e) {}
+      }
+      if (api.LMSGetValue('cmi.core.lesson_status') === 'not attempted') {
+        api.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+        api.LMSCommit('');
+      }
+    } catch (e) { console.log('SCORM init:', e); }
+  }
+
+  // Schreibt und meldet, wenn das LMS ablehnt. Stilles Scheitern hatte zur Folge,
+  // dass der komplette Fortschritt verlorenging, ohne dass es jemand merkte.
+  function setzen(element, wert) {
+    const ok = api.LMSSetValue(element, String(wert));
+    if (ok !== 'true') {
+      console.warn('[S1] LMS lehnt ab:', element,
+                   'Laenge', String(wert).length,
+                   'Fehlercode', api.LMSGetLastError());
+      return false;
+    }
+    return true;
+  }
+
+  function save(completed) {
+    if (!api || !initialized) return;
+    try {
+      const daten = JSON.stringify(state);
+      if (daten.length > 4000) {
+        console.warn('[S1] Zustand naehert sich der suspend_data-Grenze:', daten.length);
+      }
+      setzen('cmi.suspend_data', daten);
+      setzen('cmi.core.lesson_location', state.section);
+      const total = 5;
+      const right = Object.values(state.quiz).filter(v => v === true).length;
+      setzen('cmi.core.score.raw', Math.round(right / total * 100));
+      setzen('cmi.core.score.min', 0);
+      setzen('cmi.core.score.max', 100);
+      if (completed || state.done) setzen('cmi.core.lesson_status', 'completed');
+      api.LMSCommit('');
+    } catch (e) { console.log('SCORM save:', e); }
+  }
+
+  function finish() {
+    if (!api || !initialized) return;
+    try { save(); api.LMSFinish(''); } catch (e) {}
+  }
+
+  return { init, save, finish };
+})();
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let state = {
+  section: 0,
+  t: 0,              // Reglerstellung Energie
+  daempfung: 0.15,   // Reglerstellung Reibung
+  q1: null, q2: null,
+  quiz: {}, quizPick: {},
+  done: false
+};
+
+const LAST = 5;
+function persist() { SCORM.save(); }
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function go(n) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec' + n).classList.add('active');
+  state.section = n;
+  if (n === 1) energieRegeln();
+  if (n === 2) daempfRegeln();
+  renderSteps();
+  persist();
+  zeigeAbschnittsAnfang(n);
+}
+
+// Immer 'instant': 'auto' uebernimmt den CSS-Wert, und eine Animation
+// wird in Moodles SCORM-Fenster nicht ausgefuehrt.
+function zeigeAbschnittsAnfang(n) {
+  try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, 0); }
+  try {
+    const el = document.getElementById('sec' + n);
+    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start', behavior: 'instant' });
+  } catch (e) {}
+  try {
+    if (window.parent && window.parent !== window && window.frameElement) {
+      const y = window.frameElement.getBoundingClientRect().top + window.parent.scrollY;
+      window.parent.scrollTo(0, Math.max(0, y - 8));
+    }
+  } catch (e) {}
+}
+
+function renderSteps() {
+  const el = document.getElementById('steps');
+  const labels = ['Start', 'Energie', 'Dämpfung', 'Modellgrenze', 'Modelle', 'Check'];
+  el.innerHTML = '';
+  for (let i = 0; i <= LAST; i++) {
+    const b = document.createElement('button');
+    b.className = 'step-dot' + (i === state.section ? ' here' : (i < state.section ? ' done' : ''));
+    b.title = labels[i];
+    b.setAttribute('aria-label', 'Zu Abschnitt ' + labels[i]);
+    b.onclick = () => go(i);
+    el.appendChild(b);
+  }
+}
+
+const komma = (x, n) => x.toFixed(n).replace('.', ',');
+
+// ══════════════════════════════════════════
+// ABSCHNITT 1: ENERGIE
+// ══════════════════════════════════════════
+// Federpendel m = 0,50 kg, D = 5,0 N/m, Amplitude 4,0 cm -> T = 2,0 s, E = 4,0 mJ
+const T_E = 2.0, AMP = 4.0, E_GES = 4.0;
+
+function energieRegeln() {
+  const t = parseFloat(document.getElementById('sT').value);
+  state.t = t;
+  document.getElementById('oT').textContent = komma(t, 2) + ' s';
+  const phase = 2 * Math.PI * t / T_E;
+  const y = AMP * Math.sin(phase);
+  const ePot = E_GES * Math.sin(phase) ** 2;
+  const eKin = E_GES * Math.cos(phase) ** 2;
+
+  document.getElementById('wPot').textContent = komma(ePot, 1) + ' mJ';
+  document.getElementById('wKin').textContent = komma(eKin, 1) + ' mJ';
+  document.getElementById('wGes').textContent = komma(ePot + eKin, 1) + ' mJ';
+  document.getElementById('bPot').style.width = (ePot / E_GES * 100) + '%';
+  document.getElementById('bKin').style.width = (eKin / E_GES * 100) + '%';
+  document.getElementById('bGes').style.width = '100%';
+
+  zeichneY(t, y);
+  zeichneEnergie(t);
+  persist();
+}
+
+function zeichneY(t, y) {
+  const svg = document.getElementById('plotY');
+  const W = 640, H = 200, L = 52, R = 16, TP = 14, B = 32;
+  const px = W - L - R, py = H - TP - B;
+  const X = tt => L + (tt / T_E) * px;
+  const Y = yy => TP + py / 2 - (yy / (AMP * 1.25)) * (py / 2);
+  let s = '';
+  for (let i = 1; i <= 4; i++) {
+    const gx = L + (i / 4) * px;
+    s += '<line x1="' + gx + '" y1="' + TP + '" x2="' + gx + '" y2="' + (TP + py) + '" stroke="rgba(255,255,255,0.05)"/>';
+    s += '<text x="' + gx + '" y="' + (TP + py + 18) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="middle">' + komma(T_E * i / 4, 1) + '</text>';
+  }
+  s += '<line x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '" stroke="#6f8299" stroke-width="1.4"/>';
+  s += '<text x="' + (L - 8) + '" y="' + (Y(AMP) + 4) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end">+4</text>';
+  s += '<text x="' + (L - 8) + '" y="' + (Y(-AMP) + 4) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end">-4</text>';
+  s += '<text x="' + (W - R) + '" y="' + (TP + py + 30) + '" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end">t in s</text>';
+  let d = '';
+  for (let i = 0; i <= 300; i++) {
+    const tt = T_E / 300 * i;
+    d += (i === 0 ? 'M' : 'L') + X(tt).toFixed(1) + ',' + Y(AMP * Math.sin(2 * Math.PI * tt / T_E)).toFixed(1);
+  }
+  s += '<path d="' + d + '" fill="none" stroke="#22d3ee" stroke-width="2.4"/>';
+  s += '<line x1="' + X(t).toFixed(1) + '" y1="' + TP + '" x2="' + X(t).toFixed(1) + '" y2="' + (TP + py) + '" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 3"/>';
+  s += '<circle cx="' + X(t).toFixed(1) + '" cy="' + Y(y).toFixed(1) + '" r="6" fill="#fbbf24"/>';
+  svg.innerHTML = s;
+}
+
+function zeichneEnergie(t) {
+  const svg = document.getElementById('plotE');
+  const W = 640, H = 240, L = 52, R = 120, TP = 16, B = 36;
+  const px = W - L - R, py = H - TP - B;
+  const X = tt => L + (tt / T_E) * px;
+  const Y = e => TP + py - (e / (E_GES * 1.15)) * py;
+  let s = '';
+  for (let i = 1; i <= 4; i++) {
+    const gx = L + (i / 4) * px;
+    s += '<line x1="' + gx + '" y1="' + TP + '" x2="' + gx + '" y2="' + (TP + py) + '" stroke="rgba(255,255,255,0.05)"/>';
+    s += '<text x="' + gx + '" y="' + (TP + py + 18) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="middle">' + komma(T_E * i / 4, 1) + '</text>';
+  }
+  s += '<line x1="' + L + '" y1="' + (TP + py) + '" x2="' + (W - R) + '" y2="' + (TP + py) + '" stroke="#6f8299" stroke-width="1.4"/>';
+  s += '<line x1="' + L + '" y1="' + TP + '" x2="' + L + '" y2="' + (TP + py) + '" stroke="#6f8299" stroke-width="1.4"/>';
+  s += '<text x="' + (L - 8) + '" y="' + (Y(E_GES) + 4) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end">4,0</text>';
+  s += '<text x="' + (L - 8) + '" y="' + (Y(0) + 4) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end">0</text>';
+  s += '<text x="' + L + '" y="' + (TP - 3) + '" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="11">E in mJ</text>';
+
+  const kurve = (fn, farbe, breite, strich) => {
+    let d = '';
+    for (let i = 0; i <= 300; i++) {
+      const tt = T_E / 300 * i;
+      d += (i === 0 ? 'M' : 'L') + X(tt).toFixed(1) + ',' + Y(fn(tt)).toFixed(1);
+    }
+    return '<path d="' + d + '" fill="none" stroke="' + farbe + '" stroke-width="' + breite + '"' + (strich ? ' stroke-dasharray="' + strich + '"' : '') + '/>';
+  };
+  const pot = tt => E_GES * Math.sin(2 * Math.PI * tt / T_E) ** 2;
+  const kin = tt => E_GES * Math.cos(2 * Math.PI * tt / T_E) ** 2;
+  s += kurve(pot, '#c084fc', 2.2, null);
+  s += kurve(kin, '#34d399', 2.2, null);
+  s += kurve(() => E_GES, '#fbbf24', 2.2, '6 4');
+  s += '<line x1="' + X(t).toFixed(1) + '" y1="' + TP + '" x2="' + X(t).toFixed(1) + '" y2="' + (TP + py) + '" stroke="rgba(251,191,36,0.5)" stroke-width="1.2"/>';
+
+  // Legende rechts
+  const lx = W - R + 12;
+  [['#c084fc', 'Lageenergie'], ['#34d399', 'Bewegung'], ['#fbbf24', 'Summe']].forEach((e, i) => {
+    const ly = TP + 22 + i * 26;
+    s += '<line x1="' + lx + '" y1="' + ly + '" x2="' + (lx + 22) + '" y2="' + ly + '" stroke="' + e[0] + '" stroke-width="3"' + (i === 2 ? ' stroke-dasharray="6 4"' : '') + '/>';
+    s += '<text x="' + (lx + 28) + '" y="' + (ly + 4) + '" fill="#a3b4c8" font-family="Outfit, sans-serif" font-size="12">' + e[1] + '</text>';
+  });
+  svg.innerHTML = s;
+}
+
+// ══════════════════════════════════════════
+// ABSCHNITT 2: DÄMPFUNG
+// ══════════════════════════════════════════
+function daempfRegeln() {
+  const d = parseFloat(document.getElementById('sDaempf').value);
+  state.daempfung = d;
+  const worte = d < 0.05 ? 'keine' : d < 0.2 ? 'wenig' : d < 0.4 ? 'mittel' : 'viel';
+  document.getElementById('oDaempf').textContent = worte;
+  zeichneDaempfung(d);
+  persist();
+}
+
+function zeichneDaempfung(delta) {
+  const svg = document.getElementById('plotD');
+  const W = 640, H = 260, L = 52, R = 16, TP = 16, B = 40;
+  const px = W - L - R, py = H - TP - B;
+  const tMax = 10, yMax = 4.6;
+  const X = t => L + (t / tMax) * px;
+  const Y = y => TP + py / 2 - (y / yMax) * (py / 2);
+
+  // ungedaempfte Kreisfrequenz und die tatsaechliche der gedaempften Schwingung
+  const w0 = 2 * Math.PI / 2.0;
+  const wd = Math.sqrt(Math.max(w0 * w0 - delta * delta, 0.01));
+  const Td = 2 * Math.PI / wd;
+
+  let s = '';
+  for (let i = 1; i <= 5; i++) {
+    const gx = L + (i / 5) * px;
+    s += '<line x1="' + gx + '" y1="' + TP + '" x2="' + gx + '" y2="' + (TP + py) + '" stroke="rgba(255,255,255,0.05)"/>';
+    s += '<text x="' + gx + '" y="' + (TP + py + 18) + '" fill="#6f8299" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="middle">' + (tMax * i / 5) + '</text>';
+  }
+  s += '<line x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '" stroke="#6f8299" stroke-width="1.4"/>';
+  s += '<text x="' + (W - R) + '" y="' + (TP + py + 34) + '" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end">t in s</text>';
+  s += '<text x="' + L + '" y="' + (TP - 3) + '" fill="#a3b4c8" font-family="IBM Plex Mono, monospace" font-size="11">y in cm</text>';
+
+  // Nulldurchgaenge markieren
+  for (let k = 0; k * Td / 2 <= tMax; k++) {
+    const tn = k * Td / 2;
+    s += '<line x1="' + X(tn).toFixed(1) + '" y1="' + (Y(0) - 12) + '" x2="' + X(tn).toFixed(1) + '" y2="' + (Y(0) + 12) + '" stroke="#fbbf24" stroke-width="1.4"/>';
+  }
+  // Einhuellende
+  const huelle = (vz) => {
+    let d = '';
+    for (let i = 0; i <= 200; i++) {
+      const t = tMax / 200 * i;
+      d += (i === 0 ? 'M' : 'L') + X(t).toFixed(1) + ',' + Y(vz * 4 * Math.exp(-delta * t)).toFixed(1);
+    }
+    return '<path d="' + d + '" fill="none" stroke="rgba(163,180,200,0.35)" stroke-width="1.3" stroke-dasharray="4 4"/>';
+  };
+  s += huelle(1) + huelle(-1);
+  // Schwingung
+  let d = '';
+  for (let i = 0; i <= 600; i++) {
+    const t = tMax / 600 * i;
+    d += (i === 0 ? 'M' : 'L') + X(t).toFixed(1) + ',' + Y(4 * Math.exp(-delta * t) * Math.sin(wd * t)).toFixed(1);
+  }
+  s += '<path d="' + d + '" fill="none" stroke="#22d3ee" stroke-width="2.3"/>';
+  s += '<text x="' + (W - R - 4) + '" y="' + (TP + 16) + '" fill="#fbbf24" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end">T = ' + komma(Td, 2) + ' s</text>';
+  svg.innerHTML = s;
+}
+
+// ══════════════════════════════════════════
+// ABSCHNITT 3: WINKELTABELLE
+// ══════════════════════════════════════════
+function renderWinkelTabelle() {
+  const tb = document.getElementById('winkelTabelle');
+  tb.innerHTML = '';
+  [5, 10, 20, 40].forEach(g => {
+    const r = g * Math.PI / 180;
+    const abw = (r - Math.sin(r)) / Math.sin(r) * 100;
+    const zuschlag = (r * r / 16) * 100;
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + g + '&deg;</td><td>' + komma(r, 4) + '</td><td>' + komma(Math.sin(r), 4) + '</td>' +
+      '<td>' + komma(abw, 2) + ' %</td><td>' + komma(zuschlag, 1) + ' %</td>';
+    tb.appendChild(tr);
+  });
+}
+
+// ══════════════════════════════════════════
+// AUSWAHLFRAGEN
+// ══════════════════════════════════════════
+const LETTERS = ['A', 'B', 'C', 'D'];
+
+const F1 = {
+  a: ['In den Umkehrpunkten, dort ist die Auslenkung am größten.',
+      'Beim Durchgang durch die Ruhelage.',
+      'Genau dazwischen, bei der halben Auslenkung.',
+      'Sie ist während der ganzen Schwingung gleich groß.'],
+  r: 1,
+  fb: ['In den Umkehrpunkten steht der Körper einen Moment still. Seine Geschwindigkeit ist dort null, also auch seine Bewegungsenergie. Dort ist die Lageenergie maximal.',
+       'Richtig. Dort ist der Körper am schnellsten, und die Feder ist entspannt. Die gesamte Energie steckt in der Bewegung.',
+       'Bei halber Auslenkung sind beide Formen vorhanden, aber keine ist maximal. Schiebe den Regler dorthin und sieh dir die Balken an.',
+       'Konstant ist nur die Summe der beiden. Die Bewegungsenergie allein schwankt zwischen null und dem Maximum.']
+};
+
+const F2 = {
+  a: ['Die Amplitude nimmt ab und die Periodendauer wird deutlich größer.',
+      'Die Amplitude nimmt ab, die Periodendauer bleibt praktisch gleich.',
+      'Die Amplitude bleibt gleich, die Schwingung wird nur langsamer.',
+      'Beides bleibt gleich, die Schwingung hört nur irgendwann plötzlich auf.'],
+  r: 1,
+  fb: ['Die Amplitude nimmt tatsächlich ab, die Periodendauer aber kaum. Beobachte die senkrechten Striche: ihr Abstand ändert sich fast nicht.',
+       'Richtig. Der Ausschlag wird kleiner, aber der Takt bleibt. Erst bei sehr starker Reibung rücken die Nulldurchgänge messbar auseinander.',
+       'Genau umgekehrt: die Amplitude ist das, was sichtbar abnimmt.',
+       'Die Schwingung hört nicht plötzlich auf, sie wird allmählich kleiner, bis man sie nicht mehr sieht.']
+};
+
+function renderChoices(boxId, daten, key, fbId) {
+  const box = document.getElementById(boxId);
+  box.innerHTML = '';
+  const gewaehlt = state[key];
+  daten.a.forEach((text, i) => {
+    const b = document.createElement('button');
+    b.className = 'choice';
+    b.innerHTML = '<span class="letter">' + LETTERS[i] + '</span><span>' + text + '</span>';
+    if (gewaehlt != null) {
+      b.disabled = true;
+      if (i === daten.r) b.className = 'choice right';
+      else if (i === gewaehlt) b.className = 'choice wrong';
+    } else {
+      b.onclick = () => { state[key] = i; renderChoices(boxId, daten, key, fbId); persist(); };
+    }
+    box.appendChild(b);
+  });
+  if (gewaehlt != null) {
+    const fb = document.getElementById(fbId);
+    fb.className = 'fb ' + (gewaehlt === daten.r ? 'good' : 'bad') + ' show';
+    fb.innerHTML = daten.fb[gewaehlt];
+  }
+}
+
+// ══════════════════════════════════════════
+// CHECK
+// ══════════════════════════════════════════
+const QUIZ = [
+  {
+    q: 'Ein Pendel schwingt ohne Reibung. Was gilt für die Summe aus Lage- und Bewegungsenergie?',
+    a: ['Sie nimmt langsam ab.', 'Sie bleibt konstant.', 'Sie schwankt im Takt der Schwingung.', 'Sie ist in den Umkehrpunkten null.'],
+    r: 1,
+    fb: ['Abnehmen würde sie nur mit Reibung. Ohne Reibung geht keine Energie verloren, sie wechselt nur die Form.',
+         'Richtig. Genau das zeigt die waagerechte Linie im Energiediagramm.',
+         'Die beiden einzelnen Formen schwanken, ihre Summe nicht. Das ist der ganze Punkt an der Darstellung.',
+         'In den Umkehrpunkten ist die Bewegungsenergie null, aber die Lageenergie maximal. Die Summe ist dort so groß wie überall.']
+  },
+  {
+    q: 'Warum wird eine reale Schwingung kleiner, ohne dass sich die Periodendauer merklich ändert?',
+    a: ['Weil Reibung nur die Amplitude angreift und die Periodendauer davon fast nicht abhängt.',
+        'Weil die Reibung genau so groß ist, dass sich beide Effekte aufheben.',
+        'Weil die Periodendauer von der Masse abhängt und die sich nicht ändert.',
+        'Das stimmt nicht, die Periodendauer wird deutlich größer.'],
+    r: 0,
+    fb: ['Richtig. Der Körper legt einen kürzeren Weg zurück, ist dabei aber auch langsamer. Beides gleicht sich fast vollständig aus.',
+         'Von einem Zufall hängt es nicht ab: Der Zusammenhang gilt bei jeder schwachen Reibung, egal wie groß sie genau ist.',
+         'Beim Fadenpendel spielt die Masse für die Periodendauer ohnehin keine Rolle. Das ist hier nicht der Grund.',
+         'Bei schwacher Reibung ist die Änderung so klein, dass sie im Unterricht nicht messbar ist. Erst bei sehr starker Dämpfung wird sie sichtbar.']
+  },
+  {
+    q: 'Auf welcher Näherung beruht die Gleichung T = 2π · √(l / g)?',
+    a: ['Dass die Masse vernachlässigt wird.', 'Dass sin(φ) ungefähr gleich φ ist, was nur für kleine Winkel gilt.', 'Dass g überall gleich groß ist.', 'Dass die Schwingung ungedämpft ist, sonst gilt sie exakt.'],
+    r: 1,
+    fb: ['Die Masse wird nicht vernachlässigt, sie kürzt sich exakt heraus. Das ist keine Näherung, sondern ein Ergebnis.',
+         'Richtig. Ohne diese Näherung ließe sich die Bewegungsgleichung nicht so einfach lösen, und die Gleichung sähe anders aus.',
+         'Dass g je nach Ort verschieden ist, ändert nichts an der Gleichung: man setzt eben den passenden Wert ein.',
+         'Ungedämpft wird zwar auch angenommen, aber die entscheidende Näherung für diese Form der Gleichung ist die für kleine Winkel.']
+  },
+  {
+    q: 'In Lernschritt 1 wurde bei 40 Grad Auslenkung eine größere Periodendauer gemessen als bei 5 Grad. Was folgt daraus?',
+    a: ['Bei 40 Grad wurde ungenau gemessen.',
+        'Die einfache Gleichung gilt dort nicht mehr genau genug, die Messung ist richtig.',
+        'Das Pendel war bei 40 Grad beschädigt.',
+        'Die Periodendauer hängt eben doch von der Amplitude ab, immer und überall.'],
+    r: 1,
+    fb: ['Die Abweichung passt genau zu dem, was die Korrekturrechnung vorhersagt. Für einen Messfehler wäre das ein großer Zufall.',
+         'Richtig. Der Messwert stimmt, das vereinfachte Modell nicht mehr. Genau solche Abweichungen zeigen die Grenzen eines Modells.',
+         'Am Aufbau lag es nicht. Der Effekt ist berechenbar und tritt bei jedem Pendel auf.',
+         'Bei kleinen Winkeln hängt sie praktisch nicht davon ab, und das ist auch gemessen worden. Erst bei großen Winkeln wird der Effekt sichtbar.']
+  },
+  {
+    q: 'Welche Aussage über physikalische Modelle trifft zu?',
+    a: ['Ein gutes Modell beschreibt die Wirklichkeit vollständig.',
+        'Ein Modell macht Annahmen, und man muss wissen, wo sie nicht mehr tragen.',
+        'Modelle sind Notlösungen, bis man die exakte Rechnung beherrscht.',
+        'Wenn Messung und Modell abweichen, ist immer die Messung schuld.'],
+    r: 1,
+    fb: ['Vollständig beschreibt kein Modell die Wirklichkeit. Es lässt immer etwas weg, und genau das macht es brauchbar.',
+         'Richtig. Nicht das Rechnen ist die eigentliche Fähigkeit, sondern zu wissen, wann das Ergebnis noch etwas taugt.',
+         'Auch die genauere Rechnung für große Winkel bleibt ein Modell, nur mit anderen Annahmen. Ohne Annahmen kommt man nie aus.',
+         'Manchmal ist die Messung schuld, manchmal das Modell. Die 40-Grad-Zeile aus Lernschritt 1 ist ein Beispiel für den zweiten Fall.']
+  }
+];
+
+function renderQuiz() {
+  const box = document.getElementById('quizBox');
+  box.innerHTML = '';
+  QUIZ.forEach((item, qi) => {
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = '1.4rem';
+    const h = document.createElement('p');
+    h.innerHTML = '<strong>' + (qi + 1) + '. ' + item.q + '</strong>';
+    h.style.color = 'var(--ink)';
+    wrap.appendChild(h);
+    const ch = document.createElement('div');
+    ch.className = 'choices'; ch.id = 'quiz' + qi;
+    wrap.appendChild(ch);
+    const fb = document.createElement('div');
+    fb.className = 'fb'; fb.id = 'quizfb' + qi;
+    wrap.appendChild(fb);
+    box.appendChild(wrap);
+    item.a.forEach((text, ai) => {
+      const b = document.createElement('button');
+      b.className = 'choice';
+      b.innerHTML = '<span class="letter">' + LETTERS[ai] + '</span><span>' + text + '</span>';
+      b.onclick = () => answerQuiz(qi, ai);
+      ch.appendChild(b);
+    });
+    if (state.quiz[qi] !== undefined) showQuizAnswer(qi, state.quizPick[qi]);
+  });
+  updateQuizResult();
+}
+
+function answerQuiz(qi, ai) {
+  if (state.quiz[qi] !== undefined) return;
+  state.quizPick[qi] = ai;
+  state.quiz[qi] = (ai === QUIZ[qi].r);
+  showQuizAnswer(qi, ai);
+  updateQuizResult();
+  persist();
+}
+
+function showQuizAnswer(qi, ai) {
+  const item = QUIZ[qi];
+  const ch = document.getElementById('quiz' + qi);
+  Array.from(ch.children).forEach((c, j) => {
+    c.disabled = true;
+    if (j === item.r) c.className = 'choice right';
+    else if (j === ai) c.className = 'choice wrong';
+    else c.className = 'choice';
+  });
+  const fb = document.getElementById('quizfb' + qi);
+  fb.className = 'fb ' + (ai === item.r ? 'good' : 'bad') + ' show';
+  fb.innerHTML = item.fb[ai];
+}
+
+function updateQuizResult() {
+  if (Object.keys(state.quiz).length < QUIZ.length) return;
+  const richtig = Object.values(state.quiz).filter(v => v).length;
+  const el = document.getElementById('quizResult');
+  el.style.display = 'block';
+  document.getElementById('quizScore').textContent = richtig + '/' + QUIZ.length;
+  const caps = [
+    'Das war noch nichts. Geh die Abschnitte 1 bis 3 noch einmal durch.',
+    'Da fehlt einiges. Lies die Rückmeldungen zu deinen Fehlern in Ruhe.',
+    'Die Hälfte sitzt. Nimm dir die Fragen vor, bei denen es nicht gereicht hat.',
+    'Solide. Eine Sache fehlt noch.',
+    'Fast alles sitzt.',
+    'Alles richtig. Damit ist die Einheit Schwingungen für dich durch.'
+  ];
+  document.getElementById('quizCap').textContent = caps[richtig];
+}
+
+// ══════════════════════════════════════════
+// ABSCHLUSS
+// ══════════════════════════════════════════
+function finishModule(ev) {
+  state.done = true;
+  SCORM.save(true);
+  const btn = ev && ev.currentTarget;
+  if (btn) { btn.textContent = 'Abgeschlossen und gespeichert'; btn.disabled = true; }
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+SCORM.init();
+
+renderSteps();
+renderWinkelTabelle();
+renderChoices('q1', F1, 'q1', 'q1fb');
+renderChoices('q2', F2, 'q2', 'q2fb');
+renderQuiz();
+
+document.getElementById('sT').value = state.t;
+document.getElementById('sDaempf').value = state.daempfung;
+energieRegeln();
+daempfRegeln();
+
+if (state.section > 0) go(state.section);
+
+window.addEventListener('beforeunload', () => SCORM.finish());
+
+</script>
+
+</body>
+</html>

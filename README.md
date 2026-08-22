@@ -152,13 +152,22 @@ Die drei Rechenaufgaben stammen aus dem vorhandenen Moodle-Material (Fadenpendel
 Fallbeschleunigung auf dem Mond). Das Modul erkennt sieben typische Fehler an ihrem Zahlenwert und
 meldet jeweils den konkreten Denkfehler zurück, statt nur „falsch" zu sagen.
 
-### LS4 Deuten: Energie, Dämpfung, Modellgrenzen (2 Std., Kür)
+### LS4 Deuten: Was hinter der Gleichung steckt (2 Std., Kür)
 
 **Nicht KC-Pflicht im gA.** Energieumwandlung, warum die Masse herausfällt, warum die Gleichung nur für kleine Winkel gilt, warum eine reale Schwingung kleiner wird, aber nicht langsamer.
 
-- SCORM-Modul: noch zu bauen
+- SCORM-Modul: `PH12S4Deuten` (gebaut)
 - Brian: `PH12-S4 Pendel erklären` (Dialogform **offen**, die Lernenden wählen selbst)
 - Präsenz: Diskussionsvorrat, Karten 2, 4 und 7
+
+Aufbau: Energieumwandlung mit einem Zeitregler und drei Balken, von denen der dritte sich nicht
+bewegt; danach Dämpfung mit einem Reibungsregler und markierten Nulldurchgängen, deren Abstand
+gleich bleibt; danach die Kleinwinkelnäherung. Der dritte Abschnitt schließt die Einheit
+zusammen: die 40-Grad-Zeile aus LS1 wird gegen das Modell mit und ohne Korrektur gestellt, und die
+Korrektur trifft die Messwerte auf zwei Nachkommastellen. Damit war der damalige Messwert richtig
+und das einfache Modell nicht. Der letzte Abschnitt überträgt das auf andere stillschweigende
+Annahmen im Physikunterricht, unter anderem auf das homogene Feld im Plattenkondensator, das im
+zweiten Halbjahr kommt.
 
 ### Abschluss (1 Std.)
 

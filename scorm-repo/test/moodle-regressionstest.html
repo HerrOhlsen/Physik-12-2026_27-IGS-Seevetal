@@ -63,6 +63,11 @@ function fit() {
 
 const warte = ms => new Promise(r => setTimeout(r, ms));
 
+// Hinweis zur Aussagekraft: Test 1 faengt den Fehler nur, wenn die Scrollstrecke
+// vor dem Klick gross genug ist. Bei kurzen Abschnitten (unter etwa 300 px) laeuft
+// eine smooth-Animation durch und der Test bleibt gruen, obwohl der Fehler drin ist.
+// Test 3 greift dagegen immer: er prueft die Ursache statt der Wirkung. Nachgestellt
+// am 2026-08-22 mit einer absichtlich kaputten Fassung von S4.
 window.runTests = async function () {
   const f = document.getElementById('sco');
   fit(); await warte(400);
@@ -105,8 +110,12 @@ window.runTests = async function () {
     scrollVorKlick: scrollVor,
     scrollNachKlick: Math.round(LAYOUT === 'popup' ? g.scrollY : window.scrollY),
     sec6ObenImFenster: Math.round(kopfSec6),
-    aussagekraeftig: scrollVor > 300,
-    bestanden: scrollVor > 300 && kopfSec6 > -80 && kopfSec6 < window.innerHeight
+    // Aussagekraeftig ist der Test, wenn ein fehlender Sprung das Kriterium
+    // unten wirklich verletzt haette. Die Sektion beginnt rund 45 px unter dem
+    // Rahmenrand, das Kriterium greift ab -80: also muss vorher mindestens
+    // etwa 125 px gescrollt gewesen sein. 150 als Sicherheitsabstand.
+    aussagekraeftig: scrollVor > 150,
+    bestanden: scrollVor > 150 && kopfSec6 > -80 && kopfSec6 < window.innerHeight
   });
 
   // --- TEST 2: Der gespeicherte Zustand passt in die SCORM-Grenzen ---

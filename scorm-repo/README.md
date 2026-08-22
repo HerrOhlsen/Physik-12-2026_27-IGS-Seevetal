@@ -11,7 +11,7 @@ Abgrenzung: Das **Bootcamp** trainiert Basiskompetenzen (Formeln, Einheiten, Dia
 | PH12S1Messen | Schwingungen S1: Wovon hängt die Schwingungsdauer ab? | gebaut |
 | PH12S2Beschreiben | Schwingungen S2: Die Schwingung als Gleichung | gebaut |
 | PH12S3Rechnen | Schwingungen S3: Die Schwingungsdauer vorhersagen | gebaut |
-| PH12S4Deuten | Schwingungen S4: Energie, Dämpfung, Modellgrenzen | geplant |
+| PH12S4Deuten | Schwingungen S4: Was hinter der Gleichung steckt | gebaut |
 
 ## Repo-Struktur
 
@@ -79,7 +79,9 @@ Geprueft wird:
 1. **Die Ansicht springt beim Abschnittswechsel an den Anfang.**
 2. **Der Zustand wird vollstaendig gespeichert.** `cmi.core.lesson_location` fasst nur 255 Zeichen;
    der Zustand gehoert in `cmi.suspend_data` (4096 Zeichen).
-3. **`scroll-behavior` erzwingt keine Animation.** Steht es im CSS auf `smooth`, gilt das auch fuer
+3. **`scroll-behavior` erzwingt keine Animation.** Das ist der verlässlichste der drei Tests, weil
+   er die Ursache prueft. Test 1 prueft die Wirkung und faengt den Fehler nur, wenn vor dem Klick
+   weit genug gescrollt war; bei kurzen Abschnitten laeuft die Animation durch und er bleibt gruen. Steht es im CSS auf `smooth`, gilt das auch fuer
    `behavior: 'auto'`, und im SCORM-Fenster wird die Animation nicht ausgefuehrt: der Abschnitt
    wechselt, die Ansicht bleibt stehen. Scrollbefehle deshalb immer mit `behavior: 'instant'`.
 
