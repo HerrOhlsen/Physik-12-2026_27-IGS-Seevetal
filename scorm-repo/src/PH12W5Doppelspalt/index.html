@@ -573,9 +573,10 @@ $$('[data-num]').forEach(b => {
     l2.setAttribute('x1', s2.x); l2.setAttribute('y1', s2.y); l2.setAttribute('x2', px); l2.setAttribute('y2', py);
     P.setAttribute('cx', px); P.setAttribute('cy', py); Pl.setAttribute('x', px + 12); Pl.setAttribute('y', py + 5);
     const L1 = Math.hypot(px - s1.x, py - s1.y) / LAM, L2 = Math.hypot(px - s2.x, py - s2.y) / LAM, ds = L2 - L1;
-    const phi = 2 * Math.PI * ds;
-    z1.setAttribute('x2', 34); z1.setAttribute('y2', 10);
-    z2.setAttribute('x2', 34 * Math.cos(phi)); z2.setAttribute('y2', 10 - 34 * Math.sin(phi));
+    // each phasor turns with its own path length (phase = 2π·s/λ); only the difference matters for brightness
+    const phi1 = 2 * Math.PI * L1, phi2 = 2 * Math.PI * L2, phi = phi2 - phi1;
+    z1.setAttribute('x2', 34 * Math.cos(phi1)); z1.setAttribute('y2', 10 - 34 * Math.sin(phi1));
+    z2.setAttribute('x2', 34 * Math.cos(phi2)); z2.setAttribute('y2', 10 - 34 * Math.sin(phi2));
     const amp = Math.abs(Math.cos(phi / 2));
     bar.setAttribute('width', 60 * amp);
     const frac = Math.abs(ds - Math.round(ds));
