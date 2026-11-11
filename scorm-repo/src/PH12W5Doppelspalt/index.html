@@ -49,6 +49,9 @@ h2 { font-size: 1.6rem; font-weight: 700; margin: 4px 0 12px; line-height: 1.2; 
 .bare p { margin-bottom: 8px; }
 .formula { font-family: var(--mono); font-size: 1.25rem; background: var(--bg-deep); border: 1px solid var(--border-strong); border-radius: var(--r-md); padding: 10px 14px; display: inline-block; margin: 6px 0; color: var(--light); }
 .formula.big { font-size: 1.5rem; }
+.frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 .15em; line-height: 1.15; }
+.frac > span:first-child { border-bottom: 1.5px solid currentColor; padding: 0 .3em .05em; }
+.frac > span:last-child { padding: .05em .3em 0; }
 .note { color: var(--ink-muted); font-size: .92rem; }
 .panel { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 8px; margin: 10px 0; }
 svg { width: 100%; height: auto; display: block; touch-action: none; user-select: none; -webkit-user-select: none; }
@@ -223,7 +226,7 @@ input[type=range] { flex: 1; min-width: 160px; accent-color: var(--accent); heig
   <div class="audio" data-audio="s6.mp3"></div>
   <div class="card">
     <div class="bare"><p>Gemessen wird nicht der Winkel, sondern der Abstand a<sub>k</sub> des Maximums von der Schirmmitte.</p>
-    <div class="formula big">tan α = a<sub>k</sub> / e</div></div>
+    <div class="formula big">tan α = <span class="frac"><span>a<sub>k</sub></span><span>e</span></span></div></div>
     <div class="panel"><svg id="svg6" viewBox="0 0 640 300"></svg></div>
     <p class="note">Kleines Dreieck an den Spalten: Sinus. Großes Dreieck zum Schirm: Tangens.</p>
   </div>
@@ -242,8 +245,8 @@ input[type=range] { flex: 1; min-width: 160px; accent-color: var(--accent); heig
   <div class="audio" data-audio="s7.mp3"></div>
   <div class="card">
     <div class="bare"><p>Für kleine Winkel gilt sin α ≈ tan α. Dann werden aus zwei Gleichungen eine:</p>
-    <div class="formula">k · λ / d = a<sub>k</sub> / e</div>
-    <div class="formula big">a<sub>k</sub> = k · λ · e / d</div></div>
+    <div class="formula"><span class="frac"><span>k · λ</span><span>d</span></span> = <span class="frac"><span>a<sub>k</sub></span><span>e</span></span></div>
+    <div class="formula big">a<sub>k</sub> = <span class="frac"><span>k · λ · e</span><span>d</span></span></div></div>
     <div class="ctrl"><label for="r7">Winkel α</label><input type="range" id="r7" min="0.5" max="30" value="12" step="0.5">
       <span class="readout" id="ro7"></span></div>
     <table class="tbl"><thead><tr><th>α</th><th>sin α</th><th>tan α</th><th>Abweichung</th></tr></thead><tbody id="tb7"></tbody></table>
@@ -268,7 +271,7 @@ input[type=range] { flex: 1; min-width: 160px; accent-color: var(--accent); heig
   <h2>Die Wellenlänge messen</h2>
   <div class="audio" data-audio="s8.mp3"></div>
   <div class="card">
-    <div class="bare"><p>Umgestellt nach λ:</p><div class="formula big">λ = a · d / e</div>
+    <div class="bare"><p>Umgestellt nach λ:</p><div class="formula big">λ = <span class="frac"><span>a · d</span><span>e</span></span></div>
     <p class="note">d = 0,20 mm, e = 2,00 m. Miss den Abstand a benachbarter Maxima auf dem Schirm.</p></div>
     <div class="panel"><svg id="svg8" viewBox="0 0 640 200"></svg></div>
   </div>
@@ -286,7 +289,7 @@ input[type=range] { flex: 1; min-width: 160px; accent-color: var(--accent); heig
   <h2>Vorhersagen</h2>
   <div class="audio" data-audio="s9.mp3"></div>
   <div class="card">
-    <div class="bare"><div class="formula">a<sub>k</sub> = k · λ · e / d</div>
+    <div class="bare"><div class="formula">a<sub>k</sub> = <span class="frac"><span>k · λ · e</span><span>d</span></span></div>
     <p class="note">Erst vorhersagen, dann prüfen.</p></div>
     <div class="panel"><svg id="svg9" viewBox="0 0 640 170"></svg></div>
   </div>
@@ -464,7 +467,7 @@ const FB = {
   '9b': { ok: 'Richtig. d steht im Nenner: größerer Spaltabstand, engere Streifen.', err: 'd steht im Nenner. Größerer Nenner heißt …?' },
   '9c': { ok: 'Richtig. e steht im Zähler: weiter weg, breiteres Muster.', err: 'e steht im Zähler. Was passiert mit a, wenn e wächst?' }
 };
-function showFb(key, cls, text) { const f = $(`[data-fb="${key}"]`); f.className = 'fb ' + cls; f.textContent = text; }
+function showFb(key, cls, text) { const f = $(`[data-fb="${key}"]`); f.className = 'fb ' + cls; f.innerHTML = text; }  // texts are authored constants, never user input
 function pass(key) { state.checks[key] = true; renderDots(); updateNav(); persist(); if (key.startsWith('9')) updatePred(key); }
 
 $$('[data-mc]').forEach(grp => {
@@ -478,9 +481,9 @@ $$('[data-mc]').forEach(grp => {
 });
 // Numeric checks: target, tolerance, unit hint
 const NUM = {
-  '5': { t: 0.172, tol: 0.012, ok: 'Richtig: sin α₁ = λ/d = 6,0·10⁻⁷ m / 2,0·10⁻⁴ m = 0,0030, also α₁ ≈ 0,17°. Winzig, wie angekündigt.', err: 'Noch nicht. Rechne λ und d in Meter um, teile λ durch d und nimm davon den Arkussinus (sin⁻¹). Ergebnis in Grad, mit zwei Nachkommastellen.' },
+  '5': { t: 0.172, tol: 0.012, ok: 'Richtig: sin α₁ = <span class="frac"><span>λ</span><span>d</span></span> = <span class="frac"><span>6,0·10⁻⁷ m</span><span>2,0·10⁻⁴ m</span></span> = 0,0030, also α₁ ≈ 0,17°. Winzig, wie angekündigt.', err: 'Noch nicht. Rechne λ und d in Meter um, teile λ durch d und nimm davon den Arkussinus (sin⁻¹). Ergebnis in Grad, mit zwei Nachkommastellen.' },
   '6': { t: 6.0, tol: 0.4, ok: 'Richtig: a₁ = e · tan α₁ = 2000 mm · tan 0,172° ≈ 6,0 mm.', err: 'Noch nicht. a₁ = e · tan α₁. Nimm e in Millimetern (2000 mm) und α₁ = 0,172°.' },
-  '8': { t: 600, tol: 45, ok: 'Richtig: a ≈ 6,0 mm, also λ = 6,0·10⁻³ m · 2,0·10⁻⁴ m / 2,00 m = 6,0·10⁻⁷ m = 600 nm. Rot-oranges Licht.', err: 'Noch nicht. Miss a am Lineal (Tipp: über mehrere Streifen messen und teilen), dann λ = a · d / e, alles in Meter. 1 nm = 10⁻⁹ m.' }
+  '8': { t: 600, tol: 45, ok: 'Richtig: a ≈ 6,0 mm, also λ = <span class="frac"><span>6,0·10⁻³ m · 2,0·10⁻⁴ m</span><span>2,00 m</span></span> = 6,0·10⁻⁷ m = 600 nm. Rot-oranges Licht.', err: 'Noch nicht. Miss a am Lineal (Tipp: über mehrere Streifen messen und teilen), dann λ = <span class="frac"><span>a · d</span><span>e</span></span>, alles in Meter. 1 nm = 10⁻⁹ m.' }
 };
 $$('[data-num]').forEach(b => {
   const key = b.dataset.num, inp = $('#in' + key), cfg = NUM[key];

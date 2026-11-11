@@ -225,3 +225,65 @@ Ein Push auf `scorm-repo/src/**` löst die GitHub Action aus, die die ZIPs neu b
 ## Für später
 
 Das Muster ist so gebaut, dass es für **Wellen** (12.1) und **Elektrische und magnetische Felder** (12.2) wiederverwendet wird: gleiche fünf Bausteine, gleiche vier Brian-Formen, gleiche Bootcamp-Absprünge. Der Aufwand entsteht einmal.
+
+## Einheit Wellen (Stand 2026-09-20, im Aufbau)
+
+**KC gA (S. 38 bis 39):** Ausbreitung harmonischer Wellen (Sinuskurven oder Zeigerketten), Beschreibung mit T, c, λ, f, Amplitude, Phase; c = λ · f anwenden; Reflexion, Brechung, Beugung als Phänomene; longitudinal gegen transversal; Polarisation als Unterscheidungsmerkmal mit Lichtexperiment; Interferenz an stehender Welle, Michelson-Interferometer, Doppelspalt und Gitter; je ein Experiment zur Wellenlängenbestimmung (Ultraschall an stehender Welle, Licht am Gitter); Doppelspaltgleichung vorstrukturiert herleiten; sichtbares Licht ins EM-Spektrum einordnen.
+
+**Befund aus dem alten Kurs (Abi27, Moodle 273):** Materialliste plus ein eigener Unterkurs „Interferenz: Wenn Wellen wechselwirken“ (Moodle 303, vier Teile mit Freischaltung). Dopplereffekt war drin, ist gA nicht verbindlich und **fliegt raus**. Stehende Wellen, Polarisation, Gitter mit Licht fehlten. Es gibt in der Sammlung **kein Ultraschall-Set und keinen Laser mit Gitter**, die beiden Wellenlängenbestimmungen müssen also über Simulation oder Video laufen.
+
+| | Lernschritt | Aus dem alten Kurs | Neu |
+|---|---|---|---|
+| LS1 | Welle als Kette von Schwingern, transversal/longitudinal, T gegen λ, c = λ · f | Leifi-Grundwissen, Leifi-Aufgaben Wellengrößen, H5P „Querwelle eines Seiles“, GeoGebra-Simulation, Videos (Hui, Think Logic) | Einstiegsfolien, Lernpfad als Abschnittstext, Brian PH12-W1 |
+| LS2 | Wellengleichung y(x,t), Reflexion/Brechung/Beugung, Polarisation | „Wellen M1-M3“ (Buchkapitel Zeigermodell, S. 1 bis 2), Leifi Reflexion, Huygens | noch offen |
+| LS3 | Interferenz, Superposition, Zeigerdarstellung | Unterkurs 303 fast komplett | Zeiger neu einführen |
+| LS4 | Stehende Welle, Wellenlängenbestimmung Ultraschall | nichts | Simulation statt Realversuch |
+| LS5 | Doppelspalt und Gitter mit Licht, EM-Spektrum | nichts | Simulation statt Realversuch |
+
+### LS1 (gebaut 2026-09-20)
+
+- Folien: `stunden/Physik12_Wellen_Einstieg_LS1.pptx` (11 Folien: Einstieg frontal, Lernpfad Teil 1, Tafelherleitung c = λ/T mit Lücken, Rechnen, Lernpfad Teil 2, Ausblick Interferenz). Lösungen und Regieanweisungen in den Notizen.
+- Moodle 382, Abschnitt „Wellen“: die fünf alten Materialien per Kurs-Import aus 273 übernommen, Lernpfad in zwei Teilen als Abschnittsbeschreibung.
+- Brian: `PH12-W1 Welle erklären` (Dialog/Feedback), Prompt in `brian-auftraege/PH12-W1_Welle-erklaeren.md`, in Brian unter Lerneinheit „Wellen“ angelegt.
+- Bewusst nicht in LS1: Wellengleichung mit beiden Variablen und Zeigermodell. Beides kommt später, wenn c = λ · f sitzt.
+
+### LS3 Interferenz (vorbereitet 2026-10-04)
+
+Stand vorher: LS2 (Wellengleichung mit Aufgaben) hat Malte selbst unterrichtet, dazu in Brian „Wellengleichung verstehen“ angelegt. Reflexion, Brechung, Beugung, Huygens und Polarisation waren noch offen; Huygens und Beugung sind in diese Doppelstunde eingebaut (Folie 9, Lernpfad Teil 2), weil der Doppelspalt sie braucht. **Polarisation bleibt ein eigener kurzer Baustein** (Leifi plus Polfilter-Experiment, gA-Pflicht) und ist noch nicht geplant.
+
+- Folien: `stunden/Physik12_Wellen_Interferenz_LS3.pptx` (11 Folien: Zwei-Handy-Versuch, Superposition, Gangunterschied, Zeiger als neues Werkzeug, Lernpfad Teil 1, gemeinsame Aufgabe mit zwei Wellenlängen, Huygens/Beugung, Lernpfad Teil 2, Ausblick Doppelspalt). Lösungen in den Notizen.
+- Brian: `PH12-W2 Gangunterschied erklären` (Dialog/abfragen, 7 Fragen), Prompt in `brian-auftraege/PH12-W2_Gangunterschied-erklaeren.md`, in Brian angelegt.
+- Moodle (erledigt 2026-10-04): Interferenz-Material aus dem Unterkurs 303 (Simulation, Arbeitsblatt, Concept Builder, Buchseiten, Journal, Abschlusstest, Auffrischung, Interferometer-Aufgabe) und Reflexion/Huygens/Beugung aus 273 in den Abschnitt „Wellen“ importiert; Lernpfad-Text um Schritt 3 ergänzt. Entscheidung Malte: alles an einem Ort, Unterkurs 303 wird nicht weiterverwendet. Reihenfolge der Aktivitäten im Abschnitt ist noch unsortiert (Importe stehen oben, LS1-Material unten); der nummerierte Lernpfad-Text fängt das auf.
+
+### Baustein Michelson-Interferometer (vorbereitet 2026-10-05)
+
+Zwischen Interferenz (LS3) und Doppelspalt (LS5). Deckt die gA-Kompetenz „technische Verwendung des Michelson-Interferometers zum Nachweis kleiner Längenänderungen“ ab. Grundlage ist die Leifi-Aufgabe „Interferometer (Abitur BY 2022 Ph11-1 A2)“, Teile a bis c; d und e (LIGO) sind Kür und Diskussionsstoff.
+
+- Brian: `PH12-W3 Interferometer` (Dialog/Feedback ohne Lösungsverrat), Prompt in `brian-auftraege/PH12-W3_Interferometer.md`, in Brian angelegt, noch verborgen. Ersetzt den alten Hinweis „nutze den Study Mode einer KI“.
+- Moodle: Malte hat die Interferenz-Materialien in einen eigenen Abschnitt **„Interferenz“** (section 3, id 4061) neben „Wellen“ gelegt; der Lernpfad-Block Schritt 3 steht dort. Der Link „Aufgabe Interferometer“ (cmid 10569) hat den neuen Dreischritt (Papier, Brian W3, dann Lösung aufklappen); unten in der Abschnittsbeschreibung steht der Baustein als eigener Absatz.
+- Fachlicher Kern des Prompts: der Faktor 2 (Spiegel um d verschoben, Lichtweg um 2d). Der Tutor fragt „Wie oft legt der Teilstrahl die Strecke zurück?“ statt zu korrigieren.
+
+### Arbeitsblatt Interferenz-Simulation (2026-10-05)
+
+`arbeitsblaetter/AB_Interferenz_Simulation.html` (Quelle) und `.pdf` (2 Seiten, A4). Deutsche, gekürzte Fassung des Physics-Classroom-Blatts „Wave Interference“ zur Simulation „Wave Addition“ (Lizenz dort: Lehrkräfte dürfen den Text kopieren und für den eigenen Unterricht abändern). Sechs Aufgaben: Auslöschung beobachten und ankreuzen, Verstärkung, ungleiche Amplituden (0,16 m gegen 0,32 m), Werte y₁/y₂/Summe an drei Stellen ablesen und die Regel formulieren, Summenwelle aus einer Tabelle zeichnen (Welle 1 ±2 cm, Welle 2 ∓1 cm, Summe ±1 cm). PDF-Erzeugung: Chrome headless (`--headless=new --print-to-pdf`, eigener `--user-data-dir`); der Prozess beendet sich nicht von selbst, nach dem Schreiben per `pkill -f chrome-headless` abräumen. Als Moodle-Ressource per MCP (`upload_file` plus `add_resource`) in Abschnitt 3 eingestellt.
+
+### Klausur Nr. 1 Schwingungen und Wellen (gebaut 2026-11-02)
+
+Ordner `klausur-2026/`: `Klausur Physik 12_Ohlsen_2026_1.docx` (8 Seiten inkl. Formelsammlung, 44 BE, 90 min) und `..._Erwartungshorizont.docx` (mit Notenvorschlag). Weiterentwicklung der Klausur vom November 2023: Doppler und Doppelspalt raus, dafür Seilwelle lesen (λ, T, c, transversal/longitudinal), Zwei-Handy-Aufgabe mit Gangunterschied und Zeigerbild (440 Hz, s₁ = 2,00 m, s₂ = 3,16 m, Δs = 1,5 λ) und Energiefrage beim aktiven Lärmschutz. Nicht geprüft: Huygens, Beugung, Reflexion, stehende Welle, Michelson (Entscheidung Malte). Build-Skript `mkklausur12.py` (python-docx + matplotlib, Formeln als OMML, Schreiblinien und Karo als Tabellen) lag im Scratchpad der Session.
+
+**Nachtrag 2026-11-04:** Aufgabe 7b der Klausur getauscht (Schallenergie war im Unterricht nicht dran; jetzt: warum Noise Cancelling tiefe, gleichmäßige Töne besser filtert als hohe, unregelmäßige), Dateien als `_v2`. Build-Skript liegt jetzt dauerhaft in `klausur-2026/_build/mkklausur12.py`. Neu: `klausur-2026/Klausurvorbereitung_Schwingungen_Wellen.html` für die SuS (Checkliste mit lokalem Speichern, Pflichtwissen harmonisch/periodisch, Zeigerbilder, drei interaktive Zeiger-Übungen per SVG-Pointer-Events, Übungsplan, Probeaufgabe mit Lösung, Formelsammlung).
+
+### Nachtrag 2026-11-08
+
+- Klausur v3: bei allen Rechenaufgaben (3c, 5b, 6a, 6c) Karofläche statt Schreibzeilen. Build: `klausur-2026/_build/mkklausur12.py` (VERSION v3). v2-Dateien können gelöscht werden.
+
+### LS4/LS5 Huygens-Abschluss und Doppelspalt (gebaut 2026-11-11)
+
+Nach der Klausur. Stand: Huygens war im Lernpfad bearbeitet, aber kaum besprochen; Doppelspalt noch nicht begonnen. Kein Laser in der Sammlung, deshalb Simulation (PhET „Wave Interference“) und Leifi-Video statt Realversuch.
+
+- Folien für die Einzelstunde 2026-11-12: `stunden/Physik12_Huygens_Doppelspalt_Einstieg.pptx` (11 Folien: Huygens in einem Satz, fünf Peer-Instruction-Fragen mit Lösungen in den Notizen, Zirkelkonstruktion Beugung am Spalt, Brücke „zwei Spalte, zwei Quellen“, Ausblick). Build: `stunden/_build/mk_huygens_slides.py`.
+- SCORM-Modul `scorm-repo/src/PH12W5Doppelspalt` „Vom Doppelspalt zur Formel“: neun Stationen mit SVG-Interaktionen und je einer Audio-Erklärung (Gemini-TTS), Text bewusst knapp. Herleitung Schritt für Schritt: Δs = s₂ − s₁, Exkurs Sonnenstrahlen (parallele Strahlen), kleines Dreieck Δs = d · sin α mit Klick-Aufgabe „welcher Winkel ist α“, d · sin α = k · λ, großes Dreieck tan α = a/e, Kleinwinkelnäherung mit Tabelle, Wellenlängenbestimmung am Lineal, Vorhersagen. Beispielwerte durchgehend λ = 600 nm, d = 0,20 mm, e = 2,0 m, a₁ = 6,0 mm. Details in `scorm-repo/README.md`.
+- Plan Doppelstunde (Woche vom 2026-11-17): Stationen 1 bis 3 als Hausaufgabe, Stationen 4 bis 9 in der Doppelstunde zu zweit, Sicherung über die Vorhersagen aus Station 9 als Abstimmung. Schneller Schüler: Modul vorab als Tester, danach Gitter als Verallgemeinerung.
+- Moodle: Abschnitt „Doppelspalt“ konnte per MCP nicht angelegt werden (Rolle ohne Recht, Fehler nopermissions), ebenso kein SCORM-Lernpaket per API. Beides muss Malte in Moodle anlegen (Pakettyp Download mit der raw.githubusercontent-URL aus `scorm-repo/README.md`).
+- Nachtrag 2026-11-11: Beides über den Browser angelegt (Malte war im Moodle angemeldet). Abschnitt „Doppelspalt“ (section 4, id 4173), Lernpaket „Vom Doppelspalt zur Formel (interaktives Modul mit Audio)“ (cmid 10849, SCO 254), Pakettyp Heruntergeladenes Paket, Auto-Update täglich, neuer Versuch nie erzwungen (sonst ginge der gespeicherte Stand nach dem Abschluss verloren), Abschluss automatisch bei Status „vollständig bearbeitet“. Im Player geprüft: Modul lädt, Audio erreichbar, suspend_data wird geschrieben.
+- Nachbesserungen nach Maltes Durchsicht (2026-11-11 abends): Station 2 beide Zeiger drehen sich mit ihrer Weglänge (vorher blauer Zeiger fest bei 0°); Station 3 Regler logarithmisch bis e = 100 · d, ab 560 px wird herausgezoomt mit Maßstabsanzeige und Hinweis „d bleibt gleich“; Station 6 nennt λ, d und α₁ = 0,172° in der Aufgabe, damit niemand zurückblättern muss. Paket baut die GitHub Action, lokale ZIP-Commits kollidieren damit (nur src committen, danach pullen).
