@@ -228,7 +228,7 @@ input[type=range] { flex: 1; min-width: 160px; accent-color: var(--accent); heig
     <p class="note">Kleines Dreieck an den Spalten: Sinus. Großes Dreieck zum Schirm: Tangens.</p>
   </div>
   <div class="card check">
-    <h3>Der Schirm steht e = 2,0 m entfernt. Wie weit von der Mitte liegt das erste Maximum?</h3>
+    <h3>Wie in Station 5: λ = 600 nm, d = 0,20 mm, also α₁ ≈ 0,172°. Der Schirm steht e = 2,0 m entfernt. Wie weit von der Mitte liegt das erste Maximum?</h3>
     <div class="num"><span>a₁ =</span><input type="text" inputmode="decimal" id="in6" placeholder="0,0"><span>mm</span><button class="btn" data-num="6">Prüfen</button></div>
     <div class="fb" data-fb="6"></div>
   </div>
@@ -479,7 +479,7 @@ $$('[data-mc]').forEach(grp => {
 // Numeric checks: target, tolerance, unit hint
 const NUM = {
   '5': { t: 0.172, tol: 0.012, ok: 'Richtig: sin α₁ = λ/d = 6,0·10⁻⁷ m / 2,0·10⁻⁴ m = 0,0030, also α₁ ≈ 0,17°. Winzig, wie angekündigt.', err: 'Noch nicht. Rechne λ und d in Meter um, teile λ durch d und nimm davon den Arkussinus (sin⁻¹). Ergebnis in Grad, mit zwei Nachkommastellen.' },
-  '6': { t: 6.0, tol: 0.4, ok: 'Richtig: a₁ = e · tan α₁ = 2000 mm · tan 0,172° ≈ 6,0 mm.', err: 'Noch nicht. a₁ = e · tan α₁. Nimm e in Millimetern (2000 mm) und den Winkel aus Station 5.' },
+  '6': { t: 6.0, tol: 0.4, ok: 'Richtig: a₁ = e · tan α₁ = 2000 mm · tan 0,172° ≈ 6,0 mm.', err: 'Noch nicht. a₁ = e · tan α₁. Nimm e in Millimetern (2000 mm) und α₁ = 0,172°.' },
   '8': { t: 600, tol: 45, ok: 'Richtig: a ≈ 6,0 mm, also λ = 6,0·10⁻³ m · 2,0·10⁻⁴ m / 2,00 m = 6,0·10⁻⁷ m = 600 nm. Rot-oranges Licht.', err: 'Noch nicht. Miss a am Lineal (Tipp: über mehrere Streifen messen und teilen), dann λ = a · d / e, alles in Meter. 1 nm = 10⁻⁹ m.' }
 };
 $$('[data-num]').forEach(b => {
