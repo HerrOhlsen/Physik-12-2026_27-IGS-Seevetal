@@ -156,7 +156,7 @@ input[type=range] { flex: 1; min-width: 160px; accent-color: var(--accent); heig
   <div class="card">
     <div class="bare"><p>Zwei Strahlen zu einem weit entfernten Punkt sind praktisch parallel, wenn ihr Startabstand d winzig gegen die Entfernung e ist.</p></div>
     <div class="panel"><svg id="svg3" viewBox="0 0 640 300"></svg></div>
-    <div class="ctrl"><label for="r3">Schirmabstand e</label><input type="range" id="r3" min="40" max="560" value="120" step="1">
+    <div class="ctrl"><label for="r3">Schirmabstand e</label><input type="range" id="r3" min="0" max="1000" value="220" step="1">
       <span class="readout" id="ro3"></span></div>
     <div class="two">
       <div class="readout">Doppelspalt im Versuch: d = 0,20 mm, e = 2,0 m. Winkel zwischen den beiden Strahlen zu P: <b>etwa 0,006°</b>.</div>
@@ -589,30 +589,44 @@ $$('[data-num]').forEach(b => {
 
 // ══════════════════════════════════════════ STATION 3: rays become parallel
 (function () {
-  const svg = $('#svg3'), cy = 170, d = 60;
-  const s1 = { x: 40, y: cy - d / 2 }, s2 = { x: 40, y: cy + d / 2 };
-  el('rect', { x: 32, y: 40, width: 8, height: 260, fill: '#6f8299' }, svg);
-  el('circle', { cx: s1.x, cy: s1.y, r: 5, fill: '#22d3ee' }, svg); el('circle', { cx: s2.x, cy: s2.y, r: 5, fill: '#f472b6' }, svg);
-  txt(svg, 10, cy + 4, 'd', { 'font-style': 'italic' });
+  const svg = $('#svg3'), cy = 170, d = 60, x0 = 40, W = 560, PY = 90;  // physical sizes in px at zoom 1
+  const E_MIN = 40, E_MAX = 6000;                                      // slider is logarithmic between these
+  const slitWall = el('rect', { x: 32, width: 8, fill: '#6f8299' }, svg);
+  const c1 = el('circle', { cx: x0, r: 5, fill: '#22d3ee' }, svg), c2 = el('circle', { cx: x0, r: 5, fill: '#f472b6' }, svg);
+  const dl = txt(svg, 10, cy + 4, 'd', { 'font-style': 'italic' });
   const screen = el('rect', { y: 20, width: 6, height: 280, fill: '#a3b4c8' }, svg);
   const l1 = el('line', { stroke: '#22d3ee', 'stroke-width': 2.5 }, svg), l2 = el('line', { stroke: '#f472b6', 'stroke-width': 2.5 }, svg);
   const P = el('circle', { r: 6, fill: '#ffd166' }, svg);
   const arc = el('path', { fill: 'none', stroke: '#ffd166', 'stroke-width': 2 }, svg);
   const lab = txt(svg, 0, 0, '', { fill: '#ffd166', 'font-weight': 700 });
+  const zoomBox = el('g', {}, svg);
+  el('rect', { x: 150, y: 24, width: 400, height: 46, rx: 8, fill: '#0b1220', 'fill-opacity': .9, stroke: '#1d3049' }, zoomBox);
+  const zoomT1 = txt(zoomBox, 162, 44, '', { fill: '#ffd166', 'font-weight': 700, 'font-size': 13 });
+  const zoomT2 = txt(zoomBox, 162, 62, 'd bleibt gleich. Nur die Zeichnung wird kleiner, weil wir herauszoomen.', { fill: '#a3b4c8', 'font-size': 12 });
   const r = $('#r3'), ro = $('#ro3');
   function update() {
-    const e = +r.value, px = 40 + e, py = cy - 90;
-    screen.setAttribute('x', px);
+    const e = E_MIN * Math.pow(E_MAX / E_MIN, (+r.value) / 1000);   // physical screen distance (px at zoom 1)
+    const k = Math.min(1, W / e);                                     // zoom factor so the screen stays in view
+    const s1 = { x: x0, y: cy - d / 2 * k }, s2 = { x: x0, y: cy + d / 2 * k };
+    const px = x0 + e * k, py = cy - PY * k;
+    const wallH = Math.max(260 * k, 24);
+    slitWall.setAttribute('y', cy - wallH / 2); slitWall.setAttribute('height', wallH);
+    c1.setAttribute('cy', s1.y); c2.setAttribute('cy', s2.y);
+    c1.setAttribute('r', Math.max(5 * k, 2)); c2.setAttribute('r', Math.max(5 * k, 2));
+    screen.setAttribute('x', px); screen.setAttribute('y', cy - Math.max(140 * k, 30)); screen.setAttribute('height', Math.max(280 * k, 60));
     l1.setAttribute('x1', s1.x); l1.setAttribute('y1', s1.y); l1.setAttribute('x2', px); l1.setAttribute('y2', py);
     l2.setAttribute('x1', s2.x); l2.setAttribute('y1', s2.y); l2.setAttribute('x2', px); l2.setAttribute('y2', py);
     P.setAttribute('cx', px); P.setAttribute('cy', py);
     const a1 = Math.atan2(py - s1.y, px - s1.x), a2 = Math.atan2(py - s2.y, px - s2.x);
-    const g = (a1 - a2) * 180 / Math.PI;
+    const g = Math.abs(a1 - a2) * 180 / Math.PI;
     // angle arc at P between the two rays
     const R = 40, ax = px + R * Math.cos(a1 + Math.PI), ay = py + R * Math.sin(a1 + Math.PI), bx = px + R * Math.cos(a2 + Math.PI), by = py + R * Math.sin(a2 + Math.PI);
     arc.setAttribute('d', `M${ax},${ay} A${R},${R} 0 0 0 ${bx},${by}`);
-    lab.textContent = fmt(Math.abs(g), 1) + '°'; lab.setAttribute('x', px - 90); lab.setAttribute('y', py + 30);
-    ro.innerHTML = `e = <b>${fmt(e / d, 1)} · d</b> &nbsp; Winkel zwischen den Strahlen in P: <b>${fmt(Math.abs(g), 1)}°</b>`;
+    lab.textContent = fmt(g, g < 1 ? 2 : 1) + '°'; lab.setAttribute('x', px - 90); lab.setAttribute('y', py + 30);
+    const zoomed = k < 0.999;
+    zoomBox.style.display = zoomed ? '' : 'none';
+    if (zoomed) zoomT1.textContent = `Herausgezoomt, Maßstab 1 : ${fmt(1 / k, 1 / k < 10 ? 1 : 0)}`;
+    ro.innerHTML = `e = <b>${fmt(e / d, e / d < 10 ? 1 : 0)} · d</b> &nbsp; Winkel zwischen den Strahlen in P: <b>${fmt(g, g < 1 ? 2 : 1)}°</b>` + (zoomed ? ` &nbsp; <span style="color:#a3b4c8">Zoom 1 : ${fmt(1 / k, 1 / k < 10 ? 1 : 0)}</span>` : '');
   }
   r.addEventListener('input', update); update();
 })();
