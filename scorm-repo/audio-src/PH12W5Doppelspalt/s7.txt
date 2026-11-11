@@ -1,0 +1,6 @@
+Station sieben. Kleine Winkel.
+Wir haben zwei Gleichungen mit demselben Winkel. Aus dem kleinen Dreieck: Sinus Alpha gleich k Lambda durch d. Aus dem großen Dreieck: Tangens Alpha gleich a k durch e. Schön wäre eine einzige Formel, die direkt vom Lineal zur Wellenlänge führt, ohne den Umweg über den Winkel.
+Dafür hilft eine Beobachtung. Schiebe den Regler für den Winkel ganz nach links und schau dir die Tabelle an. Bei kleinen Winkeln sind Sinus und Tangens fast gleich. Bei fünf Grad unterscheiden sie sich um weniger als ein halbes Prozent. Beim Doppelspalt liegen die Winkel typischerweise unter einem Grad. Da ist der Unterschied kleiner als jede Messungenauigkeit mit dem Lineal.
+Also dürfen wir Sinus Alpha durch Tangens Alpha ersetzen. Dann wird aus den beiden Gleichungen eine: k Lambda durch d gleich a k durch e. Umgestellt nach dem Abstand auf dem Schirm: a k gleich k mal Lambda mal e geteilt durch d.
+Das ist die Doppelspaltformel. Lies sie einmal in Worten: Der Abstand eines Maximums von der Mitte ist umso größer, je größer die Wellenlänge, je weiter der Schirm entfernt und je enger die Spalte beieinander sind.
+Finde mit dem Regler heraus, ab welchem Winkel die Abweichung über ein Prozent steigt. Und überlege, wann man die Näherung besser nicht benutzt.

@@ -12,6 +12,7 @@ Abgrenzung: Das **Bootcamp** trainiert Basiskompetenzen (Formeln, Einheiten, Dia
 | PH12S2Beschreiben | Schwingungen S2: Die Schwingung als Gleichung | gebaut |
 | PH12S3Rechnen | Schwingungen S3: Die Schwingungsdauer vorhersagen | gebaut |
 | PH12S4Deuten | Schwingungen S4: Was hinter der Gleichung steckt | gebaut |
+| PH12W5Doppelspalt | Wellen W5: Vom Doppelspalt zur Formel (9 Stationen mit Audio) | gebaut 2026-11-11 |
 
 ## Repo-Struktur
 
@@ -100,3 +101,13 @@ Der Selbstcheck ist bewusst **nicht** die Leistungsmessung. Die liegt in Brian (
 git revert <commit>     # einzelne Änderung zurücknehmen
 git push                # Moodle zieht den alten Stand beim nächsten Update
 ```
+
+## PH12W5Doppelspalt: Besonderheiten
+
+- Neun Stationen (Phänomen, zwei Strahlen, Exkurs Sonne, kleines Dreieck, Maxima-Bedingung, großes Dreieck, Kleinwinkelnäherung, Wellenlänge messen, Vorhersagen). Eine Station schaltet die nächste erst nach bestandenem Check frei; die Punkte im Kopf springen zu freigeschalteten Stationen.
+- Pro Station eine Audio-Erklärung (`s1.mp3` bis `s9.mp3`, Gemini-TTS, Stimme Charon). Der sichtbare Text ist bewusst knapp, die Erklärung steckt im Audio. Skripte liegen in `audio-src/PH12W5Doppelspalt/*.txt`, die Rücktranskription daneben als `*.transkript.txt`.
+- Audio neu erzeugen: `python tools/tts.py PH12W5Doppelspalt [s4 s5 …]` (braucht `GEMINI_API_KEY`, ffmpeg, requests). Das Skript trimmt Stille, normalisiert auf -19 LUFS und transkribiert zur Kontrolle zurück.
+- Zustand: `state = {section, checks, s4step, done}` in `cmi.suspend_data` (rund 150 Zeichen), `lesson_location` nur die Stationsnummer. Ohne LMS fällt das Modul auf localStorage zurück.
+- Score: Anteil bestandener Checks (11 Checks); `completed` beim Klick auf „Lernschritt abschließen“.
+- Test: `test/w5-regressionstest.html?layout=eingebettet` und `?layout=popup`, mit `&autorun=1` schreibt er das Ergebnis in den Seitentitel (headless auswertbar). Prüft Scrollsprung, suspend_data, scroll-behavior und ob alle Audiodateien erreichbar sind.
+- Moodle-URL für den Pakettyp „Download“: `https://raw.githubusercontent.com/HerrOhlsen/Physik-12-2026_27-IGS-Seevetal/main/scorm-repo/packages/Physik12-Wellen-W5-Doppelspalt-v1.0.zip`

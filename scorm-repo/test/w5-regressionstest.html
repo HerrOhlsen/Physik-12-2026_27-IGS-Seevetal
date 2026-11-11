@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head><meta charset="utf-8"><title>Regressionstest PH12W5Doppelspalt</title>
+<style>body{margin:0;font-family:sans-serif;background:#f5f5f5} .kopf{background:#0f6cbf;color:#fff;padding:12px 20px} iframe{width:100%;border:0;display:block;background:#0b1220} .fuss{padding:40px 20px;color:#666}</style>
+</head>
+<body>
+<div class="kopf">Moodle-Nachbau fuer PH12W5Doppelspalt (Stationen statt Sektionen) &middot; <span id="modulname"></span></div>
+<iframe id="sco" scrolling="no"></iframe>
+<div class="fuss"><button onclick="runTests()">Tests ausfuehren</button><div id="ergebnis"></div></div>
+<script>
+// Same SCORM mock and layouts as moodle-regressionstest.html, but driving the W5 module (show(n), .station, state.checks).
+// ?layout=eingebettet|popup   ?autorun=1 runs the tests after load and writes the result into document.title (for headless use).
+const PARAM = new URLSearchParams(location.search);
+const MODUL = '../src/PH12W5Doppelspalt/index.html';
+const LAYOUT = PARAM.get('layout') || 'eingebettet';
+document.getElementById('sco').src = MODUL;
+document.getElementById('modulname').textContent = LAYOUT;
+if (LAYOUT === 'popup') {
+  const f = document.getElementById('sco'); f.setAttribute('scrolling', 'auto');
+  const setzen = () => { f.style.height = (window.innerHeight - f.offsetTop - 90) + 'px'; }; setzen(); window.addEventListener('resize', setzen);
+}
+window.SCORM_LOG = [];
+window.API = (function () {
+  const store = {}; let err = '0'; const LIMITS = { 'cmi.core.lesson_location': 255, 'cmi.suspend_data': 4096 };
+  return {
+    LMSInitialize: () => { err = '0'; return 'true'; }, LMSGetValue: el => { err = '0'; return store[el] || ''; },
+    LMSSetValue: (el, val) => { const max = LIMITS[el], s = String(val); if (max && s.length > max) { err = '405'; SCORM_LOG.push({ el, len: s.length, ok: false }); return 'false'; } err = '0'; store[el] = s; SCORM_LOG.push({ el, len: s.length, ok: true }); return 'true'; },
+    LMSCommit: () => 'true', LMSFinish: () => 'true', LMSGetLastError: () => err, LMSGetErrorString: () => '', LMSGetDiagnostic: () => '', _store: store
+  };
+})();
+function fit() { if (LAYOUT === 'popup') return; const f = document.getElementById('sco'); try { f.style.height = f.contentDocument.body.scrollHeight + 'px'; } catch (e) {} }
+const warte = ms => new Promise(r => setTimeout(r, ms));
+window.runTests = async function () {
+  const f = document.getElementById('sco'); fit(); await warte(300);
+  const g = f.contentWindow, ergebnis = [];
+  // fill state: every check passed, go to station 2 (long page: pattern + question)
+  g.eval(`['1','2','3','4','5','6','7','8','9a','9b','9c'].forEach(k => state.checks[k] = true); state.s4step = 5; show(2);`);
+  for (let i = 0; i < 6; i++) { fit(); await warte(120); }
+  const btn = g.document.querySelector('.station.active [data-next]');
+  const btnAbsolut = f.offsetTop + btn.offsetTop;
+  let scrollVor;
+  if (LAYOUT === 'popup') { g.scrollTo({ top: g.document.documentElement.scrollHeight, behavior: 'instant' }); await warte(200); scrollVor = Math.round(g.scrollY); }
+  else { window.scrollTo({ top: Math.max(0, btnAbsolut - window.innerHeight + 120), behavior: 'instant' }); await warte(200); scrollVor = Math.round(window.scrollY); }
+  btn.click(); fit(); await warte(400);
+  const ziel = g.document.querySelector('header');
+  const kopf = LAYOUT === 'popup' ? ziel.getBoundingClientRect().top : f.getBoundingClientRect().top + ziel.offsetTop;
+  ergebnis.push({ test: 'Ansicht springt beim Stationswechsel an den Anfang (' + LAYOUT + ')', scrollVorKlick: scrollVor, kopfImFenster: Math.round(kopf), aussagekraeftig: scrollVor > 150, bestanden: scrollVor > 150 && kopf > -80 && kopf < window.innerHeight });
+  g.eval(`state.done = true; persist(true);`); await warte(200);
+  const abgelehnt = SCORM_LOG.filter(c => !c.ok); const gespeichert = API._store['cmi.suspend_data'] || '';
+  let ok = false; try { const j = JSON.parse(gespeichert); ok = j.checks && j.checks['9c'] === true && j.section === 3; } catch (e) {}
+  ergebnis.push({ test: 'Zustand in suspend_data, wieder lesbar, lesson_location kurz', abgelehnt, laenge: gespeichert.length, lessonLocation: API._store['cmi.core.lesson_location'], status: API._store['cmi.core.lesson_status'], score: API._store['cmi.core.score.raw'], bestanden: abgelehnt.length === 0 && ok && API._store['cmi.core.lesson_status'] === 'completed' });
+  const css = g.getComputedStyle(g.document.documentElement).scrollBehavior;
+  ergebnis.push({ test: 'scroll-behavior erzwingt keine Animation', wert: css, bestanden: css !== 'smooth' });
+  // audio files reachable
+  const audioOk = await Promise.all([...g.document.querySelectorAll('.audio')].map(a => fetch(MODUL.replace('index.html', '') + a.dataset.audio, { method: 'HEAD' }).then(r => r.ok).catch(() => false)));
+  ergebnis.push({ test: 'alle Audiodateien vorhanden', gefunden: audioOk.filter(Boolean).length, von: audioOk.length, bestanden: audioOk.every(Boolean) });
+  window.TESTERGEBNIS = ergebnis;
+  document.getElementById('ergebnis').innerHTML = ergebnis.map(e => '<p><strong style="color:' + (e.bestanden ? '#137333' : '#c5221f') + '">' + (e.bestanden ? 'BESTANDEN' : 'FEHLGESCHLAGEN') + '</strong> &middot; ' + e.test + '<br><code>' + JSON.stringify(e) + '</code></p>').join('');
+  document.title = 'TESTERGEBNIS ' + JSON.stringify(ergebnis);
+  return ergebnis;
+};
+document.getElementById('sco').addEventListener('load', () => { fit(); if (PARAM.get('autorun')) setTimeout(runTests, 500); });
+</script>
+</body>
+</html>

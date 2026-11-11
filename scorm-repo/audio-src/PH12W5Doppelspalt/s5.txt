@@ -1,0 +1,5 @@
+Station fünf. Die Bedingung für die Maxima.
+Jetzt setzen wir zwei Dinge zusammen, die du schon kennst. Erstens: Hell wird es, wenn der Gangunterschied ein Vielfaches der Wellenlänge ist, also Delta s gleich k mal Lambda. Zweitens, aus der letzten Station: Delta s gleich d mal Sinus Alpha.
+Beides zusammen ergibt: d mal Sinus Alpha k gleich k mal Lambda. Das k nennt man die Ordnung des Maximums. k gleich null ist das Maximum in der Mitte. k gleich eins ist das erste Maximum daneben, k gleich zwei das zweite, und so weiter.
+Mit dieser Gleichung kannst du für jede Ordnung den Winkel ausrechnen, unter dem das Maximum erscheint. Schiebe den Regler für den Winkel und beobachte, wie der Gangunterschied in Wellenlängen mitläuft. Immer wenn er eine ganze Zahl erreicht, leuchtet es auf.
+Dann rechne selbst: Die Wellenlänge ist 600 Nanometer, der Spaltabstand 0,2 Millimeter. Unter welchem Winkel liegt das erste Maximum? Achte auf die Einheiten: Nanometer und Millimeter müssen beide in Meter umgerechnet werden, bevor du teilst. Und du brauchst den Arkussinus, auf dem Taschenrechner die Umkehrfunktion vom Sinus.

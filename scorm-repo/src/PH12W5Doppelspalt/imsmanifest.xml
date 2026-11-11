@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="Physik12_Wellen_W5_Doppelspalt"
+          version="1.0"
+          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                              http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                              http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+  <organizations default="org1">
+    <organization identifier="org1">
+      <title>Wellen W5: Vom Doppelspalt zur Formel</title>
+      <item identifier="item1" identifierref="res1">
+        <title>Wellen W5: Vom Doppelspalt zur Formel</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="res1" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <file href="s1.mp3"/><file href="s2.mp3"/><file href="s3.mp3"/><file href="s4.mp3"/><file href="s5.mp3"/>
+      <file href="s6.mp3"/><file href="s7.mp3"/><file href="s8.mp3"/><file href="s9.mp3"/>
+    </resource>
+  </resources>
+</manifest>

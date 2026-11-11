@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wellen W5: Vom Doppelspalt zur Formel | Physik 12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #0b1220; --bg-surface: #111c2e; --bg-card: #16243a; --bg-elevated: #1d3049;
+  --ink: #e6edf5; --ink-muted: #a3b4c8; --ink-dim: #6f8299;
+  --accent: #22d3ee; --accent-deep: #0891b2; --accent-subtle: rgba(34,211,238,0.10); --accent-glow: rgba(34,211,238,0.28);
+  --ok: #34d399; --ok-bg: rgba(52,211,153,0.12); --ok-border: rgba(52,211,153,0.35);
+  --err: #f87171; --err-bg: rgba(248,113,113,0.12); --err-border: rgba(248,113,113,0.35);
+  --warn: #fbbf24; --warn-bg: rgba(251,191,36,0.10); --warn-border: rgba(251,191,36,0.30);
+  --light: #ffd166; --ray1: #22d3ee; --ray2: #f472b6;
+  --border: rgba(34,211,238,0.15); --border-strong: rgba(34,211,238,0.32);
+  --font: 'Outfit', system-ui, -apple-system, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-full: 100px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.32), 0 1px 4px rgba(0,0,0,0.2);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Kein scroll-behavior: smooth (Scrollsprünge laufen sonst im SCORM-Fenster ins Leere). */
+html { scroll-behavior: auto; }
+body { font-family: var(--font); background: var(--bg-deep); color: var(--ink); line-height: 1.5; -webkit-text-size-adjust: 100%; min-height: 100vh; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 16px 16px 48px; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 8px 0 14px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+header h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: .01em; }
+header .sub { color: var(--ink-dim); font-size: .85rem; }
+.dots { display: flex; gap: 6px; margin-left: auto; }
+.dot { width: 26px; height: 26px; border-radius: var(--r-full); border: 1px solid var(--border-strong); background: var(--bg-card); color: var(--ink-dim); font-size: .75rem; font-weight: 600; display: grid; place-items: center; cursor: pointer; }
+.dot.done { background: var(--ok-bg); border-color: var(--ok-border); color: var(--ok); }
+.dot.cur { background: var(--accent); color: #06242b; border-color: var(--accent); }
+.dot.locked { opacity: .45; cursor: default; }
+.station { display: none; }
+.station.active { display: block; }
+.kicker { color: var(--accent); font-weight: 600; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; }
+h2 { font-size: 1.6rem; font-weight: 700; margin: 4px 0 12px; line-height: 1.2; }
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.audio { display: flex; align-items: center; gap: 12px; background: var(--bg-elevated); border: 1px solid var(--border-strong); border-radius: var(--r-md); padding: 10px 12px; margin-bottom: 14px; }
+.audio button { width: 48px; height: 48px; border-radius: var(--r-full); border: none; background: var(--accent); color: #06242b; font-size: 1.2rem; font-weight: 800; cursor: pointer; flex: none; box-shadow: 0 0 0 4px var(--accent-subtle); }
+.audio .lbl { font-weight: 600; }
+.audio .time { color: var(--ink-dim); font-size: .85rem; font-family: var(--mono); }
+.audio .bar { flex: 1; height: 6px; background: var(--bg-deep); border-radius: var(--r-full); overflow: hidden; min-width: 60px; }
+.audio .bar i { display: block; height: 100%; width: 0; background: var(--accent); }
+.bare { font-size: 1.05rem; }
+.bare p { margin-bottom: 8px; }
+.formula { font-family: var(--mono); font-size: 1.25rem; background: var(--bg-deep); border: 1px solid var(--border-strong); border-radius: var(--r-md); padding: 10px 14px; display: inline-block; margin: 6px 0; color: var(--light); }
+.formula.big { font-size: 1.5rem; }
+.note { color: var(--ink-muted); font-size: .92rem; }
+.panel { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 8px; margin: 10px 0; }
+svg { width: 100%; height: auto; display: block; touch-action: none; user-select: none; -webkit-user-select: none; }
+svg text { font-family: var(--font); fill: var(--ink); font-size: 13px; }
+svg .mono { font-family: var(--mono); }
+.ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 8px 0; }
+.ctrl label { font-weight: 600; font-size: .95rem; }
+input[type=range] { flex: 1; min-width: 160px; accent-color: var(--accent); height: 32px; }
+.readout { font-family: var(--mono); font-size: .95rem; background: var(--bg-deep); border-radius: var(--r-sm); padding: 6px 10px; border: 1px solid var(--border); }
+.readout b { color: var(--light); font-weight: 600; }
+.btn { font: inherit; font-weight: 600; padding: 10px 16px; min-height: 44px; border-radius: var(--r-md); border: 1px solid var(--border-strong); background: var(--bg-elevated); color: var(--ink); cursor: pointer; }
+.btn.primary { background: var(--accent); color: #06242b; border-color: var(--accent); }
+.btn:disabled { opacity: .4; cursor: default; }
+.check { border-left: 4px solid var(--accent); }
+.check h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+.opts { display: grid; gap: 8px; }
+.opt { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: var(--r-md); border: 1px solid var(--border); background: var(--bg-surface); cursor: pointer; min-height: 44px; }
+.opt input { margin-top: 4px; accent-color: var(--accent); width: 18px; height: 18px; flex: none; }
+.opt.right { border-color: var(--ok-border); background: var(--ok-bg); }
+.opt.wrong { border-color: var(--err-border); background: var(--err-bg); }
+.fb { margin-top: 10px; padding: 10px 12px; border-radius: var(--r-md); font-size: .95rem; display: none; }
+.fb.ok { display: block; background: var(--ok-bg); border: 1px solid var(--ok-border); }
+.fb.err { display: block; background: var(--err-bg); border: 1px solid var(--err-border); }
+.fb.info { display: block; background: var(--warn-bg); border: 1px solid var(--warn-border); }
+.num { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.num input { font: inherit; font-family: var(--mono); font-size: 1.05rem; width: 130px; padding: 8px 10px; border-radius: var(--r-sm); border: 1px solid var(--border-strong); background: var(--bg-deep); color: var(--ink); min-height: 44px; }
+.nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; }
+.steps { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 8px 0; }
+.steps .st { color: var(--ink-muted); font-size: .95rem; }
+.tbl { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: .95rem; margin-top: 8px; }
+.tbl th, .tbl td { padding: 6px 8px; text-align: right; border-bottom: 1px solid var(--border); }
+.tbl th { color: var(--ink-dim); font-weight: 500; }
+.tbl td.hi { color: var(--light); }
+.badge { display: inline-block; padding: 2px 10px; border-radius: var(--r-full); font-size: .8rem; font-weight: 700; }
+.badge.hell { background: rgba(255,209,102,.18); color: var(--light); border: 1px solid rgba(255,209,102,.45); }
+.badge.dunkel { background: rgba(111,130,153,.18); color: var(--ink-muted); border: 1px solid rgba(111,130,153,.4); }
+.two { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 640px) { .two { grid-template-columns: 1fr 1fr; } }
+.final { text-align: center; padding: 24px 16px; }
+.final .big { font-size: 2.2rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div><h1>Vom Doppelspalt zur Formel</h1><div class="sub">Physik 12 gA · Wellen · Lernschritt 5 · neun Stationen</div></div>
+  <div class="dots" id="dots"></div>
+</header>
+
+<!-- ───────────── Station 1 ───────────── -->
+<section class="station" data-s="1">
+  <div class="kicker">Station 1 von 9</div>
+  <h2>Das Phänomen</h2>
+  <div class="audio" data-audio="s1.mp3"></div>
+  <div class="card">
+    <div class="bare"><p>Zwei schmale Spalte, Licht einer Wellenlänge, ein Schirm. Auf dem Schirm: helle und dunkle Streifen.</p>
+    <p class="note">Tippe auf dem Schirm alle Stellen an, an denen es hell ist.</p></div>
+    <div class="panel"><svg id="svg1" viewBox="0 0 640 360"></svg></div>
+    <div id="fb1" class="fb"></div>
+  </div>
+  <div class="card check" id="chk1">
+    <h3>An den hellen Stellen gilt für den Gangunterschied der beiden Wege:</h3>
+    <div class="opts" data-mc="1" data-answer="B">
+      <label class="opt"><input type="radio" name="mc1" value="A"><span>Δs = (k + ½) · λ, die Wellen kommen gegenphasig an.</span></label>
+      <label class="opt"><input type="radio" name="mc1" value="B"><span>Δs = k · λ, die Wellen kommen gleichphasig an.</span></label>
+      <label class="opt"><input type="radio" name="mc1" value="C"><span>Δs = 0 an jeder hellen Stelle.</span></label>
+      <label class="opt"><input type="radio" name="mc1" value="D"><span>Der Gangunterschied spielt keine Rolle, nur die Helligkeit des Lasers.</span></label>
+    </div>
+    <div class="fb" data-fb="1"></div>
+  </div>
+  <div class="nav"><span></span><button class="btn primary" data-next>Weiter zu Station 2</button></div>
+</section>
+
+<!-- ───────────── Station 2 ───────────── -->
+<section class="station" data-s="2">
+  <div class="kicker">Station 2 von 9</div>
+  <h2>Zwei Strahlen zu einem Punkt</h2>
+  <div class="audio" data-audio="s2.mp3"></div>
+  <div class="card">
+    <div class="bare"><p>Von jedem Spalt läuft ein Weg zum Punkt P. Der Unterschied der Weglängen ist der Gangunterschied.</p>
+    <div class="formula">Δs = s₂ − s₁</div>
+    <p class="note">Stark vergrößert: hier ist d = 4 λ und e = 25 λ. In Wirklichkeit ist e zehntausendmal größer als d.</p></div>
+    <div class="panel"><svg id="svg2" viewBox="0 0 640 360"></svg></div>
+    <div class="ctrl"><label for="r2">Position von P</label><input type="range" id="r2" min="-150" max="150" value="60" step="1">
+      <span class="readout" id="ro2"></span></div>
+  </div>
+  <div class="card check">
+    <h3>Bei welchem Gangunterschied ist es im Punkt P dunkel?</h3>
+    <div class="opts" data-mc="2" data-answer="C">
+      <label class="opt"><input type="radio" name="mc2" value="A"><span>Δs = 0</span></label>
+      <label class="opt"><input type="radio" name="mc2" value="B"><span>Δs = 1 λ</span></label>
+      <label class="opt"><input type="radio" name="mc2" value="C"><span>Δs = 1,5 λ</span></label>
+      <label class="opt"><input type="radio" name="mc2" value="D"><span>Δs = 2 λ</span></label>
+    </div>
+    <div class="fb" data-fb="2"></div>
+  </div>
+  <div class="nav"><button class="btn" data-prev>Zurück</button><button class="btn primary" data-next>Weiter zu Station 3</button></div>
+</section>
+
+<!-- ───────────── Station 3 ───────────── -->
+<section class="station" data-s="3">
+  <div class="kicker">Station 3 von 9</div>
+  <h2>Exkurs: Warum Sonnenstrahlen parallel sind</h2>
+  <div class="audio" data-audio="s3.mp3"></div>
+  <div class="card">
+    <div class="bare"><p>Zwei Strahlen zu einem weit entfernten Punkt sind praktisch parallel, wenn ihr Startabstand d winzig gegen die Entfernung e ist.</p></div>
+    <div class="panel"><svg id="svg3" viewBox="0 0 640 300"></svg></div>
+    <div class="ctrl"><label for="r3">Schirmabstand e</label><input type="range" id="r3" min="40" max="560" value="120" step="1">
+      <span class="readout" id="ro3"></span></div>
+    <div class="two">
+      <div class="readout">Doppelspalt im Versuch: d = 0,20 mm, e = 2,0 m. Winkel zwischen den beiden Strahlen zu P: <b>etwa 0,006°</b>.</div>
+      <div class="readout">Sonne: 150 Mio. km entfernt. Zwei Orte, 1 km auseinander: Winkel zwischen den Strahlen <b>0,0000004°</b>.</div>
+    </div>
+  </div>
+  <div class="card check">
+    <h3>Warum dürfen wir die beiden Strahlen in der Herleitung als parallel zeichnen, obwohl sie sich in P treffen?</h3>
+    <div class="opts" data-mc="3" data-answer="B">
+      <label class="opt"><input type="radio" name="mc3" value="A"><span>Weil Licht sich immer geradlinig ausbreitet.</span></label>
+      <label class="opt"><input type="radio" name="mc3" value="B"><span>Weil der Schirmabstand sehr viel größer ist als der Spaltabstand. Der Winkel zwischen den Strahlen ist praktisch null.</span></label>
+      <label class="opt"><input type="radio" name="mc3" value="C"><span>Weil Laserlicht von Natur aus parallel ist.</span></label>
+      <label class="opt"><input type="radio" name="mc3" value="D"><span>Weil die beiden Spalte gleich breit sind.</span></label>
+    </div>
+    <div class="fb" data-fb="3"></div>
+  </div>
+  <div class="nav"><button class="btn" data-prev>Zurück</button><button class="btn primary" data-next>Weiter zu Station 4</button></div>
+</section>
+
+<!-- ───────────── Station 4 ───────────── -->
+<section class="station" data-s="4">
+  <div class="kicker">Station 4 von 9 · die wichtigste</div>
+  <h2>Das kleine Dreieck</h2>
+  <div class="audio" data-audio="s4.mp3"></div>
+  <div class="card">
+    <div class="bare"><p>Parallele Strahlen, Lot vom oberen Spalt auf den unteren Strahl. Im kleinen Dreieck steckt der Gangunterschied.</p></div>
+    <div class="panel"><svg id="svg4" viewBox="0 0 640 360"></svg></div>
+    <div class="steps"><button class="btn primary" id="b4">Nächster Schritt</button><span class="st" id="st4">Schritt 0 von 5</span></div>
+    <div id="fb4" class="fb"></div>
+    <div class="bare" id="res4" style="display:none"><div class="formula big">Δs = d · sin α</div></div>
+  </div>
+  <div class="card check" id="chk4" style="display:none">
+    <h3>Welcher Winkel im kleinen Dreieck ist gleich α? Tippe ihn in der Zeichnung an.</h3>
+    <div class="fb" data-fb="4"></div>
+  </div>
+  <div class="nav"><button class="btn" data-prev>Zurück</button><button class="btn primary" data-next>Weiter zu Station 5</button></div>
+</section>
+
+<!-- ───────────── Station 5 ───────────── -->
+<section class="station" data-s="5">
+  <div class="kicker">Station 5 von 9</div>
+  <h2>Die Bedingung für die Maxima</h2>
+  <div class="audio" data-audio="s5.mp3"></div>
+  <div class="card">
+    <div class="bare"><p>Hell bei Δs = k · λ. Und Δs = d · sin α. Zusammen:</p>
+    <div class="formula big">d · sin α<sub>k</sub> = k · λ</div>
+    <p class="note">k = 0, 1, 2, … ist die Ordnung des Maximums.</p></div>
+    <div class="panel"><svg id="svg5" viewBox="0 0 640 220"></svg></div>
+    <div class="ctrl"><label for="r5">Winkel α</label><input type="range" id="r5" min="0" max="0.6" value="0.1" step="0.002">
+      <span class="readout" id="ro5"></span></div>
+  </div>
+  <div class="card check">
+    <h3>λ = 600 nm, d = 0,20 mm. Unter welchem Winkel liegt das erste Maximum (k = 1)?</h3>
+    <div class="num"><span>α₁ =</span><input type="text" inputmode="decimal" id="in5" placeholder="0,000"><span>°</span><button class="btn" data-num="5">Prüfen</button></div>
+    <div class="fb" data-fb="5"></div>
+  </div>
+  <div class="nav"><button class="btn" data-prev>Zurück</button><button class="btn primary" data-next>Weiter zu Station 6</button></div>
+</section>
+
+<!-- ───────────── Station 6 ───────────── -->
+<section class="station" data-s="6">
+  <div class="kicker">Station 6 von 9</div>
+  <h2>Das große Dreieck</h2>
+  <div class="audio" data-audio="s6.mp3"></div>
+  <div class="card">
+    <div class="bare"><p>Gemessen wird nicht der Winkel, sondern der Abstand a<sub>k</sub> des Maximums von der Schirmmitte.</p>
+    <div class="formula big">tan α = a<sub>k</sub> / e</div></div>
+    <div class="panel"><svg id="svg6" viewBox="0 0 640 300"></svg></div>
+    <p class="note">Kleines Dreieck an den Spalten: Sinus. Großes Dreieck zum Schirm: Tangens.</p>
+  </div>
+  <div class="card check">
+    <h3>Der Schirm steht e = 2,0 m entfernt. Wie weit von der Mitte liegt das erste Maximum?</h3>
+    <div class="num"><span>a₁ =</span><input type="text" inputmode="decimal" id="in6" placeholder="0,0"><span>mm</span><button class="btn" data-num="6">Prüfen</button></div>
+    <div class="fb" data-fb="6"></div>
+  </div>
+  <div class="nav"><button class="btn" data-prev>Zurück</button><button class="btn primary" data-next>Weiter zu Station 7</button></div>
+</section>
+
+<!-- ───────────── Station 7 ───────────── -->
+<section class="station" data-s="7">
+  <div class="kicker">Station 7 von 9</div>
+  <h2>Kleine Winkel</h2>
+  <div class="audio" data-audio="s7.mp3"></div>
+  <div class="card">
+    <div class="bare"><p>Für kleine Winkel gilt sin α ≈ tan α. Dann werden aus zwei Gleichungen eine:</p>
+    <div class="formula">k · λ / d = a<sub>k</sub> / e</div>
+    <div class="formula big">a<sub>k</sub> = k · λ · e / d</div></div>
+    <div class="ctrl"><label for="r7">Winkel α</label><input type="range" id="r7" min="0.5" max="30" value="12" step="0.5">
+      <span class="readout" id="ro7"></span></div>
+    <table class="tbl"><thead><tr><th>α</th><th>sin α</th><th>tan α</th><th>Abweichung</th></tr></thead><tbody id="tb7"></tbody></table>
+    <div id="fb7" class="fb"></div>
+  </div>
+  <div class="card check">
+    <h3>Wann sollte man die Näherung sin α ≈ tan α nicht benutzen?</h3>
+    <div class="opts" data-mc="7" data-answer="A">
+      <label class="opt"><input type="radio" name="mc7" value="A"><span>Bei großen Winkeln, zum Beispiel am Gitter, wo Maxima bei 20° und mehr liegen.</span></label>
+      <label class="opt"><input type="radio" name="mc7" value="B"><span>Nie, sie ist immer exakt.</span></label>
+      <label class="opt"><input type="radio" name="mc7" value="C"><span>Wenn der Schirm sehr weit entfernt ist.</span></label>
+      <label class="opt"><input type="radio" name="mc7" value="D"><span>Wenn die Wellenlänge kleiner als der Spaltabstand ist.</span></label>
+    </div>
+    <div class="fb" data-fb="7"></div>
+  </div>
+  <div class="nav"><button class="btn" data-prev>Zurück</button><button class="btn primary" data-next>Weiter zu Station 8</button></div>
+</section>
+
+<!-- ───────────── Station 8 ───────────── -->
+<section class="station" data-s="8">
+  <div class="kicker">Station 8 von 9</div>
+  <h2>Die Wellenlänge messen</h2>
+  <div class="audio" data-audio="s8.mp3"></div>
+  <div class="card">
+    <div class="bare"><p>Umgestellt nach λ:</p><div class="formula big">λ = a · d / e</div>
+    <p class="note">d = 0,20 mm, e = 2,00 m. Miss den Abstand a benachbarter Maxima auf dem Schirm.</p></div>
+    <div class="panel"><svg id="svg8" viewBox="0 0 640 200"></svg></div>
+  </div>
+  <div class="card check">
+    <h3>Welche Wellenlänge hat das Licht?</h3>
+    <div class="num"><span>λ =</span><input type="text" inputmode="decimal" id="in8" placeholder="000"><span>nm</span><button class="btn" data-num="8">Prüfen</button></div>
+    <div class="fb" data-fb="8"></div>
+  </div>
+  <div class="nav"><button class="btn" data-prev>Zurück</button><button class="btn primary" data-next>Weiter zu Station 9</button></div>
+</section>
+
+<!-- ───────────── Station 9 ───────────── -->
+<section class="station" data-s="9">
+  <div class="kicker">Station 9 von 9</div>
+  <h2>Vorhersagen</h2>
+  <div class="audio" data-audio="s9.mp3"></div>
+  <div class="card">
+    <div class="bare"><div class="formula">a<sub>k</sub> = k · λ · e / d</div>
+    <p class="note">Erst vorhersagen, dann prüfen.</p></div>
+    <div class="panel"><svg id="svg9" viewBox="0 0 640 170"></svg></div>
+  </div>
+  <div class="card check" data-pred="1">
+    <h3>1. Blauer statt roter Laser (kürzere Wellenlänge). Die Streifen …</h3>
+    <div class="opts" data-mc="9a" data-answer="B">
+      <label class="opt"><input type="radio" name="mc9a" value="A"><span>rücken auseinander.</span></label>
+      <label class="opt"><input type="radio" name="mc9a" value="B"><span>rücken zusammen.</span></label>
+      <label class="opt"><input type="radio" name="mc9a" value="C"><span>bleiben, werden nur blau.</span></label>
+    </div>
+    <div class="fb" data-fb="9a"></div>
+  </div>
+  <div class="card check" data-pred="2">
+    <h3>2. Doppelspalt mit größerem Spaltabstand d. Die Streifen …</h3>
+    <div class="opts" data-mc="9b" data-answer="B">
+      <label class="opt"><input type="radio" name="mc9b" value="A"><span>rücken auseinander.</span></label>
+      <label class="opt"><input type="radio" name="mc9b" value="B"><span>rücken zusammen.</span></label>
+      <label class="opt"><input type="radio" name="mc9b" value="C"><span>bleiben gleich.</span></label>
+    </div>
+    <div class="fb" data-fb="9b"></div>
+  </div>
+  <div class="card check" data-pred="3">
+    <h3>3. Der Schirm wird weiter weggeschoben. Die Streifen …</h3>
+    <div class="opts" data-mc="9c" data-answer="A">
+      <label class="opt"><input type="radio" name="mc9c" value="A"><span>rücken auseinander.</span></label>
+      <label class="opt"><input type="radio" name="mc9c" value="B"><span>rücken zusammen.</span></label>
+      <label class="opt"><input type="radio" name="mc9c" value="C"><span>bleiben gleich.</span></label>
+    </div>
+    <div class="fb" data-fb="9c"></div>
+  </div>
+  <div class="card final">
+    <div id="finalText"><p>Wenn alle drei Vorhersagen geprüft sind, kannst du den Lernschritt abschließen.</p></div>
+    <p style="margin-top:12px"><button class="btn primary" id="btnDone" disabled>Lernschritt abschließen</button></p>
+  </div>
+  <div class="nav"><button class="btn" data-prev>Zurück</button><span></span></div>
+</section>
+</div>
+
+<script>
+// ══════════════════════════════════════════ STATE + SCORM
+const N = 9;
+const state = { section: 1, checks: {}, done: false, s4step: 0 };
+
+const SCORM = (() => {
+  let api = null, initialized = false;
+  function findAPI(win) {
+    let tries = 0;
+    while (win && !win.API && tries < 10) {
+      tries++;
+      if (win.parent && win.parent !== win) win = win.parent;
+      else if (win.opener) win = win.opener;
+      else break;
+    }
+    return win ? win.API : null;
+  }
+  function init() {
+    try {
+      api = findAPI(window);
+      if (!api) return;
+      api.LMSInitialize('');
+      initialized = true;
+      const saved = api.LMSGetValue('cmi.suspend_data');
+      if (saved) { try { const g = JSON.parse(saved); if (g && typeof g === 'object') Object.assign(state, g); } catch (e) {} }
+      if (api.LMSGetValue('cmi.core.lesson_status') === 'not attempted') {
+        api.LMSSetValue('cmi.core.lesson_status', 'incomplete'); api.LMSCommit('');
+      }
+    } catch (e) { console.log('SCORM init:', e); }
+  }
+  function setzen(el, wert) {
+    const ok = api.LMSSetValue(el, String(wert));
+    if (ok !== 'true') { console.warn('[W5] LMS lehnt ab:', el, 'Laenge', String(wert).length, 'Fehlercode', api.LMSGetLastError()); return false; }
+    return true;
+  }
+  function save(completed) {
+    if (!api || !initialized) return;
+    try {
+      const daten = JSON.stringify(state);
+      if (daten.length > 4000) console.warn('[W5] suspend_data nahe der Grenze:', daten.length);
+      setzen('cmi.suspend_data', daten);
+      setzen('cmi.core.lesson_location', state.section);
+      const keys = ['1','2','3','4','5','6','7','8','9a','9b','9c'];
+      const right = keys.filter(k => state.checks[k]).length;
+      setzen('cmi.core.score.raw', Math.round(right / keys.length * 100));
+      setzen('cmi.core.score.min', 0); setzen('cmi.core.score.max', 100);
+      if (completed || state.done) setzen('cmi.core.lesson_status', 'completed');
+      api.LMSCommit('');
+    } catch (e) { console.log('SCORM save:', e); }
+  }
+  function finish() { if (!api || !initialized) return; try { save(true); api.LMSFinish(''); } catch (e) {} }
+  return { init, save, finish };
+})();
+
+// Fallback ohne LMS: localStorage, damit die Datei auch allein funktioniert.
+function loadLocal() { try { const g = JSON.parse(localStorage.getItem('ph12w5') || 'null'); if (g) Object.assign(state, g); } catch (e) {} }
+function persist(done) { try { localStorage.setItem('ph12w5', JSON.stringify(state)); } catch (e) {} SCORM.save(done); }
+
+// ══════════════════════════════════════════ HELPERS
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const NS = 'http://www.w3.org/2000/svg';
+function el(name, attrs = {}, parent) {
+  const e = document.createElementNS(NS, name);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, attrs = {}) { const t = el('text', Object.assign({ x, y }, attrs), parent); t.textContent = s; return t; }
+function fmt(v, dec = 1) { return v.toFixed(dec).replace('.', ','); }
+function parseNum(s) { return parseFloat(String(s).replace(',', '.').replace(/[^\d.\-]/g, '')); }
+function unlocked(n) { return n === 1 || state.checks[String(n - 1)] || (n === 9 && state.checks['8']) || n <= state.section; }
+function stationPassed(n) { return n === 9 ? (state.checks['9a'] && state.checks['9b'] && state.checks['9c']) : !!state.checks[String(n)]; }
+
+// Scrollen auf drei Ebenen, alle instant (siehe scorm-repo/README).
+function scrollTop() {
+  try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (e) { try { window.scrollTo(0, 0); } catch (e2) {} }
+  try { document.querySelector('header').scrollIntoView({ block: 'start', behavior: 'instant' }); } catch (e) {}
+  try { if (window.frameElement && window.parent) { const r = window.frameElement.getBoundingClientRect(); window.parent.scrollTo({ top: r.top + window.parent.scrollY - 8, behavior: 'instant' }); } } catch (e) {}
+}
+
+// ══════════════════════════════════════════ NAVIGATION
+function show(n) {
+  n = Math.max(1, Math.min(N, n));
+  state.section = n;
+  $$('.station').forEach(s => s.classList.toggle('active', +s.dataset.s === n));
+  renderDots(); updateNav(); stopAllAudio();
+  persist(); scrollTop();
+}
+function renderDots() {
+  const d = $('#dots'); d.innerHTML = '';
+  for (let i = 1; i <= N; i++) {
+    const b = document.createElement('div'); b.className = 'dot'; b.textContent = i;
+    if (stationPassed(i)) b.classList.add('done');
+    if (i === state.section) b.classList.add('cur');
+    if (!unlocked(i)) b.classList.add('locked'); else b.addEventListener('click', () => show(i));
+    d.appendChild(b);
+  }
+}
+function updateNav() {
+  $$('.station').forEach(s => {
+    const n = +s.dataset.s, nx = $('[data-next]', s);
+    if (nx) nx.disabled = !stationPassed(n);
+  });
+  $('#btnDone').disabled = !stationPassed(9);
+}
+$$('[data-next]').forEach(b => b.addEventListener('click', () => show(state.section + 1)));
+$$('[data-prev]').forEach(b => b.addEventListener('click', () => show(state.section - 1)));
+
+// ══════════════════════════════════════════ AUDIO
+const players = [];
+function stopAllAudio() { players.forEach(p => { p.audio.pause(); }); }
+$$('.audio').forEach(box => {
+  const src = box.dataset.audio;
+  const audio = new Audio(src); audio.preload = 'metadata';
+  box.innerHTML = '<button aria-label="Erklärung abspielen">▶</button><div><div class="lbl">Erklärung anhören</div><div class="time">…</div></div><div class="bar"><i></i></div>';
+  const btn = $('button', box), time = $('.time', box), bar = $('.bar i', box);
+  const mmss = s => isFinite(s) ? Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0') : '';
+  audio.addEventListener('loadedmetadata', () => time.textContent = mmss(audio.duration));
+  audio.addEventListener('timeupdate', () => { bar.style.width = (audio.currentTime / audio.duration * 100) + '%'; time.textContent = mmss(audio.currentTime) + ' / ' + mmss(audio.duration); });
+  audio.addEventListener('play', () => btn.textContent = '❚❚');
+  audio.addEventListener('pause', () => btn.textContent = '▶');
+  audio.addEventListener('ended', () => { btn.textContent = '▶'; bar.style.width = '0'; });
+  audio.addEventListener('error', () => { time.textContent = 'Audio nicht gefunden'; });
+  btn.addEventListener('click', () => { if (audio.paused) { stopAllAudio(); audio.play().catch(() => {}); } else audio.pause(); });
+  $('.bar', box).addEventListener('click', ev => { const r = ev.currentTarget.getBoundingClientRect(); if (isFinite(audio.duration)) audio.currentTime = (ev.clientX - r.left) / r.width * audio.duration; });
+  players.push({ audio });
+});
+
+// ══════════════════════════════════════════ CHECKS (MC + numeric)
+const FB = {
+  '1': { ok: 'Richtig. Hell heißt gleichphasig, und gleichphasig heißt: die Wege unterscheiden sich um ganze Wellenlängen.', err: 'Nicht ganz. Denk an die Handys: laut war es, wenn beide Wellen im Takt ankamen. Wann ist das der Fall?' },
+  '2': { ok: 'Richtig. Bei 1,5 λ (und 0,5 λ, 2,5 λ …) stehen die Zeiger entgegengesetzt, die Wellen löschen sich aus.', err: 'Schau noch einmal mit dem Regler: Bei welchem Δs stehen die beiden Zeiger entgegengesetzt?' },
+  '3': { ok: 'Richtig. Das ist dieselbe Geometrie wie bei der Sonne: winziger Startabstand, riesige Entfernung.', err: 'Geradlinig ja, aber das sagt nichts über den Winkel zwischen den beiden Strahlen. Schieb den Regler ganz nach rechts und schau auf den Winkel.' },
+  '7': { ok: 'Richtig. Am Gitter liegen die Maxima oft bei großen Winkeln, dort rechnet man mit d · sin α = k · λ und dem Tangens getrennt.', err: 'Schau in die Tabelle: Bei welchen Winkeln wird die Abweichung groß?' },
+  '9a': { ok: 'Richtig. λ steht im Zähler: kleinere Wellenlänge, kleinerer Streifenabstand.', err: 'λ steht im Zähler der Formel. Was passiert mit a, wenn λ kleiner wird?' },
+  '9b': { ok: 'Richtig. d steht im Nenner: größerer Spaltabstand, engere Streifen.', err: 'd steht im Nenner. Größerer Nenner heißt …?' },
+  '9c': { ok: 'Richtig. e steht im Zähler: weiter weg, breiteres Muster.', err: 'e steht im Zähler. Was passiert mit a, wenn e wächst?' }
+};
+function showFb(key, cls, text) { const f = $(`[data-fb="${key}"]`); f.className = 'fb ' + cls; f.textContent = text; }
+function pass(key) { state.checks[key] = true; renderDots(); updateNav(); persist(); if (key.startsWith('9')) updatePred(key); }
+
+$$('[data-mc]').forEach(grp => {
+  const key = grp.dataset.mc, ans = grp.dataset.answer;
+  grp.addEventListener('change', ev => {
+    const v = ev.target.value, opt = ev.target.closest('.opt');
+    $$('.opt', grp).forEach(o => o.classList.remove('right', 'wrong'));
+    if (v === ans) { opt.classList.add('right'); showFb(key, 'ok', FB[key].ok); $$('input', grp).forEach(i => i.disabled = true); pass(key); }
+    else { opt.classList.add('wrong'); showFb(key, 'err', FB[key].err); }
+  });
+});
+// Numeric checks: target, tolerance, unit hint
+const NUM = {
+  '5': { t: 0.172, tol: 0.012, ok: 'Richtig: sin α₁ = λ/d = 6,0·10⁻⁷ m / 2,0·10⁻⁴ m = 0,0030, also α₁ ≈ 0,17°. Winzig, wie angekündigt.', err: 'Noch nicht. Rechne λ und d in Meter um, teile λ durch d und nimm davon den Arkussinus (sin⁻¹). Ergebnis in Grad, mit zwei Nachkommastellen.' },
+  '6': { t: 6.0, tol: 0.4, ok: 'Richtig: a₁ = e · tan α₁ = 2000 mm · tan 0,172° ≈ 6,0 mm.', err: 'Noch nicht. a₁ = e · tan α₁. Nimm e in Millimetern (2000 mm) und den Winkel aus Station 5.' },
+  '8': { t: 600, tol: 45, ok: 'Richtig: a ≈ 6,0 mm, also λ = 6,0·10⁻³ m · 2,0·10⁻⁴ m / 2,00 m = 6,0·10⁻⁷ m = 600 nm. Rot-oranges Licht.', err: 'Noch nicht. Miss a am Lineal (Tipp: über mehrere Streifen messen und teilen), dann λ = a · d / e, alles in Meter. 1 nm = 10⁻⁹ m.' }
+};
+$$('[data-num]').forEach(b => {
+  const key = b.dataset.num, inp = $('#in' + key), cfg = NUM[key];
+  const check = () => {
+    const v = parseNum(inp.value);
+    if (!isFinite(v)) { showFb(key, 'info', 'Bitte eine Zahl eingeben.'); return; }
+    if (Math.abs(v - cfg.t) <= cfg.tol) { showFb(key, 'ok', cfg.ok); inp.disabled = true; b.disabled = true; pass(key); }
+    else { showFb(key, 'err', cfg.err); }
+  };
+  b.addEventListener('click', check);
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
+});
+
+// ══════════════════════════════════════════ STATION 1: pattern + click maxima
+(function () {
+  const svg = $('#svg1'); const cy = 180, a1 = 42, screenX = 560, K = 3;
+  // Wall with two slits
+  el('rect', { x: 118, y: 20, width: 8, height: 320, fill: '#6f8299' }, svg);
+  el('rect', { x: 118, y: cy - 40 - 4, width: 8, height: 8, fill: '#0b1220' }, svg);
+  el('rect', { x: 118, y: cy + 40 - 4, width: 8, height: 8, fill: '#0b1220' }, svg);
+  // incoming light
+  for (let i = 0; i < 6; i++) el('line', { x1: 20 + i * 16, y1: 40, x2: 20 + i * 16, y2: 320, stroke: '#ffd166', 'stroke-opacity': .35, 'stroke-width': 2 }, svg);
+  txt(svg, 20, 30, 'Licht, eine Wellenlänge', { fill: '#a3b4c8' });
+  txt(svg, 100, 350, 'Doppelspalt', { fill: '#a3b4c8' });
+  // fan of light (schematic)
+  for (let k = -K; k <= K; k++) {
+    for (const sy of [cy - 40, cy + 40]) el('line', { x1: 126, y1: sy, x2: screenX, y2: cy + k * a1, stroke: '#ffd166', 'stroke-opacity': .12 }, svg);
+  }
+  // Screen with intensity
+  el('rect', { x: screenX, y: 20, width: 40, height: 320, fill: '#0b1220', stroke: '#6f8299' }, svg);
+  for (let y = 22; y < 338; y += 2) {
+    const I = Math.pow(Math.cos(Math.PI * (y - cy) / a1), 2) * Math.exp(-Math.pow((y - cy) / 150, 2));
+    el('rect', { x: screenX + 1, y, width: 38, height: 2, fill: '#ffd166', 'fill-opacity': I.toFixed(2) }, svg);
+  }
+  txt(svg, 540, 350, 'Schirm', { fill: '#a3b4c8' });
+  // click layer
+  const hit = el('rect', { x: screenX - 20, y: 20, width: 80, height: 320, fill: 'transparent', style: 'cursor:pointer' }, svg);
+  const marks = el('g', {}, svg);
+  const found = new Set();
+  const fb = $('#fb1');
+  hit.addEventListener('pointerdown', ev => {
+    const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+    const k = Math.round((p.y - cy) / a1);
+    const dy = Math.abs(p.y - (cy + k * a1));
+    if (Math.abs(k) <= K && dy <= 12) {
+      if (!found.has(k)) { found.add(k); el('circle', { cx: screenX + 20, cy: cy + k * a1, r: 9, fill: 'none', stroke: '#34d399', 'stroke-width': 3 }, marks); }
+      fb.className = 'fb ok'; fb.textContent = found.size === 2 * K + 1 ? 'Alle sieben hellen Streifen gefunden. Jetzt die Frage unten.' : `Hell. ${found.size} von ${2 * K + 1} gefunden.`;
+    } else {
+      const x = el('g', {}, marks);
+      el('line', { x1: screenX + 12, y1: p.y - 8, x2: screenX + 28, y2: p.y + 8, stroke: '#f87171', 'stroke-width': 3 }, x);
+      el('line', { x1: screenX + 28, y1: p.y - 8, x2: screenX + 12, y2: p.y + 8, stroke: '#f87171', 'stroke-width': 3 }, x);
+      setTimeout(() => { if (x.parentNode) marks.removeChild(x); }, 900);
+      fb.className = 'fb err'; fb.textContent = 'Hier ist es dunkel oder nur schwach hell. Tippe genauer auf die Mitte eines hellen Streifens.';
+    }
+  });
+})();
+
+// ══════════════════════════════════════════ STATION 2: two paths, phasors
+(function () {
+  const svg = $('#svg2'), LAM = 20, S = { x: 60 }, cy = 180, d = 80, screenX = 560;
+  const s1 = { x: S.x, y: cy - d / 2 }, s2 = { x: S.x, y: cy + d / 2 };
+  // crests from both slits
+  const crests = el('g', {}, svg);
+  for (const s of [s1, s2]) for (let r = LAM; r < 560; r += LAM) el('circle', { cx: s.x, cy: s.y, r, fill: 'none', stroke: s === s1 ? '#22d3ee' : '#f472b6', 'stroke-opacity': .18 }, crests);
+  el('rect', { x: 52, y: 20, width: 8, height: 320, fill: '#6f8299' }, svg);
+  for (const s of [s1, s2]) el('circle', { cx: s.x, cy: s.y, r: 5, fill: s === s1 ? '#22d3ee' : '#f472b6' }, svg);
+  txt(svg, 14, s1.y + 5, 'S₁', { fill: '#22d3ee', 'font-weight': 700 }); txt(svg, 14, s2.y + 5, 'S₂', { fill: '#f472b6', 'font-weight': 700 });
+  el('line', { x1: s1.x, y1: s1.y, x2: s2.x, y2: s2.y, stroke: '#e6edf5', 'stroke-width': 2 }, svg);
+  txt(svg, 66, cy + 4, 'd', { fill: '#e6edf5', 'font-style': 'italic' });
+  el('rect', { x: screenX, y: 20, width: 6, height: 320, fill: '#a3b4c8' }, svg);
+  const l1 = el('line', { stroke: '#22d3ee', 'stroke-width': 2.5 }, svg), l2 = el('line', { stroke: '#f472b6', 'stroke-width': 2.5 }, svg);
+  const P = el('circle', { r: 7, fill: '#ffd166', stroke: '#0b1220', 'stroke-width': 2 }, svg);
+  const Pl = txt(svg, 0, 0, 'P', { fill: '#ffd166', 'font-weight': 700 });
+  // phasor inset
+  const ins = el('g', { transform: 'translate(300,70)' }, svg);
+  el('rect', { x: -70, y: -50, width: 190, height: 110, rx: 10, fill: '#0b1220', 'fill-opacity': .85, stroke: '#1d3049' }, ins);
+  txt(ins, -62, -32, 'Zeigerbild in P', { fill: '#a3b4c8', 'font-size': 12 });
+  el('circle', { cx: 0, cy: 10, r: 36, fill: 'none', stroke: '#1d3049' }, ins);
+  const z1 = el('line', { x1: 0, y1: 10, stroke: '#22d3ee', 'stroke-width': 3, 'stroke-linecap': 'round' }, ins);
+  const z2 = el('line', { x1: 0, y1: 10, stroke: '#f472b6', 'stroke-width': 3, 'stroke-linecap': 'round' }, ins);
+  const badge = txt(ins, 50, 0, '', { 'font-weight': 700 });
+  const bar = el('rect', { x: 50, y: 8, width: 0, height: 10, fill: '#ffd166' }, ins);
+  el('rect', { x: 50, y: 8, width: 60, height: 10, fill: 'none', stroke: '#6f8299' }, ins);
+  txt(ins, 50, 34, 'Helligkeit', { fill: '#6f8299', 'font-size': 11 });
+  const r = $('#r2'), ro = $('#ro2');
+  function update() {
+    const py = cy - (+r.value), px = screenX + 3;
+    l1.setAttribute('x1', s1.x); l1.setAttribute('y1', s1.y); l1.setAttribute('x2', px); l1.setAttribute('y2', py);
+    l2.setAttribute('x1', s2.x); l2.setAttribute('y1', s2.y); l2.setAttribute('x2', px); l2.setAttribute('y2', py);
+    P.setAttribute('cx', px); P.setAttribute('cy', py); Pl.setAttribute('x', px + 12); Pl.setAttribute('y', py + 5);
+    const L1 = Math.hypot(px - s1.x, py - s1.y) / LAM, L2 = Math.hypot(px - s2.x, py - s2.y) / LAM, ds = L2 - L1;
+    const phi = 2 * Math.PI * ds;
+    z1.setAttribute('x2', 34); z1.setAttribute('y2', 10);
+    z2.setAttribute('x2', 34 * Math.cos(phi)); z2.setAttribute('y2', 10 - 34 * Math.sin(phi));
+    const amp = Math.abs(Math.cos(phi / 2));
+    bar.setAttribute('width', 60 * amp);
+    const frac = Math.abs(ds - Math.round(ds));
+    badge.textContent = frac < 0.08 ? 'hell' : Math.abs(frac - 0.5) < 0.08 ? 'dunkel' : '';
+    badge.setAttribute('fill', frac < 0.08 ? '#ffd166' : '#a3b4c8');
+    ro.innerHTML = `s₁ = <b>${fmt(L1, 2)} λ</b> &nbsp; s₂ = <b>${fmt(L2, 2)} λ</b> &nbsp; Δs = <b>${fmt(ds, 2)} λ</b>`;
+  }
+  r.addEventListener('input', update); update();
+})();
+
+// ══════════════════════════════════════════ STATION 3: rays become parallel
+(function () {
+  const svg = $('#svg3'), cy = 170, d = 60;
+  const s1 = { x: 40, y: cy - d / 2 }, s2 = { x: 40, y: cy + d / 2 };
+  el('rect', { x: 32, y: 40, width: 8, height: 260, fill: '#6f8299' }, svg);
+  el('circle', { cx: s1.x, cy: s1.y, r: 5, fill: '#22d3ee' }, svg); el('circle', { cx: s2.x, cy: s2.y, r: 5, fill: '#f472b6' }, svg);
+  txt(svg, 10, cy + 4, 'd', { 'font-style': 'italic' });
+  const screen = el('rect', { y: 20, width: 6, height: 280, fill: '#a3b4c8' }, svg);
+  const l1 = el('line', { stroke: '#22d3ee', 'stroke-width': 2.5 }, svg), l2 = el('line', { stroke: '#f472b6', 'stroke-width': 2.5 }, svg);
+  const P = el('circle', { r: 6, fill: '#ffd166' }, svg);
+  const arc = el('path', { fill: 'none', stroke: '#ffd166', 'stroke-width': 2 }, svg);
+  const lab = txt(svg, 0, 0, '', { fill: '#ffd166', 'font-weight': 700 });
+  const r = $('#r3'), ro = $('#ro3');
+  function update() {
+    const e = +r.value, px = 40 + e, py = cy - 90;
+    screen.setAttribute('x', px);
+    l1.setAttribute('x1', s1.x); l1.setAttribute('y1', s1.y); l1.setAttribute('x2', px); l1.setAttribute('y2', py);
+    l2.setAttribute('x1', s2.x); l2.setAttribute('y1', s2.y); l2.setAttribute('x2', px); l2.setAttribute('y2', py);
+    P.setAttribute('cx', px); P.setAttribute('cy', py);
+    const a1 = Math.atan2(py - s1.y, px - s1.x), a2 = Math.atan2(py - s2.y, px - s2.x);
+    const g = (a1 - a2) * 180 / Math.PI;
+    // angle arc at P between the two rays
+    const R = 40, ax = px + R * Math.cos(a1 + Math.PI), ay = py + R * Math.sin(a1 + Math.PI), bx = px + R * Math.cos(a2 + Math.PI), by = py + R * Math.sin(a2 + Math.PI);
+    arc.setAttribute('d', `M${ax},${ay} A${R},${R} 0 0 0 ${bx},${by}`);
+    lab.textContent = fmt(Math.abs(g), 1) + '°'; lab.setAttribute('x', px - 90); lab.setAttribute('y', py + 30);
+    ro.innerHTML = `e = <b>${fmt(e / d, 1)} · d</b> &nbsp; Winkel zwischen den Strahlen in P: <b>${fmt(Math.abs(g), 1)}°</b>`;
+  }
+  r.addEventListener('input', update); update();
+})();
+
+// ══════════════════════════════════════════ STATION 4: small triangle, stepwise
+(function () {
+  const svg = $('#svg4'), A = 35 * Math.PI / 180, dir = { x: Math.cos(A), y: -Math.sin(A) };
+  const s1 = { x: 160, y: 95 }, s2 = { x: 160, y: 265 }, d = 170;
+  const t = (s1.x - s2.x) * dir.x + (s1.y - s2.y) * dir.y; // = d sin A
+  const F = { x: s2.x + t * dir.x, y: s2.y + t * dir.y };
+  const mid = { x: 160, y: 180 };
+  const g = [el('g', {}, svg), el('g', {}, svg), el('g', {}, svg), el('g', {}, svg), el('g', {}, svg), el('g', {}, svg)];
+  // base: wall, slits, axis
+  el('rect', { x: 152, y: 20, width: 8, height: 330, fill: '#6f8299' }, g[0]);
+  el('rect', { x: 152, y: s1.y - 4, width: 8, height: 8, fill: '#0b1220' }, g[0]); el('rect', { x: 152, y: s2.y - 4, width: 8, height: 8, fill: '#0b1220' }, g[0]);
+  el('circle', { cx: s1.x, cy: s1.y, r: 5, fill: '#22d3ee' }, g[0]); el('circle', { cx: s2.x, cy: s2.y, r: 5, fill: '#f472b6' }, g[0]);
+  txt(g[0], 118, s1.y + 5, 'S₁', { fill: '#22d3ee', 'font-weight': 700 }); txt(g[0], 118, s2.y + 5, 'S₂', { fill: '#f472b6', 'font-weight': 700 });
+  el('line', { x1: mid.x, y1: mid.y, x2: 620, y2: mid.y, stroke: '#6f8299', 'stroke-dasharray': '6 5' }, g[0]);
+  txt(g[0], 520, mid.y - 6, 'Mittelachse', { fill: '#6f8299', 'font-size': 12 });
+  // step 1: parallel rays + alpha
+  const L = 520;
+  for (const s of [s1, s2]) el('line', { x1: s.x, y1: s.y, x2: s.x + L * dir.x, y2: s.y + L * dir.y, stroke: s === s1 ? '#22d3ee' : '#f472b6', 'stroke-width': 2.5 }, g[1]);
+  el('line', { x1: mid.x, y1: mid.y, x2: mid.x + L * dir.x, y2: mid.y + L * dir.y, stroke: '#ffd166', 'stroke-dasharray': '4 4', 'stroke-opacity': .6 }, g[1]);
+  el('path', { d: `M${mid.x + 150},${mid.y} A150,150 0 0 0 ${mid.x + 150 * Math.cos(A)},${mid.y - 150 * Math.sin(A)}`, fill: 'none', stroke: '#ffd166', 'stroke-width': 2 }, g[1]);
+  txt(g[1], mid.x + 158, mid.y - 22, 'α', { fill: '#ffd166', 'font-weight': 700, 'font-size': 16 });
+  txt(g[1], 470, 70, 'zum Punkt P, weit weg →', { fill: '#a3b4c8', 'font-size': 12 });
+  // step 2: perpendicular from S1 to ray 2
+  el('line', { x1: s1.x, y1: s1.y, x2: F.x, y2: F.y, stroke: '#e6edf5', 'stroke-width': 2, 'stroke-dasharray': '5 4' }, g[2]);
+  const sq = 10, nx = -dir.y, ny = dir.x; // normal pointing from ray2 toward S1 side
+  el('path', { d: `M${F.x - sq * dir.x},${F.y - sq * dir.y} l${-sq * nx},${-sq * ny} l${sq * dir.x},${sq * dir.y}`, fill: 'none', stroke: '#e6edf5' }, g[2]);
+  txt(g[2], F.x + 10, F.y + 16, 'F', { 'font-weight': 700, 'font-size': 15 });
+  txt(g[2], (s1.x + F.x) / 2 + 10, (s1.y + F.y) / 2 - 6, 'Lot', { fill: '#a3b4c8', 'font-size': 12 });
+  // step 3: delta s highlighted
+  el('line', { x1: s2.x, y1: s2.y, x2: F.x, y2: F.y, stroke: '#ffd166', 'stroke-width': 7, 'stroke-opacity': .9, 'stroke-linecap': 'round' }, g[3]);
+  txt(g[3], (s2.x + F.x) / 2 + 6, (s2.y + F.y) / 2 + 22, 'Δs', { fill: '#ffd166', 'font-weight': 700, 'font-size': 16 });
+  // step 4: triangle fill + d label
+  el('polygon', { points: `${s1.x},${s1.y} ${s2.x},${s2.y} ${F.x},${F.y}`, fill: '#22d3ee', 'fill-opacity': .15, stroke: '#22d3ee', 'stroke-width': 1.5 }, g[4]);
+  txt(g[4], s1.x - 24, mid.y + 5, 'd', { 'font-style': 'italic', 'font-size': 16 });
+  // step 5: clickable angles
+  const angles = [
+    { id: 'S1', cx: s1.x, cy: s1.y, a0: Math.PI / 2, a1: Math.atan2(F.y - s1.y, F.x - s1.x), ok: true, msg: 'Richtig. Spaltwand und Lot stehen senkrecht auf Mittelachse und Strahl. Beide Schenkel um 90° gedreht, der Winkel bleibt: das ist α. Also sin α = Δs / d.' },
+    { id: 'S2', cx: s2.x, cy: s2.y, a0: -Math.PI / 2, a1: Math.atan2(F.y - s2.y, F.x - s2.x), ok: false, msg: 'Dieser Winkel ist 90° − α, zwischen Spaltwand und Strahl. Probier den Winkel beim oberen Spalt.' },
+    { id: 'F', cx: F.x, cy: F.y, a0: Math.atan2(s1.y - F.y, s1.x - F.x), a1: Math.atan2(s2.y - F.y, s2.x - F.x), ok: false, msg: 'Bei F sitzt der rechte Winkel, das Lot steht ja senkrecht auf dem Strahl. Gesucht ist ein anderer.' }
+  ];
+  for (const an of angles) {
+    const R = 34, ga = el('g', { style: 'cursor:pointer' }, g[5]);
+    let a0 = an.a0, a1 = an.a1; let sweep = a1 - a0; while (sweep > Math.PI) sweep -= 2 * Math.PI; while (sweep < -Math.PI) sweep += 2 * Math.PI;
+    const p0 = { x: an.cx + R * Math.cos(a0), y: an.cy + R * Math.sin(a0) }, p1 = { x: an.cx + R * Math.cos(a1), y: an.cy + R * Math.sin(a1) };
+    el('path', { d: `M${an.cx},${an.cy} L${p0.x},${p0.y} A${R},${R} 0 0 ${sweep > 0 ? 1 : 0} ${p1.x},${p1.y} Z`, fill: '#ffd166', 'fill-opacity': .25, stroke: '#ffd166', 'stroke-width': 2 }, ga);
+    el('circle', { cx: an.cx, cy: an.cy, r: 40, fill: 'transparent' }, ga);
+    txt(ga, an.cx + 52 * Math.cos(a0 + sweep / 2) - 5, an.cy + 52 * Math.sin(a0 + sweep / 2) + 6, '?', { fill: '#ffd166', 'font-weight': 800, 'font-size': 16 });
+    ga.addEventListener('pointerdown', () => {
+      if (state.checks['4']) return;
+      if (an.ok) { showFb('4', 'ok', an.msg); $('#res4').style.display = 'block'; pass('4'); }
+      else showFb('4', 'err', an.msg);
+    });
+  }
+  const steps = ['Schritt 0 von 5', 'Schritt 1: zwei parallele Strahlen unter dem Winkel α.', 'Schritt 2: Lot vom oberen Spalt auf den unteren Strahl, Fußpunkt F.', 'Schritt 3: Ab F sind beide Wege gleich lang. Der Rest ist Δs.', 'Schritt 4: rechtwinkliges Dreieck S₁ S₂ F, Hypotenuse d.', 'Schritt 5: Welcher Winkel ist α? Tippe ihn an.'];
+  const b = $('#b4'), st = $('#st4');
+  function render() {
+    for (let i = 1; i <= 5; i++) g[i].style.display = state.s4step >= i ? '' : 'none';
+    st.textContent = steps[state.s4step];
+    b.disabled = state.s4step >= 5;
+    $('#chk4').style.display = state.s4step >= 5 ? '' : 'none';
+    if (state.checks['4']) { $('#res4').style.display = 'block'; showFb('4', 'ok', angles[0].msg); }
+  }
+  b.addEventListener('click', () => { if (state.s4step < 5) { state.s4step++; render(); persist(); } });
+  window.render4 = render;
+})();
+
+// ══════════════════════════════════════════ STATION 5: slider alpha -> ds in lambda
+(function () {
+  const svg = $('#svg5'), LAM = 600e-9, D = 0.20e-3;
+  const cy = 110;
+  // mini pattern strip and marker
+  txt(svg, 20, 30, 'Δs = d · sin α in Wellenlängen', { fill: '#a3b4c8' });
+  for (let i = 0; i <= 3; i++) { const x = 60 + i * 170; el('line', { x1: x, y1: 60, x2: x, y2: 160, stroke: '#6f8299', 'stroke-dasharray': '4 4' }, svg); txt(svg, x - 10, 185, i + ' λ', { fill: '#a3b4c8' }); }
+  el('rect', { x: 60, y: 100, width: 510, height: 20, fill: '#0b1220', stroke: '#1d3049' }, svg);
+  for (let x = 60; x < 570; x += 2) { const dsl = (x - 60) / 170; el('rect', { x, y: 101, width: 2, height: 18, fill: '#ffd166', 'fill-opacity': Math.pow(Math.cos(Math.PI * dsl), 2).toFixed(2) }, svg); }
+  const mk = el('polygon', { fill: '#22d3ee' }, svg);
+  const lab = txt(svg, 0, 0, '', { fill: '#ffd166', 'font-weight': 700 });
+  const r = $('#r5'), ro = $('#ro5');
+  function update() {
+    const a = +r.value, ds = D * Math.sin(a * Math.PI / 180), dsl = ds / LAM, x = 60 + Math.min(3, dsl) * 170;
+    mk.setAttribute('points', `${x},92 ${x - 8},78 ${x + 8},78`);
+    const near = Math.abs(dsl - Math.round(dsl)) < 0.03;
+    lab.textContent = near ? `hell: k = ${Math.round(dsl)}` : ''; lab.setAttribute('x', x - 30); lab.setAttribute('y', 145);
+    ro.innerHTML = `α = <b>${fmt(a, 3)}°</b> &nbsp; Δs = d · sin α = <b>${fmt(ds * 1e9, 0)} nm</b> = <b>${fmt(dsl, 2)} λ</b>`;
+  }
+  r.addEventListener('input', update); update();
+})();
+
+// ══════════════════════════════════════════ STATION 6: big triangle
+(function () {
+  const svg = $('#svg6'), cy = 190, sx = 60, scx = 560, A = 15 * Math.PI / 180;
+  const a = (scx - sx) * Math.tan(A), P = { x: scx, y: cy - a };
+  el('rect', { x: sx - 4, y: 30, width: 8, height: 260, fill: '#6f8299' }, svg);
+  el('circle', { cx: sx, cy: cy - 6, r: 4, fill: '#22d3ee' }, svg); el('circle', { cx: sx, cy: cy + 6, r: 4, fill: '#f472b6' }, svg);
+  txt(svg, 20, cy + 40, 'Spalte', { fill: '#a3b4c8', 'font-size': 12 });
+  el('rect', { x: scx, y: 20, width: 6, height: 280, fill: '#a3b4c8' }, svg);
+  txt(svg, 540, 295, 'Schirm', { fill: '#a3b4c8', 'font-size': 12 });
+  el('polygon', { points: `${sx},${cy} ${scx},${cy} ${P.x},${P.y}`, fill: '#22d3ee', 'fill-opacity': .12 }, svg);
+  el('line', { x1: sx, y1: cy, x2: scx, y2: cy, stroke: '#e6edf5', 'stroke-width': 2 }, svg);
+  txt(svg, 300, cy + 22, 'e (Schirmabstand)', { 'font-style': 'italic' });
+  el('line', { x1: scx, y1: cy, x2: P.x, y2: P.y, stroke: '#ffd166', 'stroke-width': 4 }, svg);
+  txt(svg, scx + 14, cy - a / 2 + 5, 'a₁', { fill: '#ffd166', 'font-weight': 700, 'font-size': 16 });
+  el('line', { x1: sx, y1: cy, x2: P.x, y2: P.y, stroke: '#22d3ee', 'stroke-width': 2.5 }, svg);
+  el('path', { d: `M${sx + 60},${cy} A60,60 0 0 0 ${sx + 60 * Math.cos(A)},${cy - 60 * Math.sin(A)}`, fill: 'none', stroke: '#ffd166', 'stroke-width': 2 }, svg);
+  txt(svg, sx + 68, cy - 10, 'α', { fill: '#ffd166', 'font-weight': 700, 'font-size': 16 });
+  el('path', { d: `M${scx - 14},${cy} l0,-14 l14,0`, fill: 'none', stroke: '#e6edf5' }, svg);
+  el('circle', { cx: P.x, cy: P.y, r: 6, fill: '#ffd166' }, svg); txt(svg, P.x - 118, P.y - 12, 'Maximum k = 1', { fill: '#ffd166', 'font-size': 12 });
+  el('circle', { cx: scx + 3, cy, r: 4, fill: '#ffd166' }, svg); txt(svg, scx + 12, cy + 5, 'k = 0', { fill: '#ffd166', 'font-size': 12 });
+  txt(svg, 20, 30, 'Winkel übertrieben groß gezeichnet', { fill: '#6f8299', 'font-size': 12 });
+})();
+
+// ══════════════════════════════════════════ STATION 7: sin vs tan table
+(function () {
+  const r = $('#r7'), ro = $('#ro7'), tb = $('#tb7'), fb = $('#fb7');
+  const fixed = [1, 2, 5, 10, 20, 30];
+  function row(a, hi) {
+    const s = Math.sin(a * Math.PI / 180), t = Math.tan(a * Math.PI / 180), dev = (t - s) / s * 100;
+    return `<tr><td${hi ? ' class="hi"' : ''}>${fmt(a, 1)}°</td><td>${s.toFixed(4).replace('.', ',')}</td><td>${t.toFixed(4).replace('.', ',')}</td><td${hi ? ' class="hi"' : ''}>${fmt(dev, 2)} %</td></tr>`;
+  }
+  function update() {
+    const a = +r.value, s = Math.sin(a * Math.PI / 180), t = Math.tan(a * Math.PI / 180), dev = (t - s) / s * 100;
+    ro.innerHTML = `α = <b>${fmt(a, 1)}°</b> &nbsp; Abweichung tan zu sin: <b>${fmt(dev, 2)} %</b>`;
+    tb.innerHTML = row(a, true) + fixed.map(x => row(x, false)).join('');
+    fb.className = 'fb ' + (dev < 1 ? 'ok' : 'info');
+    fb.textContent = dev < 1 ? 'Unter 1 %: hier darf man sin α durch tan α ersetzen.' : 'Über 1 %: hier wird die Näherung spürbar ungenau.';
+  }
+  r.addEventListener('input', update); update();
+})();
+
+// ══════════════════════════════════════════ STATION 8: ruler measurement
+(function () {
+  const svg = $('#svg8'), x0 = 40, pxmm = 14, a = 6.0, cy = 70;
+  el('rect', { x: x0, y: 20, width: 40 * pxmm, height: 80, fill: '#0b1220', stroke: '#6f8299' }, svg);
+  for (let x = 0; x < 40 * pxmm; x += 2) {
+    const mm = x / pxmm - 20; const I = Math.pow(Math.cos(Math.PI * mm / a), 2) * Math.exp(-Math.pow(mm / 22, 2));
+    el('rect', { x: x0 + x, y: 21, width: 2, height: 78, fill: '#ffd166', 'fill-opacity': I.toFixed(2) }, svg);
+  }
+  // ruler
+  el('rect', { x: x0, y: 110, width: 40 * pxmm, height: 50, fill: '#f1e9d2' }, svg);
+  for (let mm = 0; mm <= 40; mm++) {
+    const x = x0 + mm * pxmm, h = mm % 10 === 0 ? 22 : mm % 5 === 0 ? 15 : 8;
+    el('line', { x1: x, y1: 110, x2: x, y2: 110 + h, stroke: '#1b1b1b', 'stroke-width': mm % 5 === 0 ? 1.5 : 1 }, svg);
+    if (mm % 10 === 0) txt(svg, mm === 0 ? x + 3 : mm === 40 ? x - 18 : x - 7, 150, String(mm), { style: 'fill:#1b1b1b', 'font-size': 13, 'font-weight': 600 });
+  }
+  txt(svg, x0 + 40 * pxmm - 52, 150, 'mm', { style: 'fill:#1b1b1b', 'font-size': 12 });
+  txt(svg, x0, 185, 'Schirm mit Lineal, Maßstab 1 : 1 (Muster bei d = 0,20 mm, e = 2,00 m)', { fill: '#6f8299', 'font-size': 12 });
+})();
+
+// ══════════════════════════════════════════ STATION 9: prediction patterns
+const pred = { '9a': { lam: 0.75, lbl: 'blau' }, '9b': { d: 1.6, lbl: 'größeres d' }, '9c': { e: 1.6, lbl: 'Schirm weiter weg' } };
+function pattern(svg, x, y, w, h, a, color, label) {
+  el('rect', { x, y, width: w, height: h, fill: '#0b1220', stroke: '#6f8299' }, svg);
+  for (let i = 0; i < w; i += 2) { const u = (i - w / 2) / a; el('rect', { x: x + i, y: y + 1, width: 2, height: h - 2, fill: color, 'fill-opacity': (Math.pow(Math.cos(Math.PI * u), 2) * Math.exp(-Math.pow(u / 5, 2))).toFixed(2) }, svg); }
+  txt(svg, x, y + h + 16, label, { fill: '#a3b4c8', 'font-size': 12 });
+}
+function updatePred() {
+  const svg = $('#svg9'); svg.innerHTML = '';
+  pattern(svg, 20, 20, 600, 40, 30, '#ff6b4a', 'Ausgangslage: roter Laser, d, e');
+  const done = ['9a', '9b', '9c'].filter(k => state.checks[k]);
+  done.forEach((k, i) => {
+    const p = pred[k], a = 30 * (p.lam || 1) * (p.e || 1) / (p.d || 1);
+    pattern(svg, 20 + i * 205, 95, 190, 36, a, k === '9a' ? '#5aa9ff' : '#ff6b4a', p.lbl);
+  });
+  if (done.length === 3) $('#finalText').innerHTML = '<p class="big">Geschafft.</p><p>Du kannst jetzt erklären, wie aus Δs = k · λ die Doppelspaltformel wird. Schließe den Lernschritt ab, damit dein Stand gespeichert ist.</p>';
+}
+$('#btnDone').addEventListener('click', () => { state.done = true; persist(true); $('#btnDone').textContent = 'Abgeschlossen ✓'; $('#btnDone').disabled = true; });
+
+// ══════════════════════════════════════════ RESTORE
+function restore() {
+  for (const k in state.checks) {
+    if (!state.checks[k]) continue;
+    const grp = $(`[data-mc="${k}"]`);
+    if (grp) { $$('input', grp).forEach(i => { i.disabled = true; if (i.value === grp.dataset.answer) i.checked = true, i.closest('.opt').classList.add('right'); }); showFb(k, 'ok', FB[k].ok); }
+    const inp = $('#in' + k); if (inp) { inp.value = String(NUM[k].t).replace('.', ','); inp.disabled = true; $(`[data-num="${k}"]`).disabled = true; showFb(k, 'ok', NUM[k].ok); }
+  }
+  window.render4(); updatePred();
+  if (state.done) { $('#btnDone').textContent = 'Abgeschlossen ✓'; }
+}
+SCORM.init(); if (!state.checks || Object.keys(state.checks).length === 0) loadLocal();
+restore(); show(state.section || 1);
+window.addEventListener('beforeunload', () => SCORM.finish());
+window.addEventListener('pagehide', () => SCORM.finish());
+</script>
+</body>
+</html>

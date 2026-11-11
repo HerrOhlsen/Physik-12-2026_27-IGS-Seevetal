@@ -1,0 +1,7 @@
+Station neun. Vorhersagen.
+Zum Schluss prüfst du, ob du die Formel wirklich verstanden hast, und zwar nicht durch Rechnen, sondern durch Vorhersagen. Drei Situationen. Überlege jeweils zuerst, was mit den Streifen passiert, wähle deine Antwort, und lass dir dann das Muster anzeigen.
+Erstens: Wir tauschen den roten Laser gegen einen blauen. Blau hat eine kürzere Wellenlänge. Rücken die Streifen zusammen oder auseinander?
+Zweitens: Wir nehmen einen Doppelspalt, bei dem die beiden Spalte weiter auseinanderliegen. Was passiert?
+Drittens: Wir schieben den Schirm weiter weg.
+Denk bei jeder Frage an die Formel: a k gleich k Lambda e durch d. Was im Zähler steht, vergrößert den Abstand. Was im Nenner steht, verkleinert ihn.
+Wenn du alle drei beantwortet hast, schließe den Lernschritt ab. Dann ist dein Stand in Moodle gespeichert.
